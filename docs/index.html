@@ -1,27 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>权三岁的小世界</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <meta name="description" content="Description">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0">
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+  <!-- 支持评论 -->
+  <link rel="stylesheet" href="//unpkg.com/gitalk/dist/gitalk.css">
+  <!-- 支持 Vue -->
+  <script src="//cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
 </head>
+
 <body>
-  <div id="app"></div>
+  <nav>
+    <a href="#/">EN</a>
+    <a href="#/zh-cn/">中文</a>
+  </nav>
+  <div id="app">正在加油中...</div>
   <script>
     window.$docsify = {
-      name: '',
-      repo: '',
-      loadSidebar:true,
+      coverpage: false, //设置封面
+      name: '小小小',
+      repo: 'https://github.com/xxxlgloverd',
+      loadSidebar: true,
+      loadNavbar: true, //配置导航
       subMaxLevel: 2,
-      search: 'auto'
+      search: {
+        maxAge: 86400000, // 过期时间，单位毫秒，默认一天
+        paths: 'auto',
+        // 搜索标题的最大程级, 1 - 6
+        depth: 2,
+      },
+      count: {
+        countable: true,
+        fontsize: '0.9em',
+        color: 'rgb(90,90,90)',
+        language: 'chinese'
+      },
+      // 支持 Vue
+      vueGlobalOptions: {
+        data() {
+          return {
+            test: 0
+          };
+        }
+      },
     }
   </script>
   <!-- Docsify v4 -->
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+  <!-- 文章搜索 -->
   <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
+  <!-- 图片缩放 -->
   <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
+  <!-- 字数统计 -->
+  <script src="//unpkg.com/docsify-count/dist/countable.js"></script>
+  <!-- 复杂到粘贴板 -->
+  <script src="//cdn.jsdelivr.net/npm/docsify-copy-code"></script>
+  <!-- 支持评论 -->
+  <script src="//unpkg.com/docsify/lib/plugins/gitalk.min.js"></script>
+  <script src="//unpkg.com/gitalk/dist/gitalk.min.js"></script>
+  <script>
+    const gitalk = new Gitalk({
+      clientID: '6a9da2702f19880a6bd8',
+      clientSecret: '768049bfa0ea20520a67dac363cdb5ec2b693d6c',
+      repo: 'my-docs', // 填写你要保存评论的仓库名字
+      owner: 'xxxlgloverd', // 就是你的 Github 名字
+      admin: ['xxxlgloverd'], // 就是你的 Github 名字
+      // facebook-like distraction free mode
+      distractionFreeMode: false
+    })
+  </script>
 </body>
+
 </html>
+
+<style>
+</style>
