@@ -1,3 +1,3 @@
-# LURUI's Blog
+#  LURUI's Blog💕
 
 > An awesome project.

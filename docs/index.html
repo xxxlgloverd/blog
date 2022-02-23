@@ -15,18 +15,16 @@
 </head>
 
 <body>
-  <nav>
-    <a href="#/">EN</a>
-    <a href="#/zh-cn/">中文</a>
-  </nav>
   <div id="app">正在加油中...</div>
   <script>
     window.$docsify = {
       coverpage: false, //设置封面
-      name: '小小小',
+      name: '<span class="title">🌈知识就是力量!</span>',
       repo: 'https://github.com/xxxlgloverd',
-      loadSidebar: true,
+      loadSidebar: true,//自定义侧边栏
       loadNavbar: true, //配置导航
+      mergeNavbar: true,//小屏设备下合并导航栏到侧边栏
+      notFoundPage: 'my404.md',
       subMaxLevel: 2,
       search: {
         maxAge: 86400000, // 过期时间，单位毫秒，默认一天
@@ -79,4 +77,8 @@
 </html>
 
 <style>
+  .title{
+    font-size: 16px;
+    font-weight: bold;
+  }
 </style>
