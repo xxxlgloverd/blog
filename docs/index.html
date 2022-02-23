@@ -13,6 +13,7 @@
   <!-- 支持 Vue -->
   <script src="//cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
 </head>
+
 <body>
   <div id="app">正在加油中...</div>
   <script>
@@ -20,9 +21,9 @@
       coverpage: false, //设置封面
       name: '<span class="title">🌈知识就是力量!</span>',
       repo: 'https://github.com/xxxlgloverd',
-      loadSidebar: true,//自定义侧边栏
+      loadSidebar: true, //自定义侧边栏
       loadNavbar: true, //配置导航
-      mergeNavbar: true,//小屏设备下合并导航栏到侧边栏
+      mergeNavbar: true, //小屏设备下合并导航栏到侧边栏
       notFoundPage: 'my404.md',
       subMaxLevel: 2,
       search: {
@@ -41,7 +42,8 @@
       vueGlobalOptions: {
         data() {
           return {
-            test: 0
+            test: "fdfd",
+            count: 0,
           };
         }
       },
@@ -76,7 +78,7 @@
 </html>
 
 <style>
-  .title{
+  .title {
     font-size: 16px;
     font-weight: bold;
   }
