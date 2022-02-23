@@ -5,4 +5,4 @@
   * [Markdown 配置](zh-cn/markdown.md)
   * [代码高亮](zh-cn/language-highlight.md)
 
-* 关于我
+* [关于我](README.md)
