@@ -6,7 +6,7 @@
 
 ?> _TODO_ 普通提示示例
 
-<div style='color: red'>
+<div>
 
 - listitem
 - listitem
