@@ -1,0 +1,1 @@
+!> 肤浅的学习一下typescript
