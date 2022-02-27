@@ -370,8 +370,8 @@ body {
 </head>
 
 <body>
-  <img src="./hong.png" alt="努力学习的汪的头像">
-  <h1 class="hello world">你好!阿汪</h1>
+  <img src="./xxx.png" alt="头像">
+  <h1 class="hello world">你好!世界</h1>
 </body>
 
 </html>
@@ -411,7 +411,7 @@ body {
 ```html
 <!--
   从前有个新生代农民工,他非常努力学习,同时又是一个单身狗
-  所以他叫 努力学习的汪 ~~
+  所以他叫 努力努力再努力！！ ~~
 -->
 ```
 
@@ -568,10 +568,10 @@ class 用于标识高度可复用组件，因此应该排在首位。id 用于�
 
 > 前面说了那么多,也不知道看进去了多少. 光说不练假把式,看看下方几个问题你说出几个,也权当是巩固一下知识点
 
-### 1、在 `<div class=hong>My name is 努力学习的汪!</div>` 这段语句中有什么错误？
+### 1、在 `<div class=hong>My name is 努力学习鸭!</div>` 这段语句中有什么错误？
 
 ```html
-<div class=hong>My name is 努力学习的汪!</div>
+<div class=hong>My name is 努力学习鸭!</div>
 ```
 
 >**标点符号问题**: 其实也是大家最容易忽略的文艺,实际上就是引号忘了加形成了这个错误.虽然很多浏览器在不加引号的情况加仍然能正确识别渲染.但是想要通过眼里的W3C XHTML国际标准是不可能的 
@@ -579,13 +579,13 @@ class 用于标识高度可复用组件，因此应该排在首位。id 用于�
 > ###### 请大家记住等号后面一定要接引号,下面给出正确写法
 
 ```html
-<div class="hong">My name is 努力学习的汪!</div>
+<div class="hong">My name is 努力学习鸭!</div>
 ```
 
-### 2、在 `<SPAN class="hong">My name is 努力学习的汪!</SPAN>`这段语句中有什么错误？
+### 2、在 `<SPAN class="hong">My name is 努力学习鸭!</SPAN>`这段语句中有什么错误？
 
 ```html
-<SPAN class="hong">My name is 努力学习的汪!</SPAN>
+<SPAN class="hong">My name is 努力学习鸭!</SPAN>
 ```
 
 **大小写问题**: 这与第一个问题是一样的,都是容易忽略的细节误问题. 
@@ -593,7 +593,7 @@ class 用于标识高度可复用组件，因此应该排在首位。id 用于�
 >###### 上面说过,**尽量使用小写的元素名**,下面给出正确写法
 
 ```html
-<span class="hong">My name is 努力学习的汪!</span>
+<span class="hong">My name is 努力学习鸭!</span>
 ```
 
 ### 3、在` <p>How are you?</p><br><p>I'm fine, thanks.</p> `这段语句中有什么错误？
