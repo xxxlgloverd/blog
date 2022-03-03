@@ -1030,20 +1030,20 @@ const { SourceMapConsumer, SourceNode } = require("source-map");
 
 ### Ⅰ-概括总结
 
->-  **Unicode表示法**: `大括号包含`表示Unicode字符(`\u{0xXX}`或`\u{0XXX}`)
->-  **字符串遍历**: 可通过 [ for-of ] 遍历字符串
->-  **字符串模板**: 可单行可多行可插入变量的增强版字符串
->-  **标签模板**: 函数参数的特殊调用
->-  **String.raw()**: 返回把字符串所有变量替换且对斜杠进行转义的结果
->-  **String.fromCodePoint()**: 返回码点对应字符
->-  **codePointAt()**: 返回字符对应码点(`String.fromCodePoint()`的逆操作)
->-  **normalize()**: 把字符的不同表示方法统一为同样形式, 返回`新字符串`(Unicode正规化)
->-  **repeat()**: 把字符串重复n次, 返回`新字符串`
->-  **matchAll()**: 返回正则表达式在字符串的所有匹配
->-  **includes()**: 是否存在指定字符串
->-  **startsWith()**: 是否存在字符串头部指定字符串
->-  **endsWith()**: 是否存在字符串尾部指定字符串
->
+-  **Unicode表示法**: `大括号包含`表示Unicode字符(`\u{0xXX}`或`\u{0XXX}`)
+-  **字符串遍历**: 可通过 [ for-of ] 遍历字符串
+-  **字符串模板**: 可单行可多行可插入变量的增强版字符串
+-  **标签模板**: 函数参数的特殊调用
+-  **String.raw()**: 返回把字符串所有变量替换且对斜杠进行转义的结果
+-  **String.fromCodePoint()**: 返回码点对应字符
+-  **codePointAt()**: 返回字符对应码点(`String.fromCodePoint()`的逆操作)
+-  **normalize()**: 把字符的不同表示方法统一为同样形式, 返回`新字符串`(Unicode正规化)
+-  **repeat()**: 把字符串重复n次, 返回`新字符串`
+-  **matchAll()**: 返回正则表达式在字符串的所有匹配
+-  **includes()**: 是否存在指定字符串
+-  **startsWith()**: 是否存在字符串头部指定字符串
+-  **endsWith()**: 是否存在字符串尾部指定字符串
+
 >- 以上扩展方法均可作用于由`4个字节储存`的`Unicode字符`上
 
 ### Ⅱ-模板字符串
@@ -1055,136 +1055,133 @@ const { SourceMapConsumer, SourceNode } = require("source-map");
 #### ① 字符串中可以出现换行符
 
 >字符串中可以出现换行符:如果使用模板字符串表示多行字符串, 所有的空格和缩进都会被保留在输出之中. 
->
->```js
->//代码中, 所有模板字符串的空格和换行, 都是被保留的, 比如`<ul>`标签前面会有一个换行. 如果你不想要这个换行, 可以使用`trim`方法消除它. 
->$('#list').html(`
-><ul>
->  <li>first</li>
->  <li>second</li>
-></ul>
->`.trim());
->```
+
+```js
+//代码中, 所有模板字符串的空格和换行, 都是被保留的, 比如`<ul>`标签前面会有一个换行. 如果你不想要这个换行, 可以使用`trim`方法消除它. 
+$('#list').html(`
+<ul>
+  <li>first</li>
+  <li>second</li>
+</ul>
+`.trim());
+```
 
 #### ② 可以使用 ${xxx} 形式输出变量
 
->```js
->function authorize(user, action) {
->  if (!user.hasPrivilege(action)) {
->    throw new Error(
->      // 传统写法为
->      // 'User '
->      // + user.name
->      // + ' is not authorized to do '
->      // + action
->      // + '.'
->      `User ${user.name} is not authorized to do ${action}.`);
->  }
->}
->```
+```js
+function authorize(user, action) {
+  if (!user.hasPrivilege(action)) {
+    throw new Error(
+      // 传统写法为
+      // 'User '
+      // + user.name
+      // + ' is not authorized to do '
+      // + action
+      // + '.'
+      `User ${user.name} is not authorized to do ${action}.`);
+  }
+}
+```
 
 #### ③ 大括号内部可以放入任意的 JavaScript 表达式
 
 >括号内部可以放入任意的 JavaScript 表达式, 可以进行运算, 以及引用对象属性. 
->
->```js
->let x = 1;
->let y = 2;
->`${x} + ${y} = ${x + y}`// "1 + 2 = 3"
->`${x} + ${y * 2} = ${x + y * 2}`// "1 + 4 = 5"
->let obj = {x: 1, y: 2};
->`${obj.x + obj.y}`// "3"
->```
+
+```js
+let x = 1;
+let y = 2;
+`${x} + ${y} = ${x + y}`// "1 + 2 = 3"
+`${x} + ${y * 2} = ${x + y * 2}`// "1 + 4 = 5"
+let obj = {x: 1, y: 2};
+`${obj.x + obj.y}`// "3"
+```
 
 #### ④ 模板字符串之中还能调用函数. 
 
->```js
->function fn() {  return "Hello World";}
->`foo ${fn()} bar`
->// foo Hello World bar
->```
+```js
+function fn() {  return "Hello World";}
+`foo ${fn()} bar`
+// foo Hello World bar
+```
 
 #### ⑤ 字符串嵌套
 
->```js
->const tmpl = addrs => `
->  <table>
->  ${addrs.map(addr => `
->    <tr><td>${addr.first}</td></tr>
->    <tr><td>${addr.last}</td></tr>
->  `).join('')}
->  </table>
->`;
->```
->
+```js
+const tmpl = addrs => `
+  <table>
+  ${addrs.map(addr => `
+    <tr><td>${addr.first}</td></tr>
+    <tr><td>${addr.last}</td></tr>
+  `).join('')}
+  </table>
+`;
+```
+
 >上面代码中, 模板字符串的变量之中, 又嵌入了另一个模板字符串, 使用方法如下. 
->
->```javascript
->const data = [
->    { first: '<Jane>', last: 'Bond' },
->    { first: 'Lars', last: '<Croft>' },
->];
->console.log(tmpl(data));
->/**下面是打印结果
-><table>
->   <tr><td><Jane></td></tr>
->  <tr><td>Bond</td></tr>
->
->   <tr><td>Lars</td></tr>
->   <tr><td><Croft></td></tr>
->
-></table>
->*/
->```
->
+
+```javascript
+const data = [
+    { first: '<Jane>', last: 'Bond' },
+    { first: 'Lars', last: '<Croft>' },
+];
+console.log(tmpl(data));
+/**下面是打印结果
+<table>
+   <tr><td><Jane></td></tr>
+  <tr><td>Bond</td></tr>
+
+   <tr><td>Lars</td></tr>
+   <tr><td><Croft></td></tr>
+</table>
+*/
+```
+
 >如果需要引用模板字符串本身, 在需要时执行, 可以写成函数. 
->
->```javascript
->let func = (name) => `Hello ${name}!`;
->func('Jack') // "Hello Jack!"
->```
->
->上面代码中, 模板字符串写成了一个函数的返回值. 执行这个函数, 就相当于执行这个模板字符串了. 
+
+```javascript
+let func = (name) => `Hello ${name}!`;
+func('Jack') // "Hello Jack!"
+```
+
+上面代码中, 模板字符串写成了一个函数的返回值. 执行这个函数, 就相当于执行这个模板字符串了. 
 
 ### Ⅲ-标签模板
 
 > 模板字符串的功能, 不仅仅是上面这些. 它可以紧跟在一个函数名后面, 该函数将被调用来处理这个模板字符串. 这被称为“`标签模板`”功能（tagged template`）.   -->反正我是很少用到,可阅读性较差
->
-> ```js
-> alert`hello`
-> // 等同于
-> alert(['hello'])
-> ```
+
+ ```js
+ alert`hello`
+ // 等同于
+ alert(['hello'])
+ ```
 
 #### ① 简单实例
 
->标签模板其实不是模板, 而是函数调用的一种特殊形式. `[标签]指的就是函数`, 紧跟在后面的模板字符串就是它的参数. 
->
->但是, 如果模板字符里面有变量, 就不是简单的调用了, 而是会将模板字符串先处理成多个参数, 再调用函数. 
->
->```javascript
->let a = 5;
->let b = 10;
->
->tag`Hello ${ a + b } world ${ a * b }`;
->// 等同于
->tag(['Hello ', ' world ',  ' '  ], 15, 50);
->```
->
->上面代码中, 模板字符串前面有一个标识名`tag`, 它是一个函数. 整个表达式的返回值, 就是`tag`函数处理模板字符串后的返回值. 
->
->函数`tag`依次会接收到多个参数. 
->
->```javascript
->function tag(stringArr, value1, value2){
->  // ...
->}
->// 等同于
->function tag(stringArr, ...values){
->  // ...
->}
->```
->
+标签模板其实不是模板, 而是函数调用的一种特殊形式. `[标签]指的就是函数`, 紧跟在后面的模板字符串就是它的参数. 
+但是, 如果模板字符里面有变量, 就不是简单的调用了, 而是会将模板字符串先处理成多个参数, 再调用函数. 
+
+```javascript
+let a = 5;
+let b = 10;
+
+tag`Hello ${ a + b } world ${ a * b }`;
+// 等同于
+tag(['Hello ', ' world ',  ' '  ], 15, 50);
+```
+
+上面代码中, 模板字符串前面有一个标识名`tag`, 它是一个函数. 整个表达式的返回值, 就是`tag`函数处理模板字符串后的返回值. 
+函数`tag`依次会接收到多个参数. 
+
+```javascript
+function tag(stringArr, value1, value2){
+  // ...
+}
+// 等同于
+function tag(stringArr, ...values){
+  // ...
+}
+```
+
 >`tag`函数的第一个参数是一个数组, `该数组的成员是模板字符串中那些没有变量替换的部分`, 也就是说, 变量替换只发生在数组的第一个成员与第二个成员之间、第二个成员与第三个成员之间, 以此类推. 
 >
 >`tag`函数的其他参数, 都是模板字符串各个变量被替换后的值. 由于本例中, 模板字符串含有两个变量, 因此`tag`会接受到`value1`和`value2`两个参数. 
@@ -1197,179 +1194,178 @@ const { SourceMapConsumer, SourceNode } = require("source-map");
 >
 >也就是说, `tag`函数实际上以下面的形式调用. 
 >
->```javascript
->tag(['Hello ', ' world ', ''], 15, 50)
->```
->
+```javascript
+tag(['Hello ', ' world ', ''], 15, 50)
+```
+
 >我们可以按照需要编写`tag`函数的代码. 下面是`tag`函数的一种写法, 以及运行结果. 
->
->```javascript
->let a = 5;
->let b = 10;
->
->function tag(s, v1, v2) {
->  console.log(s[0]);
->  console.log(s[1]);
->  console.log(s[2]);
->  console.log(v1);
->  console.log(v2);
->
->  return "OK";
->}
->
->tag`Hello ${ a + b } world ${ a * b}`;
->// "Hello "
->// " world "
->// ""
->// 15
->// 50
->// "OK"
->```
->
+
+```javascript
+let a = 5;
+let b = 10;
+
+function tag(s, v1, v2) {
+  console.log(s[0]);
+  console.log(s[1]);
+  console.log(s[2]);
+  console.log(v1);
+  console.log(v2);
+
+  return "OK";
+}
+
+tag`Hello ${ a + b } world ${ a * b}`;
+// "Hello "
+// " world "
+// ""
+// 15
+// 50
+// "OK"
+```
 
 #### ② 稍微复杂的栗子
 
->```javascript
->let total = 30;
->let msg = passthru`The total is ${total} (${total*1.05} with tax)`;
->
->function passthru(literals) {
->  let result = '';
->  let i = 0;
->while (i < literals.length) {
->  result += literals[i++];
->    if (i < arguments.length) {
->     result += arguments[i];
->     }
->    }
->  return result;
->}
->  
->msg // "The total is 30 (31.5 with tax)"
->```
->
+```javascript
+let total = 30;
+let msg = passthru`The total is ${total} (${total*1.05} with tax)`;
+
+function passthru(literals) {
+  let result = '';
+  let i = 0;
+while (i < literals.length) {
+  result += literals[i++];
+    if (i < arguments.length) {
+     result += arguments[i];
+     }
+    }
+  return result;
+}
+  
+msg // "The total is 30 (31.5 with tax)"
+```
+
 >上面这个栗子展示了, 如何将各个参数按照原来的位置拼合回去. 
 >
 >`passthru`函数采用 rest 参数的写法如下. 
 >
->```javascript
->function passthru(literals, ...values) {
->let output = "";
->let index;
->  for (index = 0; index < values.length; index++) {
->  output += literals[index] + values[index];
->  }
->    output += literals[index]
->  return output;
->}
->  ```
->  
+```javascript
+function passthru(literals, ...values) {
+let output = "";
+let index;
+  for (index = 0; index < values.length; index++) {
+  output += literals[index] + values[index];
+  }
+    output += literals[index]
+  return output;
+}
+  ```
+
 >“标签模板”的一个重要应用, 就是过滤 HTML 字符串, 防止用户输入恶意内容. 
->
->```javascript
->let message =
->SaferHTML`<p>${sender} has sent you a message.</p>`;
->
->function SaferHTML(templateData) {
->  let s = templateData[0];
->for (let i = 1; i < arguments.length; i++) {
->let arg = String(arguments[i]);
->  
->  // Escape special characters in the substitution.
->    s += arg.replace(/&/g, "&amp;")
->       .replace(/</g, "&lt;")
->           .replace(/>/g, "&gt;");
->    
->     // Don't escape special characters in the template.
->     s += templateData[i];
->}
->    return s;
->    }
->  ```
+
+```javascript
+let message =
+SaferHTML`<p>${sender} has sent you a message.</p>`;
+
+function SaferHTML(templateData) {
+  let s = templateData[0];
+for (let i = 1; i < arguments.length; i++) {
+let arg = String(arguments[i]);
+  
+  // Escape special characters in the substitution.
+    s += arg.replace(/&/g, "&amp;")
+       .replace(/</g, "&lt;")
+           .replace(/>/g, "&gt;");
+    
+     // Don't escape special characters in the template.
+     s += templateData[i];
+}
+    return s;
+    }
+  ```
 >  
 >上面代码中, `sender`变量往往是用户提供的, 经过`SaferHTML`函数处理, 里面的特殊字符都会被转义. 
 >
->```js
->let sender = '<script>alert("abc")</script>'; // 恶意代码
->let message = SaferHTML`<p>${sender} has sent you a message.</p>`;
->
->message
->// <p>&lt;script&gt;alert("abc")&lt;/script&gt; has sent you a message.</p>
->```
+```js
+let sender = '<script>alert("abc")</script>'; // 恶意代码
+let message = SaferHTML`<p>${sender} has sent you a message.</p>`;
+
+message
+// <p>&lt;script&gt;alert("abc")&lt;/script&gt; has sent you a message.</p>
+```
 
 #### ③ 用作多语言转换（国际化处理）
 
 >标签模板的另一个应用, 就是多语言转换（国际化处理）. 
 >
->```javascript
->i18n`Welcome to ${siteName}, you are visitor number ${visitorNumber}!`
->// "欢迎访问xxx , 您是第xxxx位访问者！"
->```
->
+```javascript
+i18n`Welcome to ${siteName}, you are visitor number ${visitorNumber}!`
+// "欢迎访问xxx , 您是第xxxx位访问者！"
+```
+
 >模板字符串本身并不能取代 Mustache 之类的模板库, 因为没有条件判断和循环处理功能, 但是通过标签函数, 你可以自己添加这些功能. 
 >
->```javascript
->// 下面的hashTemplate函数
->// 是一个自定义的模板处理函数
->let libraryHtml = hashTemplate`
->  <ul>
->    #for book in ${myBooks}
->      <li><i>#{book.title}</i> by #{book.author}</li>
->    #end
->  </ul>
->`;
->```
->
+```javascript
+// 下面的hashTemplate函数
+// 是一个自定义的模板处理函数
+let libraryHtml = hashTemplate`
+  <ul>
+    #for book in ${myBooks}
+      <li><i>#{book.title}</i> by #{book.author}</li>
+    #end
+  </ul>
+`;
+```
+
 >除此之外, 你甚至可以使用标签模板, 在 JavaScript 语言之中嵌入其他语言. 
 >
->```javascript
->jsx`
->  <div>
->    <input
->      ref='input'
->      onChange='${this.handleChange}'
->      defaultValue='${this.state.value}' />
->      ${this.state.value}
->   </div>
->`
->```
->
+```javascript
+jsx`
+  <div>
+    <input
+      ref='input'
+      onChange='${this.handleChange}'
+      defaultValue='${this.state.value}' />
+      ${this.state.value}
+   </div>
+`
+```
+
 >上面的代码通过`jsx`函数, 将一个 DOM 字符串转为 React 对象. 
 >
 >下面则是一个假想的栗子, 通过`java`函数, 在 JavaScript 代码之中运行 Java 代码. 
->
->```javascript
->java`
->class HelloWorldApp {
->  public static void main(String[] args) {
->    System.out.println("Hello World!"); // Display the string.
->  }
->}
->`
->HelloWorldApp.main();
->```
->
+
+```javascript
+java`
+class HelloWorldApp {
+  public static void main(String[] args) {
+    System.out.println("Hello World!"); // Display the string.
+  }
+}
+`
+HelloWorldApp.main();
+```
+
 >模板处理函数的第一个参数（模板字符串数组）, 还有一个`raw`属性. 
 >
->```javascript
->console.log`123`
->// ["123", raw: Array[1]]
->```
->
+```javascript
+console.log`123`
+// ["123", raw: Array[1]]
+```
+
 >上面代码中, `console.log`接受的参数, 实际上是一个数组. 该数组有一个`raw`属性, 保存的是转义后的原字符串. 
 >
 >请看下面的栗子. 
 >
->```javascript
->tag`First line\nSecond line`
->
->function tag(strings) {
->  console.log(strings.raw[0]);
->  // strings.raw[0] 为 "First line\\nSecond line"
->  // 打印输出 "First line\nSecond line"
->}
->```
->
+```javascript
+tag`First line\nSecond line`
+
+function tag(strings) {
+  console.log(strings.raw[0]);
+  // strings.raw[0] 为 "First line\\nSecond line"
+  // 打印输出 "First line\nSecond line"
+}
+```
+
 >上面代码中, `tag`函数的第一个参数`strings`, 有一个`raw`属性, 也指向一个数组. 该数组的成员与`strings`数组完全一致. 比如, `strings`数组是`["First line\nSecond line"]`, 那么`strings.raw`数组就是`["First line\\nSecond line"]`. 两者唯一的区别, 就是字符串里面的斜杠都被转义了. 比如 , strings.raw 数组会将`\n`视为`\\`和`n`两个字符, 而不是换行符. 这是为了方便取得转义之前的原始模板而设计的. 
 
 ## 5、数值的拓展
@@ -1380,8 +1376,7 @@ const { SourceMapConsumer, SourceNode } = require("source-map");
 >
 > **八进制表示法**: `0o或0O开头`表示二进制(`0oXX`或`0OXX`)
 >
->**指数运算符**:其实这是`ES2016` 新增的 ,指数运算符（`**`）.  -->详见下方
->
+>**指数运算符**:其实这是`ES2016` 新增的 ,指数运算符（`**`）
 > **Number.EPSILON**: 数值最小精度
 >
 > **Number.MIN_SAFE_INTEGER**: 最小安全数值(`-2^53`)
@@ -1437,34 +1432,34 @@ const { SourceMapConsumer, SourceNode } = require("source-map");
 ### Ⅱ - 指数运算符
 
 >ES2016 新增了一个指数运算符（`**`）. 
->
->```javascript
->2 ** 2 // 4
->2 ** 3 // 8
->```
->
+
+```javascript
+2 ** 2 // 4
+2 ** 3 // 8
+``
+
 >这个运算符的一个特点是右结合, 而不是常见的左结合. 多个指数运算符连用时, 是从最右边开始计算的. 
->
->```javascript
->// 相当于 2 ** (3 ** 2)
->2 ** 3 ** 2
->// 512
->```
+
+```javascript
+// 相当于 2 ** (3 ** 2)
+2 ** 3 ** 2
+// 512
+```
 >
 >上面代码中, 首先计算的是第二个指数运算符, 而不是第一个. 
 >
 >指数运算符可以与等号结合, 形成一个新的赋值运算符（`**=`）. 
 >
->```javascript
->let a = 1.5;
->a **= 2;
->// 等同于 a = a * a;
->
->let b = 4;
->b **= 3;
->// 等同于 b = b * b * b;
->```
->
+```javascript
+let a = 1.5;
+a **= 2;
+// 等同于 a = a * a;
+
+let b = 4;
+b **= 3;
+// 等同于 b = b * b * b;
+```
+
 
 ## 6、函数的拓展
 
@@ -1472,110 +1467,110 @@ const { SourceMapConsumer, SourceNode } = require("source-map");
 
 ### Ⅰ- 概括总结
 
->> **Ⅰ- 参数默认值**: 为函数参数指定默认值
->
-> - 形式: `function Func(x = 1, y = 2) {}`
-> - 参数赋值: 惰性求值(函数调用后才求值)
-> - 参数位置: 尾参数
-> - 参数作用域: 函数作用域
-> - 声明方式: 默认声明, 不能用`const`或`let`再次声明
-> - length: 返回没有指定默认值的参数个数
-> - 与解构赋值默认值结合: `function Func({ x = 1, y = 2 } = {}) {}`
-> - 应用
->   1. 指定某个参数不得省略, 省略即抛出错误: `function Func(x = throwMissing()) {}`
->   2. 将参数默认值设为 **undefined** , 表明此参数可省略: `Func(undefined, 1)`
->
->> **Ⅱ - 箭头函数(=>)**: 函数简写  -->`重点`
->
-> - 无参数: `() => {}`
-> - 单个参数: `x => {}`
-> - 多个参数: `(x, y) => {}`
-> - 解构参数: `({x, y}) => {}`
-> - 嵌套使用: ** `部署管道机制` ** -->不懂的详见下方
-> - this指向固定化
->   - 并非因为内部有绑定 [ this ] 的机制, 而是根本没有自己的 [ this ] , 导致内部的 [ this ] 就是外层代码块的 [ this ] 
->   - 因为没有 [ this ] , 因此不能用作构造函数
->
->> **Ⅲ - rest/spread参数(...)**: 返回函数多余参数
->
-> - 形式: 以数组的形式存在, 之后不能再有其他参数
-> - 作用: 代替`Arguments对象`
-> - length: 返回没有指定默认值的参数个数但不包括`rest/spread参数`
->
->> **Ⅳ - 严格模式**: 在严格条件下运行JS
->
-> - 应用: 只要函数参数使用默认值、解构赋值、扩展运算符, 那么函数内部就不能显式设定为严格模式
->
->> **Ⅴ - name属性**: 返回函数的函数名
->
-> - 将匿名函数赋值给变量: `空字符串`(**ES5**)、`变量名`(**ES6**)
-> - 将具名函数赋值给变量: `函数名`(**ES5和ES6**)
-> - bind返回的函数: `bound 函数名`(**ES5和ES6**)
-> - Function构造函数返回的函数实例: `anonymous`(**ES5和ES6**)
->
->> **Ⅵ - 尾调用优化**: 只保留内层函数的调用帧
->
-> - 尾调用
->   - 定义: 某个函数的最后一步是调用另一个函数
->   - 形式: `function f(x) { return g(x); }`
-> - 尾递归
->   - 定义: 函数尾调用自身
->   - 作用: 只要使用尾递归就不会发生栈溢出, 相对节省内存
->   - 实现: 把所有用到的内部变量改写成函数的参数并使用参数默认值
->
->> **Ⅶ - 箭头函数常见误区的正解**
->
->1. 函数体内的 [ this ] 是`定义时所在的对象`而不是`使用时所在的对象`
->2. 可让 [ this ] 指向固定化, 这种特性很有利于封装回调函数
->3. 不可当作`构造函数`, 因此箭头函数不可使用`new命令`
->4. 不可使用`yield命令`, 因此箭头函数不能用作`Generator函数`
->5. 不可使用`Arguments对象`, 此对象在函数体内不存在(可用`rest/spread参数`代替)
->6. 返回对象时必须在对象外面加上括号
+> **Ⅰ- 参数默认值**: 为函数参数指定默认值
+
+ - 形式: `function Func(x = 1, y = 2) {}`
+ - 参数赋值: 惰性求值(函数调用后才求值)
+ - 参数位置: 尾参数
+ - 参数作用域: 函数作用域
+ - 声明方式: 默认声明, 不能用`const`或`let`再次声明
+ - length: 返回没有指定默认值的参数个数
+ - 与解构赋值默认值结合: `function Func({ x = 1, y = 2 } = {}) {}`
+ - 应用
+   1. 指定某个参数不得省略, 省略即抛出错误: `function Func(x = throwMissing()) {}`
+   2. 将参数默认值设为 **undefined** , 表明此参数可省略: `Func(undefined, 1)`
+
+> **Ⅱ - 箭头函数(=>)**: 函数简写  -->`重点`
+
+ - 无参数: `() => {}`
+ - 单个参数: `x => {}`
+ - 多个参数: `(x, y) => {}`
+ - 解构参数: `({x, y}) => {}`
+ - 嵌套使用: ** `部署管道机制` ** -->不懂的详见下方
+ - this指向固定化
+   - 并非因为内部有绑定 [ this ] 的机制, 而是根本没有自己的 [ this ] , 导致内部的 [ this ] 就是外层代码块的 [ this ] 
+   - 因为没有 [ this ] , 因此不能用作构造函数
+
+> **Ⅲ - rest/spread参数(...)**: 返回函数多余参数
+
+ - 形式: 以数组的形式存在, 之后不能再有其他参数
+ - 作用: 代替`Arguments对象`
+ - length: 返回没有指定默认值的参数个数但不包括`rest/spread参数`
+
+> **Ⅳ - 严格模式**: 在严格条件下运行JS
+
+ - 应用: 只要函数参数使用默认值、解构赋值、扩展运算符, 那么函数内部就不能显式设定为严格模式
+
+> **Ⅴ - name属性**: 返回函数的函数名
+
+ - 将匿名函数赋值给变量: `空字符串`(**ES5**)、`变量名`(**ES6**)
+ - 将具名函数赋值给变量: `函数名`(**ES5和ES6**)
+ - bind返回的函数: `bound 函数名`(**ES5和ES6**)
+ - Function构造函数返回的函数实例: `anonymous`(**ES5和ES6**)
+
+> **Ⅵ - 尾调用优化**: 只保留内层函数的调用帧
+
+ - 尾调用
+   - 定义: 某个函数的最后一步是调用另一个函数
+   - 形式: `function f(x) { return g(x); }`
+ - 尾递归
+   - 定义: 函数尾调用自身
+   - 作用: 只要使用尾递归就不会发生栈溢出, 相对节省内存
+   - 实现: 把所有用到的内部变量改写成函数的参数并使用参数默认值
+
+> **Ⅶ - 箭头函数常见误区的正解**
+
+1. 函数体内的 [ this ] 是`定义时所在的对象`而不是`使用时所在的对象`
+2. 可让 [ this ] 指向固定化, 这种特性很有利于封装回调函数
+3. 不可当作`构造函数`, 因此箭头函数不可使用`new命令`
+4. 不可使用`yield命令`, 因此箭头函数不能用作`Generator函数`
+5. 不可使用`Arguments对象`, 此对象在函数体内不存在(可用`rest/spread参数`代替)
+6. 返回对象时必须在对象外面加上括号
 
 ### Ⅱ - 函数参数的默认值
 
 #### ①  基本用法
 
 >ES6 之前, 不能直接为函数的参数指定默认值, 只能采用变通的方法. 
->
->```javascript
->function log(x, y) {
->  y = y || 'World'; //[或],当y为undefined时,将其赋值
->  console.log(x, y);
->}
->log('Hello') // Hello World
->log('Hello', 'China') // Hello China
->log('Hello', '') // Hello World  -->参数`y`等于空字符, 结果被改为默认值
->```
->
+
+```javascript
+function log(x, y) {
+  y = y || 'World'; //[或],当y为undefined时,将其赋值
+  console.log(x, y);
+}
+log('Hello') // Hello World
+log('Hello', 'China') // Hello China
+log('Hello', '') // Hello World  -->参数`y`等于空字符, 结果被改为默认值
+```
+
 >上面代码检查函数`log`的参数`y`有没有赋值, 如果没有, 则指定默认值为`World`. 这种写法的缺点在于, 如果参数`y`赋值了, 但是对应的布尔值为`false`, 则该赋值不起作用. 就像上面代码的最后一行, 参数`y`等于空字符, 结果被改为默认值. 
 >
 >为了避免这个问题, 通常需要先判断一下参数`y`是否被赋值, 如果没有, 再等于默认值. 
 >
->```javascript
->if (typeof y === 'undefined') {  y = 'World'; }
->```
->
+```javascript
+if (typeof y === 'undefined') {  y = 'World'; }
+```
+
 >ES6 允许为函数的参数设置默认值, 即直接写在参数定义的后面. 
->
->```javascript
->function log(x, y = 'World') {  console.log(x, y);}
->log('Hello') // Hello World
->log('Hello', 'China') // Hello China
->log('Hello', '') // Hello
->```
->
+
+```javascript
+function log(x, y = 'World') {  console.log(x, y);}
+log('Hello') // Hello World
+log('Hello', 'China') // Hello China
+log('Hello', '') // Hello
+```
+
 >可以看到 , ES6 的写法比 ES5 简洁许多, 而且非常自然. 下面是另一个栗子. 
->
->```javascript
->function Point(x = 0, y = 0) {
->  this.x = x;
->  this.y = y;
->}
->const p = new Point();
->p // { x: 0, y: 0 }
->```
->
+
+```javascript
+function Point(x = 0, y = 0) {
+  this.x = x;
+  this.y = y;
+}
+const p = new Point();
+p // { x: 0, y: 0 }
+```
+
 >除了简洁 , ES6 的写法还有两个好处: 
 >
 >- 首先, 阅读代码的人, 可以立刻意识到哪些参数是可以省略的, 不用查看函数体或文档；
@@ -1583,55 +1578,55 @@ const { SourceMapConsumer, SourceNode } = require("source-map");
 >
 >参数变量是默认声明的, 所以不能用`let`或`const`再次声明,否则会报错. 
 >
->```javascript
->function foo(x = 5) {
->  let x = 1; // error
->  const x = 2; // error
->}
->```
->
+```javascript
+function foo(x = 5) {
+  let x = 1; // error
+  const x = 2; // error
+}
+```
+
 >`使用参数默认值时, 函数不能有同名参数`. 
->
->```javascript
->// 不报错
->function foo(x, x, y) {}
->
->// 报错
->function foo(x, x, y = 1) {}
->// SyntaxError: Duplicate parameter name not allowed in this context
->```
->
+
+```javascript
+// 不报错
+function foo(x, x, y) {}
+
+// 报错
+function foo(x, x, y = 1) {}
+// SyntaxError: Duplicate parameter name not allowed in this context
+```
+
 >另外, 一个容易忽略的地方是, 参数默认值不是传值的, 而是每次都重新计算默认值表达式的值. 也就是说, 参数默认值是惰性求值的. 
 >
->```javascript
->let x = 99;
->function foo(p = x + 1) { console.log(p);}
->foo() // 100
->foo() // 100
->x = 100;
->foo() // 101
->```
->
+```javascript
+let x = 99;
+function foo(p = x + 1) { console.log(p);}
+foo() // 100
+foo() // 100
+x = 100;
+foo() // 101
+```
+
 >上面代码中, 参数`p`的默认值是`x + 1`. 这时, 每次调用函数`foo`, 都会重新计算`x + 1`, 而不是默认`p`等于 100. 
 
 #### ② 与解构赋值默认值结合使用
 
 >参数默认值可以与解构赋值的默认值, 结合起来使用. 
->
->```javascript
->function foo({x, y = 5}) { console.log(x, y);}
->foo({}) // undefined 5
->foo({x: 1}) // 1 5
->foo({x: 1, y: 2}) // 1 2
->foo() // TypeError: Cannot read property 'x' of undefined
->```
+
+```javascript
+function foo({x, y = 5}) { console.log(x, y);}
+foo({}) // undefined 5
+foo({x: 1}) // 1 5
+foo({x: 1, y: 2}) // 1 2
+foo() // TypeError: Cannot read property 'x' of undefined
+```
 >
 >上面代码只使用了对象的解构赋值默认值, 没有使用函数参数的默认值. 只有当函数`foo`的参数是一个对象时, 变量`x`和`y`才会通过解构赋值生成. 如果函数`foo`调用时没提供参数, 变量`x`和`y`就不会生成, 从而报错. 通过提供函数参数的默认值, 就可以避免这种情况. 
 >
->```javascript
->function foo({x, y = 5} = {}){console.log(x, y);}
->foo() // undefined 5
->```
+```javascript
+function foo({x, y = 5} = {}){console.log(x, y);}
+foo() // undefined 5
+```
 >
 >上面代码指定, 如果没有提供参数, 函数`foo`的参数默认为一个空对象. 
 >
