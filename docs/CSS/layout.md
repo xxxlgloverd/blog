@@ -8,7 +8,7 @@
 
 - justify-content:center 设置子元素在父元素中居中，前提是子元素没有把父元素占满，让子元素水平居中。
 
-### 2.css3的新特性
+## 2.css3的新特性
 >transtion transition-property 规定设置过渡效果的 CSS 属性的名称。
 >
 >transition-duration 规定完成过渡效果需要多少秒或毫秒。
