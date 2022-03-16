@@ -1954,51 +1954,51 @@ function full(person) {
 
 >箭头函数使得表达更加简洁. 
 >
->```javascript
->const isEven = n => n % 2 === 0; //类型 boolean
->const square = n => n * n;  //类型 number
->```
->
+```javascript
+const isEven = n => n % 2 === 0; //类型 boolean
+const square = n => n * n;  //类型 number
+```
+
 >上面代码只用了两行, 就定义了两个简单的工具函数. 如果不用箭头函数, 可能就要占用多行, 而且还不如现在这样写醒目. 
 >
 >箭头函数的一个用处是简化回调函数. 
->
->```javascript
->// 正常函数写法
->[1,2,3].map(function (x) {
->  return x * x;
->});
->
->// 箭头函数写法
->[1,2,3].map(x => x * x);
->```
->
+
+```javascript
+// 正常函数写法
+[1,2,3].map(function (x) {
+  return x * x;
+});
+
+// 箭头函数写法
+[1,2,3].map(x => x * x);
+```
+
 >另一个栗子是
 >
->```javascript
->// 正常函数写法
->var result = values.sort(function (a, b) {
->  return a - b;
->});
->
->// 箭头函数写法
->var result = values.sort((a, b) => a - b);
->```
->
+```javascript
+// 正常函数写法
+var result = values.sort(function (a, b) {
+  return a - b;
+});
+
+// 箭头函数写法
+var result = values.sort((a, b) => a - b);
+```
+
 >下面是 rest 参数与箭头函数结合的栗子(`个人觉得很好用`). 
 >
->```javascript
->const numbers = (...nums) => nums;
->
->numbers(1, 2, 3, 4, 5)
->// [1,2,3,4,5]
->
->const headAndTail = (head, ...tail) => [head, tail];
->
->headAndTail(1, 2, 3, 4, 5)
->// [1,[2,3,4,5]]
->```
->
+```javascript
+const numbers = (...nums) => nums;
+
+numbers(1, 2, 3, 4, 5)
+// [1,2,3,4,5]
+
+const headAndTail = (head, ...tail) => [head, tail];
+
+headAndTail(1, 2, 3, 4, 5)
+// [1,[2,3,4,5]]
+```
+
 
 #### ② 使用注意点
 
@@ -2015,86 +2015,86 @@ function full(person) {
 >> 以下是详解举栗
 >
 >上面四点中, 第一点尤其值得注意. `[this]对象的指向是可变的, 但是在箭头函数中, 它是固定的`. 
->
->```javascript
->function foo() {
->setTimeout(() => {
->console.log('id:', this.id);
->}, 100);
->}
->
->var id = 21;
->
->foo.call({ id: 42 }); // id: 42
->```
->
+
+```javascript
+function foo() {
+setTimeout(() => {
+console.log('id:', this.id);
+}, 100);
+}
+
+var id = 21;
+
+foo.call({ id: 42 }); // id: 42
+```
+
 >上面代码中, `setTimeout()`的参数是一个箭头函数, 这个箭头函数的定义生效是在`foo`函数生成时, 而它的真正执行要等到 100 毫秒后. 如果是普通函数, 执行时 [ this ] 应该指向全局对象`window`, 这时应该输出`21`. 但是, 箭头函数导致 [ this ] 总是指向函数定义生效时所在的对象（本例是`{id: 42}`）, 所以打印出来的是`42`. 
 >
 >箭头函数可以让`setTimeout`里面的 [ this ] , 绑定定义时所在的作用域, 而不是指向运行时所在的作用域. 下面是另一个栗子. 
->
->```javascript
->function Timer() {
->this.s1 = 0;
->this.s2 = 0;
->// 箭头函数
->setInterval(() => this.s1++, 1000);
->// 普通函数
->setInterval(function () {
->this.s2++;
->}, 1000);
->}
->
->var timer = new Timer();
->
->setTimeout(() => console.log('s1: ', timer.s1), 3100);
->setTimeout(() => console.log('s2: ', timer.s2), 3100);
->// s1: 3
->// s2: 0
->```
->
+
+```javascript
+function Timer() {
+this.s1 = 0;
+this.s2 = 0;
+// 箭头函数
+setInterval(() => this.s1++, 1000);
+// 普通函数
+setInterval(function () {
+this.s2++;
+}, 1000);
+}
+
+var timer = new Timer();
+
+setTimeout(() => console.log('s1: ', timer.s1), 3100);
+setTimeout(() => console.log('s2: ', timer.s2), 3100);
+// s1: 3
+// s2: 0
+```
+
 >上面代码中, `Timer`函数内部设置了两个定时器, 分别使用了箭头函数和普通函数. 前者的 [ this ] 绑定定义时所在的作用域（即`Timer`函数）, 后者的 [ this ] 指向运行时所在的作用域（即全局对象）. 所以, 3100 毫秒之后, `timer.s1`被更新了 3 次, 而`timer.s2`一次都没更新. 
 >
 >`箭头函数可以让[this指向]固定化, 这种特性很有利于封装回调函数`. 下面是一个栗子 , DOM 事件的回调函数封装在一个对象里面. 
->
->```javascript
->var handler = {
->id: '123456',
->
->init: function() {
->document.addEventListener('click',
-> event => this.doSomething(event.type), false);
->},
->
->doSomething: function(type) {
->console.log('Handling ' + type  + ' for ' + this.id);
->}
->};
->```
->
+
+```javascript
+var handler = {
+id: '123456',
+
+init: function() {
+document.addEventListener('click',
+ event => this.doSomething(event.type), false);
+},
+
+doSomething: function(type) {
+console.log('Handling ' + type  + ' for ' + this.id);
+}
+};
+```
+
 >上面代码的`init`方法中, 使用了箭头函数, 这导致这个箭头函数里面的 [ this ] , 总是指向`handler`对象. 否则, 回调函数运行时, `this.doSomething`这一行会报错, 因为此时 [ this ] 指向`document`对象. 
 >
 > [ this ] 指向的固定化, 并不是因为箭头函数内部有绑定 [ this ] 的机制, 实际原因是箭头函数根本没有自己的 [ this ] , 导致内部的 [ this ] 就是外层代码块的 [ this ] . 正是因为它没有 [ this ] , 所以也就不能用作构造函数. 
 >
 >所以, 箭头函数转成 ES5 的代码如下. 
 >
->```javascript
->// ES6
->function foo() {
->setTimeout(() => {
->console.log('id:', this.id);
->}, 100);
->}
->
->// ES5
->function foo() {
->var _this = this;
->
->setTimeout(function () {
->console.log('id:', _this.id);
->}, 100);
->}
->```
->
+```javascript
+// ES6
+function foo() {
+setTimeout(() => {
+console.log('id:', this.id);
+}, 100);
+}
+
+// ES5
+function foo() {
+var _this = this;
+
+setTimeout(function () {
+console.log('id:', _this.id);
+}, 100);
+}
+```
+
 >上面代码中, 转换后的 ES5 版本清楚地说明了, 箭头函数里面根本没有自己的 [ this ] , 而是引用外层的 [ this ] . 
 >
 >请问下面的代码之中有几个 [ this ] ？

@@ -80,3 +80,179 @@ function throttle (fn,wait=100){
 ```
 
 ## 3.什么时候不能使用箭头函数
+
+>有什么缺点？
+>
+>什么时候不能用箭头函数？
+
+### 1.箭头函数有什么缺点？
+>没有arguments
+>
+>无法通过apply,call,bind 来改变this;(因为箭头函数的this都是父级作用域的this)
+>
+
+### 2.不适用的情况
+
+>1.对象方法
+
+```js
+const obj = {
+  name:'test',
+  getName:()=>{
+    return this.name
+  }
+}
+console.log(obj.getName()) //报错
+```
+>2.原型方法
+
+```js
+const obj = {
+  name:'test',
+}
+obj._proto_.getName=()=>{
+  return this.name
+}
+console.log(obj.getName()) //报错
+```
+
+>3.构造函数
+```js
+const Foo=(name,city)=>{
+  this.name=name
+  this.city=city
+}
+const f=new Foo('test','北京')
+```
+>4.动态上下文的回调函数
+
+```js
+const btn1=document.getElementById('btn1')
+btn1.addEventListener('click',()=>{
+  //console.log(this==window)
+  this.innerHTML='clicked'
+})
+```
+>5.Vue生命周期和method
+>
+>因为vue本质其实是对象
+>
+>class里面可以使用箭头函数
+
+## 4.请描述TCP三次握手和四次挥手
+
+> 握手就是TCP连接
+> 
+> 三次握手就是建立TCP连接
+> 
+> client 发-> server 收
+> 
+> server 发-> client 收
+> 
+> client 发-> server 收
+> 
+> 挥手就是TCP断开
+> 
+> 四次挥手就是关闭连接
+>
+> client 发-> server 收
+> 
+> server 发-> client 收
+>
+> server 发-> client 收
+>
+> client 发-> server 收
+
+## 5.JS中for-in和for-of有什么区别
+
+>区别一
+>for...in遍历得到key
+>
+>for...of遍历得到value
+
+```js
+const arr=[10,20,30]
+for(let key in arr){
+  console.log(key) //0,1,2
+}
+function foo(){
+  for(let arg of arguments){
+    console.log(arg)//
+  }
+}
+foo(100,200,'aaa')
+```
+>区别二
+>
+>遍历对象：for...in可以，for...of不可以(会报错！)
+>
+>遍历Map Set:for...of可以，for...in不可以（没有结果！）
+>
+>遍历generator：for...of可以，for...in不可以（没有结果！）
+```js
+const set = new Set([10,20,30])
+for(let item of set){
+  console.log(item)//10,20,30
+}
+
+const map=new Map([[0,'aa'],[1,'bb']])
+for(let item of map){
+  console.log(item)
+  // [0, 'aa']
+  // [1, 'bb']
+  }
+```
+
+?> **可枚举vs可迭代**<br/>
+?> for...in用于可枚举数据，如对象、数组、字符串<br/>
+?> for...of用于可迭代数据，如数组、字符串、Map、Set;
+
+## 6.连环问for await...of 有什么作用？
+>用于遍历多个promise对象，相当于Promise.all的替代品
+
+```js
+function createPromise(data) {
+  return new Promise((resolve,reject)=>{
+    setTimeout(()=>{
+      resolve(data)
+    },1000)
+  })
+}
+(async function () {
+  const p1 = createPromise(100)
+  const p2 = createPromise(200)
+  const p3 = createPromise(300)
+  const res1 = await p1
+  const res2 = await p2
+  const res3 = await p3
+  const list=[p1,p2,p3]
+  Promise.all(list).then=>(
+    res=>console.log(res)
+  )
+  for await(let res of list){
+    console.log(res)
+  }
+  //上部分是并发，想要一个一个串行，就是什么时候用什么时候去创建
+  const res1=await createPromise(100)
+  const res2=await createPromise(200)
+  const res3=await createPromise(300)
+})()
+```
+>业务场景：
+>用户批量上传图片，一次性并发上传就用上面的，一个一个上传就用下面的
+
+## 7.offsetHeight-scrollHeight-clientHeight 盒子模型概念
+
+>**盒子模型概念**
+>
+>width/height/padding/border/margin/box-sizing:border-box
+>设置了box-sizing 实际内容content width=初始设置的-border*2-padding*2
+>
+>计算规则：
+>
+>offsetHeight/offsetWidth border+padding+content
+>
+>clientHeight/clientWidth padding+content
+>
+>scrollHeight/scrollWidth padding+实际的内容尺寸
+>
