@@ -204,8 +204,8 @@ for(let item of map){
 ```
 
 ?> **可枚举vs可迭代**<br/>
-?> for...in用于可枚举数据，如对象、数组、字符串<br/>
-?> for...of用于可迭代数据，如数组、字符串、Map、Set;
+ for...in用于可枚举数据，如对象、数组、字符串<br/>
+ for...of用于可迭代数据，如数组、字符串、Map、Set;
 
 ## 6.连环问for await...of 有什么作用？
 >用于遍历多个promise对象，相当于Promise.all的替代品
@@ -255,4 +255,63 @@ function createPromise(data) {
 >clientHeight/clientWidth padding+content
 >
 >scrollHeight/scrollWidth padding+实际的内容尺寸
+
+
+## 8.HTMLCollection和NodeList有什么区别？
+
+> HTMLCollection是Element的集合；
 >
+> NodeList是Node的集合；
+>
+>两者不是数组而是类数组；
+>
+![nodeVSelement](image/nodeVSelement.jpg) 
+>
+
+?>类数组转换成数组<br>
+const arr1=Array.from(list);<br>
+const arr2=Array.prototype.slice.call(list)<br>
+const arr3=[...list]
+
+## 9.Vue中computed和watch有什么区别?
+
+!> 两者用途不同<br>
+computed 用于计算产出新的数据；<br>
+watch 用于监听现有的数据；<br>
+computed有缓存而watch是没有的；<br>
+
+## 10.Vue组件通讯方式
+
+### 1.通讯汇总：
+>props和$emit
+>
+>自定义事件
+>
+>$attrs 是props和$emit的候补 dom上挂载属性跟是不是唯一节点有关系；可以用 v-bind="$attrs" 来实现层级透传；
+>
+>$parent 需要在mounted 去进行调用
+>
+>$refs 需要在mounted 去进行调用
+>
+>provide/inject  动态获取 provide需要用computed声明函数并且返回想要传递的数据
+>
+>```js
+> //传递静态数据
+> provide:{info:'aaa'}
+> //传递响应式数据
+> provide(){
+>  return {
+>    info: computed(()=>this.name)
+>   }
+> }
+>```
+>
+>vuex
+
+### 2.不同场景
+
+* 父子组件
+* 上下级组件（跨多级）通讯
+* 全局组件
+
+

@@ -2099,52 +2099,52 @@ console.log('id:', _this.id);
 >
 >请问下面的代码之中有几个 [ this ] ？
 >
->```javascript
->function foo() {
->return () => {
->return () => {
-> return () => {
->   console.log('id:', this.id);
-> };
->};
->};
->}
->
->var f = foo.call({id: 1});
->
->var t1 = f.call({id: 2})()(); // id: 1
->var t2 = f().call({id: 3})(); // id: 1
->var t3 = f()().call({id: 4}); // id: 1
->```
->
+```javascript
+function foo() {
+return () => {
+return () => {
+ return () => {
+   console.log('id:', this.id);
+ };
+};
+};
+}
+
+var f = foo.call({id: 1});
+
+var t1 = f.call({id: 2})()(); // id: 1
+var t2 = f().call({id: 3})(); // id: 1
+var t3 = f()().call({id: 4}); // id: 1
+```
+
 >上面代码之中, 只有一个 [ this ] , 就是函数`foo`的 [ this ] , 所以`t1`、`t2`、`t3`都输出同样的结果. 因为所有的内层函数都是箭头函数, 都没有自己的 [ this ] , 它们的 [ this ] 其实都是最外层`foo`函数的 [ this ] . 
 >
 >除了 [ this ] , 以下三个变量在箭头函数之中也是不存在的, 指向外层函数的对应变量: `arguments`、`super`、`new.target`. 
 >
->```javascript
->function foo() {
->setTimeout(() => {
->console.log('args:', arguments);
->}, 100);
->}
->
->foo(2, 4, 6, 8)
->// args: [2, 4, 6, 8]
->```
->
+```javascript
+function foo() {
+setTimeout(() => {
+console.log('args:', arguments);
+}, 100);
+}
+
+foo(2, 4, 6, 8)
+// args: [2, 4, 6, 8]
+```
+
 >上面代码中, 箭头函数内部的变量`arguments`, 其实是函数`foo`的`arguments`变量. 
 >
 >另外, 由于箭头函数没有自己的 [ this ] , 所以当然也就不能用`call()`、`apply()`、`bind()`这些方法去改变 [ this ] 的指向. 
->
->```javascript
->(function() {
->return [
->(() => this.x).bind({ x: 'inner' })()
->];
->}).call({ x: 'outer' });
->// ['outer']
->```
->
+
+```javascript
+(function() {
+return [
+(() => this.x).bind({ x: 'inner' })()
+];
+}).call({ x: 'outer' });
+// ['outer']
+```
+
 >上面代码中, 箭头函数没有自己的 [ this ] , 所以`bind`方法无效, 内部的 [ this ] 指向外部的 [ this ] . 
 >
 >长期以来 , JavaScript 语言的 [ this ] 对象一直是一个令人头痛的问题, 在对象方法中使用 [ this ] , 必须非常小心. `箭头函数'绑定[this]', 很大程度上解决了这个困扰. `
@@ -2155,25 +2155,25 @@ console.log('id:', _this.id);
 >
 >第一个场合是定义对象的方法, 且该方法内部包括 [ this ] . 
 >
->>```javascript
->>const cat = {
->>  lives: 9,
->>  jumps: () => { this.lives--;}
->>}
->>```
->>
->>上面代码中, `cat.jumps()`方法是一个箭头函数, 这是错误的. 调用`cat.jumps()`时, 如果是普通函数, 该方法内部的 [ this ] 指向`cat`；如果写成上面那样的箭头函数, 使得 [ this ] 指向全局对象, 因此不会得到预期结果. 这是`因为对象不构成单独的作用域`, 导致`jumps`箭头函数定义时的作用域就是全局作用域. 
+```javascript
+const cat = {
+  lives: 9,
+  jumps: () => { this.lives--;}
+}
+```
+>
+>上面代码中, `cat.jumps()`方法是一个箭头函数, 这是错误的. 调用`cat.jumps()`时, 如果是普通函数, 该方法内部的 [ this ] 指向`cat`；如果写成上面那样的箭头函数, 使得 [ this ] 指向全局对象, 因此不会得到预期结果. 这是`因为对象不构成单独的作用域`, 导致`jumps`箭头函数定义时的作用域就是全局作用域. 
 >
 >第二个场合是需要动态 [ this ] 的时候, 也不应使用箭头函数. 
 >
->>```javascript
->>var button = document.getElementById('press');
->>button.addEventListener('click', () => {
->>  this.classList.toggle('on');
->>});
->>```
->>
->>上面代码运行时, 点击按钮会报错, 因为`button`的监听函数是一个箭头函数, 导致里面的 [ this ] 就是全局对象. 如果改成普通函数,  [ this ] 就会动态指向被点击的按钮对象. 
+```javascript
+var button = document.getElementById('press');
+button.addEventListener('click', () => {
+  this.classList.toggle('on');
+});
+```
+>
+>上面代码运行时, 点击按钮会报错, 因为`button`的监听函数是一个箭头函数, 导致里面的 [ this ] 就是全局对象. 如果改成普通函数,  [ this ] 就会动态指向被点击的按钮对象. 
 >
 >另外, 如果函数体很复杂, 有许多行, 或者函数内部有大量的读写操作, 不单纯是为了计算值, 这时也不应该使用箭头函数, 而是要使用普通函数, 这样可以提高代码可读性
 
@@ -2181,68 +2181,68 @@ console.log('id:', _this.id);
 
 >箭头函数内部, 还可以再使用箭头函数. 下面是一个 ES5 语法的多重嵌套函数. 
 >
->```javascript
->function insert(value) {
->  return {into: function (array) {
->    return {after: function (afterValue) {
->      array.splice(array.indexOf(afterValue) + 1, 0, value);
->      return array;
->    }};
->  }};
->}
->
->insert(2).into([1, 3]).after(1); //[1, 2, 3]
->```
+```javascript
+function insert(value) {
+  return {into: function (array) {
+    return {after: function (afterValue) {
+      array.splice(array.indexOf(afterValue) + 1, 0, value);
+      return array;
+    }};
+  }};
+}
+
+insert(2).into([1, 3]).after(1); //[1, 2, 3]
+```
 >
 >上面这个函数, 可以使用箭头函数改写. 
 >
->```javascript
->let insert = (value) => ({into: (array) => ({after: (afterValue) => {
->  array.splice(array.indexOf(afterValue) + 1, 0, value);
->  return array;
->}})});
->
->insert(2).into([1, 3]).after(1); //[1, 2, 3]
->```
->
+```javascript
+let insert = (value) => ({into: (array) => ({after: (afterValue) => {
+  array.splice(array.indexOf(afterValue) + 1, 0, value);
+  return array;
+}})});
+
+insert(2).into([1, 3]).after(1); //[1, 2, 3]
+```
+
 
 ##### a) 部署管道机制 (pipeline)
 
 >下面是一个部署管道机制 (pipeline)的栗子 : `即前一个函数的输出是后一个函数的输入`. 
 >
->```javascript
->const pipeline = (...funcs) =>
->  val => funcs.reduce((a, b) => b(a), val);
->
->const plus1 = a => a + 1;
->const mult2 = a => a * 2;
->const addThenMult = pipeline(plus1, mult2);
->
->addThenMult(5)
->// 12
->```
+```javascript
+const pipeline = (...funcs) =>
+  val => funcs.reduce((a, b) => b(a), val);
+
+const plus1 = a => a + 1;
+const mult2 = a => a * 2;
+const addThenMult = pipeline(plus1, mult2);
+
+addThenMult(5)
+// 12
+```
 >
 >如果觉得上面的写法可读性比较差, 也可以采用下面的写法. 
 >
->```javascript
->const plus1 = a => a + 1;
->const mult2 = a => a * 2;
->
->mult2(plus1(5))
->// 12
->```
->
+```javascript
+const plus1 = a => a + 1;
+const mult2 = a => a * 2;
+
+mult2(plus1(5))
+// 12
+```
+
 >箭头函数还有一个功能, 就是可以很方便地改写 λ 演算. 
 >
->```javascript
->// λ演算的写法
->fix = λf.(λx.f(λv.x(x)(v)))(λx.f(λv.x(x)(v)))
->
->// ES6的写法
->var fix = f => (x => f(v => x(x)(v)))
->               (x => f(v => x(x)(v)));
->```
->
+```javascript
+// λ演算的写法
+fix = λf.(λx.f(λv.x(x)(v)))(λx.f(λv.x(x)(v)))
+
+// ES6的写法
+var fix = f => (x => f(v => x(x)(v)))
+               (x => f(v => x(x)(v)));
+```
+
 >上面两种写法, 几乎是一一对应的. 由于 λ 演算对于计算机科学非常重要, 这使得我们可以用 ES6 作为替代工具, 探索计算机科学. 
 
 ##### b) 高阶函数
