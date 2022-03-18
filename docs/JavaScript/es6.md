@@ -2251,91 +2251,87 @@ var fix = f => (x => f(v => x(x)(v)))
 >
 >所谓高阶函数:`就是一个函数就可以接收另一个函数作为参数, 或者是返回一个函数`-->常见的高阶函数有map、reduce、filter、sort等
 >
->  ```js
->var ADD =function add(a) {
-> return function(b) { return a+b }
->}
-> 调用: ADD(2)(3)即可获得结果
->  ```
->
+```js
+var ADD =function add(a) {
+ return function(b) { return a+b }
+}
+//调用: ADD(2)(3)即可获得结果
+  ```
+
 >> map
->
->  ```js
->map接受一个函数作为参数, 不改变原来的数组, 只是返回一个全新的数组
->var arr = [1,2,3,4,5]
-> var arr1 = arr.map(item => item = 2)// 输出[1,1,1,1,1]
->  ```
->
+
+```js
+//map接受一个函数作为参数, 不改变原来的数组, 只是返回一个全新的数组
+var arr = [1,2,3,4,5]
+var arr1 = arr.map(item => item = 1)// 输出[1,1,1,1,1]
+```
+
 >> reduce
->
->  ```js
->reduce也是返回一个全新的数组. reduce接受一个函数作为参数, 这个函数要有两个形参, 代表数组中的前两项 , reduce会将这个函数的结果与数组中的第三项再次组成这个函数的两个形参以此类推进行累积操作
->var arr = [1,2,3,4,5]
->var arr2 = arr.reduce((a,b)=> a+b)
->console.log(arr2) // 15
->  ```
->
+
+```js
+//reduce也是返回一个全新的数组. reduce接受一个函数作为参数, 这个函数要有两个形参, 代表数组中的前两项 , reduce会将这个函数的结果与数组中的第三项再次组成这个函数的两个形参以此类推进行累积操作
+var arr = [1,2,3,4,5]
+var arr2 = arr.reduce((a,b)=> a+b)
+console.log(arr2) // 15
+```
+
 >> filter
->
->  ```js
->filter返回过滤后的数组. filter也接收一个函数作为参数, 这个函数将作用于数组中的每个元素, 根据该函数每次执行后返回的布尔值来保留结果, 如果是true就保留, 如果是false就过滤掉（这点与map要区分）
->var arr = [1,2,3,4,5]
-> var arr3 = arr.filter(item => item % 2 == 0)
->console.log(arr3)// [2,4]
->  ```
+
+```js
+//filter返回过滤后的数组. filter也接收一个函数作为参数, 这个函数将作用于数组中的每个元素, 根据该函数每次执行后返回的布尔值来保留结果, 如果是true就保留, 如果是false就过滤掉（这点与map要区分）
+var arr = [1,2,3,4,5]
+var arr3 = arr.filter(item => item % 2 == 0)
+console.log(arr3)// [2,4]
+```
 
 ##### c) 函数柯里化
 
->此处列出是因为此知识点常与箭头函数搭配使用,而很多同学其实有在用却都不懂这个概念(大多数教程都不会刻意去普及概念),所以我觉得在此处列出,会对很多同学有所帮助,也能形成关联性更强的知识体系
->
->> 截取自网上的正解图例
->
 >  ![image-20210415161137977](ES全系列详细学习笔记中的图片/image-20210415161137977.png)
 >
 >> 关键就是`理解柯里化`, 其实可以把它理解成, 柯里化后, `将第一个参数变量存在函数里面了(闭包)`, 然后本来需要n个参数的函数可以变成只需要剩下的（n - 1个）参数就可以调用, 比如
->
->  ```js
->let add = x => y => x + y
->let add2 = add(2)
->------------ 一般调用 ------------------------
->//本来完成 add 这个操作, 应该是这样调用
->let add = (x, y) => x + y
->add(2,3)
->------------- 柯里化后调用  ---------------------
->// 而现在 add2 函数完成同样操作只需要一个参数, 这在函数式编程中广泛应用. 
->let add = x => y => x + y
->let add2 = add(2)
->//详细解释一下, 就是 add2 函数 等价于 有了 x 这个闭包变量的 y => x + y 函数,并且此时 x = 2 , 所以此时调用
->add2(3) === 2 + 3
->  ```
+
+```js
+let add = x => y => x + y
+let add2 = add(2)
+------------ 一般调用 ------------------------
+//本来完成 add 这个操作, 应该是这样调用
+let add = (x, y) => x + y
+add(2,3)
+------------- 柯里化后调用  ---------------------
+// 而现在 add2 函数完成同样操作只需要一个参数, 这在函数式编程中广泛应用. 
+let add = x => y => x + y
+let add2 = add(2)
+//详细解释一下, 就是 add2 函数 等价于 有了 x 这个闭包变量的 y => x + y 函数,并且此时 x = 2 , 所以此时调用
+add2(3) === 2 + 3
+```
 
 ##### d) 从 ES6 高阶箭头函数理解函数柯里化以及 [ 部署管道机制 ]
 
 >1. 首先看到了这样的一个栗子: 
 >
->  ```js
->let add = a => b => a + b
->  ```
+```js
+let add = a => b => a + b
+```
 >
 >2. 以上是一个很简单的相加函数, 把它转化成 ES5 的写法如下
 >
->  ```js
->function add(a) {
->      return function(b) { return a + b }
->}
->var add3 = add(3) //add3表示一个指向函数的变量 可以当成函数调用名来用
->add3(4) === 3 + 4 //true
->  ```
+```js
+function add(a) {
+      return function(b) { return a + b }
+}
+var add3 = add(3) //add3表示一个指向函数的变量 可以当成函数调用名来用
+add3(4) === 3 + 4 //true
+```
 >
 >3. 再简化一下, 可以写成如下形式: 
 >
->  ```js
->let add = function(a) {
->    var param = a;
->    var innerFun = function(b) { return param + b; }
->    return innerFun;
->}
->  ```
+```js
+let add = function(a) {
+    var param = a;
+    var innerFun = function(b) { return param + b; }
+    return innerFun;
+}
+```
 >
 >4. 虽然好像没什么意义, 但是很显然上述使用了闭包, 而且该函数的返回值是一个函数. 其实, 这就是`高阶函数的定义: 以函数为参数或者返回值是函数的函数. `
 >
@@ -2345,195 +2341,195 @@ var fix = f => (x => f(v => x(x)(v)))
 
 >ES6 引入 rest 参数（形式为`...变量名`）, 用于获取函数的多余参数, 这样就不需要使用`arguments`对象了. rest 参数搭配的变量是一个数组, 该变量将多余的参数放入数组中. 
 >
->```javascript
->function add(...values) {
->  let sum = 0;
->  for (var val of values) {
->    sum += val;
->  }
->  return sum;
->}
->
->add(2, 5, 3) // 10
->```
+```javascript
+function add(...values) {
+  let sum = 0;
+  for (var val of values) {
+    sum += val;
+  }
+  return sum;
+}
+
+add(2, 5, 3) // 10
+```
 >
 >上面代码的`add`函数是一个求和函数, 利用 rest 参数, 可以向该函数传入任意数目的参数. 
 >
 >下面是一个 rest 参数代替`arguments`变量的栗子. 
 >
->```javascript
->// arguments变量的写法
->function sortNumbers() {
->  return Array.prototype.slice.call(arguments).sort();
->}
->
->// rest参数的写法
->const sortNumbers = (...numbers) => numbers.sort();
->```
+```javascript
+// arguments变量的写法
+function sortNumbers() {
+  return Array.prototype.slice.call(arguments).sort();
+}
+
+// rest参数的写法
+const sortNumbers = (...numbers) => numbers.sort();
+```
 >
 >上面代码的两种写法, 比较后可以发现 , rest 参数的写法更自然也更简洁. 
 >
 >`arguments`对象不是数组, 而是一个类似数组的对象. 所以为了使用数组的方法, 必须使用`Array.prototype.slice.call`先将其转为数组. `rest 参数就不存在这个问题, 它就是一个真正的数组, 数组特有的方法都可以使用`. 下面是一个利用 rest 参数改写数组`push`方法的栗子. 
 >
->```javascript
->function push(array, ...items) {
->  items.forEach(function(item) {
->    array.push(item);
->    console.log(item);
->  });
->}
->
->var a = [];
->push(a, 1, 2, 3)
->```
+```javascript
+function push(array, ...items) {
+  items.forEach(function(item) {
+    array.push(item);
+    console.log(item);
+  });
+}
+
+var a = [];
+push(a, 1, 2, 3)
+```
 >
 >注意 , rest 参数之后不能再有其他参数（即只能是最后一个参数）, 否则会报错. 
 >
->```javascript
->// 报错
->function f(a, ...b, c) {
->  // ...
->}
->```
+```javascript
+// 报错
+function f(a, ...b, c) {
+  // ...
+}
+```
 >
 >函数的`length`属性, 不包括 rest 参数. 
 >
->```javascript
->(function(a) {}).length  // 1
->(function(...a) {}).length  // 0
->(function(a, ...b) {}).length  // 1
->```
->
+```javascript
+(function(a) {}).length  // 1
+(function(...a) {}).length  // 0
+(function(a, ...b) {}).length  // 1
+```
+
 
 ### Ⅴ - 严格模式
 
 >从 ES5 开始, 函数内部可以设定为严格模式. 
->
->```javascript
->function doSomething(a, b) {
->  'use strict';
->  // code
->}
->```
->
+
+```javascript
+function doSomething(a, b) {
+  'use strict';
+  // code
+}
+```
+
 >ES2016 做了一点修改, `规定只要函数参数使用了默认值、解构赋值、或者扩展运算符, 那么函数内部就不能显式设定为严格模式, 否则会报错`. 
 >
->```javascript
->// 报错
->function doSomething(a, b = a) {
->  'use strict';
->  // code
->}
->
->// 报错
->const doSomething = function ({a, b}) {
->  'use strict';
->  // code
->};
->
->// 报错
->const doSomething = (...a) => {
->  'use strict';
->  // code
->};
->
->const obj = {
->  // 报错
->  doSomething({a, b}) {
->    'use strict';
->    // code
->  }
->};
->```
->
+```javascript
+// 报错
+function doSomething(a, b = a) {
+  'use strict';
+  // code
+}
+
+// 报错
+const doSomething = function ({a, b}) {
+  'use strict';
+  // code
+};
+
+// 报错
+const doSomething = (...a) => {
+  'use strict';
+  // code
+};
+
+const obj = {
+  // 报错
+  doSomething({a, b}) {
+    'use strict';
+    // code
+  }
+};
+```
+
 >这样规定的原因是, 函数内部的严格模式, 同时适用于函数体和函数参数. 但是, 函数执行的时候, 先执行函数参数, 然后再执行函数体. 这样就有一个不合理的地方, 只有从函数体之中, 才能知道参数是否应该以严格模式执行, 但是参数却应该先于函数体执行. 
->
->```javascript
->// 报错
->function doSomething(value = 070) {
->  'use strict';
->  return value;
->}
->```
->
+
+```javascript
+// 报错
+function doSomething(value = 070) {
+  'use strict';
+  return value;
+}
+```
+
 >上面代码中, 参数`value`的默认值是八进制数`070`, 但是严格模式下不能用前缀`0`表示八进制, 所以应该报错. 但是实际上 , JavaScript 引擎会先成功执行`value = 070`, 然后进入函数体内部, 发现需要用严格模式执行, 这时才会报错. 
 >
 >虽然可以先解析函数体代码, 再执行参数代码, 但是这样无疑就增加了复杂性. 因此, 标准索性禁止了这种用法, 只要参数使用了默认值、解构赋值、或者扩展运算符, 就不能显式指定严格模式. 
 >
 >两种方法可以规避这种限制. 第一种是设定全局性的严格模式, 这是合法的. 
 >
->```javascript
->'use strict';
->
->function doSomething(a, b = a) {
->  // code
->}
->```
->
+```javascript
+'use strict';
+
+function doSomething(a, b = a) {
+  // code
+}
+```
+
 >第二种是把函数包在一个无参数的立即执行函数里面. 
 >
->```javascript
->const doSomething = (function () {
->  'use strict';
->  return function(value = 42) {
->    return value;
->  };
->}());
->```
->
+```javascript
+const doSomething = (function () {
+  'use strict';
+  return function(value = 42) {
+    return value;
+  };
+}());
+```
+
 
 ### Ⅵ - name 属性
 
 >函数的`name`属性, 返回该函数的函数名. 
->
->```javascript
->function foo() {}
->foo.name // "foo"
->```
+
+```javascript
+function foo() {}
+foo.name // "foo"
+```
 >
 >这个属性早就被浏览器广泛支持, 但是直到 ES6 , 才将其写入了标准. 
 >
 >需要注意的是 , ES6 对这个属性的行为做出了一些修改. 如果将一个匿名函数赋值给一个变量 , ES5 的`name`属性, 会返回空字符串, 而 ES6 的`name`属性会返回实际的函数名. 
 >
->```javascript
->var f = function () {};
->
->// ES5
->f.name // ""
->
->// ES6
->f.name // "f"
->```
->
+```javascript
+var f = function () {};
+
+// ES5
+f.name // ""
+
+// ES6
+f.name // "f"
+```
+
 >上面代码中, 变量 [ f ] 等于一个匿名函数 , ES5 和 ES6 的`name`属性返回的值不一样. 
 >
 >如果将一个具名函数赋值给一个变量, 则 ES5 和 ES6 的`name`属性都返回这个具名函数原本的名字. 
 >
->```javascript
->const bar = function baz() {};
->
->// ES5
->bar.name // "baz"
->
->// ES6
->bar.name // "baz"
->```
->
+```javascript
+const bar = function baz() {};
+
+// ES5
+bar.name // "baz"
+
+// ES6
+bar.name // "baz"
+```
+
 >`Function`构造函数返回的函数实例, `name`属性的值为`anonymous`. 
->
->```javascript
->(new Function).name // "anonymous"
->```
->
+
+```javascript
+(new Function).name // "anonymous"
+```
+
 >`bind`返回的函数, `name`属性值会加上`bound`前缀. 
 >
->```javascript
->function foo() {};
->foo.bind({}).name // "bound foo"
->
->(function(){}).bind({}).name // "bound "
->```
->
+```javascript
+function foo() {};
+foo.bind({}).name // "bound foo"
+
+(function(){}).bind({}).name // "bound "
+```
+
 
 ### Ⅶ - 尾调用优化
 
@@ -2545,54 +2541,54 @@ var fix = f => (x => f(v => x(x)(v)))
 
 >尾调用（Tail Call）是函数式编程的一个重要概念, 本身非常简单, 一句话就能说清楚, 就是指某个函数的最后一步是调用另一个函数. 
 >
->```javascript
->function f(x){
->  return g(x);
->}
->```
->
+```javascript
+function f(x){
+  return g(x);
+}
+```
+
 >上面代码中, 函数 [ f ] 的最后一步是调用函数 [ g ] , 这就叫尾调用. 
 >
 >以下三种情况, 都不属于尾调用. 
 >
->```javascript
->// 情况一
->function f(x){
->  let y = g(x);
->  return y;
->}
->
->// 情况二
->function f(x){
->  return g(x) + 1;
->}
->
->// 情况三
->function f(x){
->  g(x);
->}
->```
->
+```javascript
+// 情况一
+function f(x){
+  let y = g(x);
+  return y;
+}
+
+// 情况二
+function f(x){
+  return g(x) + 1;
+}
+
+// 情况三
+function f(x){
+  g(x);
+}
+```
+
 >上面代码中, 情况一是调用函数 [ g ] 之后, 还有赋值操作, 所以不属于尾调用, 即使语义完全一样. 情况二也属于调用后还有操作, 即使写在一行内. `情况三等同于下面的代码`. 
 >
->```javascript
->function f(x){
->  g(x);
->  return undefined;
->}
->```
->
->`尾调用不一定出现在函数尾部, 只要是最后一步操作即可`. 
->
->```javascript
->function f(x) {
->  if (x > 0) {
->    return m(x)
->  }
->  return n(x);
->}
->```
->
+```javascript
+function f(x){
+  g(x);
+  return undefined;
+}
+```
+
+`尾调用不一定出现在函数尾部, 只要是最后一步操作即可`. 
+
+```javascript
+function f(x) {
+  if (x > 0) {
+    return m(x)
+  }
+  return n(x);
+}
+```
+
 >上面代码中, 函数`m`和`n`都属于尾调用, 因为它们都是函数 [ f ] 的最后一步操作
 
 #### ② 尾调用优化
@@ -2603,21 +2599,21 @@ var fix = f => (x => f(v => x(x)(v)))
 >
 >尾调用由于是函数的最后一步操作, 所以不需要保留外层函数的调用帧, 因为调用位置、内部变量等信息都不会再用到了, `只要直接用内层函数的调用帧, 取代外层函数的调用帧就可以了`. 
 >
->```javascript
->function f() {
->  let m = 1;
->  let n = 2;
->  return g(m + n);
->}
->f();
->
->// 等同于
->function f() { return g(3);}
->f();
->
->// 等同于
->g(3);
->```
+```javascript
+function f() {
+  let m = 1;
+  let n = 2;
+  return g(m + n);
+}
+f();
+
+// 等同于
+function f() { return g(3);}
+f();
+
+// 等同于
+g(3);
+```
 >
 >上面代码中, 如果函数 [ g ] 不是尾调用, 函数 [  f  ] 就需要保存内部变量`m`和`n`的值、 [ g ] 的调用位置等信息. 但由于调用 [ g ] 之后, 函数 [ `f` ] 就结束了, 所以执行到最后一步, 完全可以删除`f(x)`的调用帧, 只保留`g(3)`的调用帧. 
 >
@@ -2625,17 +2621,16 @@ var fix = f => (x => f(v => x(x)(v)))
 >
 >注意, 只有不再用到外层函数的内部变量, 内层函数的调用帧才会取代外层函数的调用帧, 否则就无法进行“尾调用优化”. 
 >
->```javascript
->function addOne(a){
->  var one = 1;
->  function inner(b){
->    return b + one;
->  }
->  return inner(a);
->}
->```
->
->上面的函数不会进行尾调用优化, 因为内层函数`inner`用到了外层函数`addOne`的内部变量`one`. 
+```javascript
+function addOne(a){
+  var one = 1;
+  function inner(b){
+    return b + one;
+  }
+  return inner(a);
+}
+```
+>>上面的函数不会进行尾调用优化, 因为内层函数`inner`用到了外层函数`addOne`的内部变量`one`. 
 
 #### ③ 尾递归
 
@@ -2643,55 +2638,55 @@ var fix = f => (x => f(v => x(x)(v)))
 >
 >`递归非常耗费内存`, 因为需要同时保存成千上百个调用帧, 很容易发生[ 栈溢出错误 (stack overflow)]. `但对于尾递归来说, 由于只存在一个调用帧, 所以永远不会发生'栈溢出'错误`. 
 >
->```javascript
->function factorial(n) {
->  if (n === 1) return 1;
->  return n * factorial(n - 1);
->}
->
->factorial(5) // 120
->```
+```javascript
+function factorial(n) {
+  if (n === 1) return 1;
+  return n * factorial(n - 1);
+}
+
+factorial(5) // 120
+```
 >
 >上面代码是一个阶乘函数, 计算`n`的阶乘, 最多需要保存`n`个调用记录, 复杂度 O(n) . 
 >
 >如果改写成尾递归, 只保留一个调用记录, 复杂度 O(1) . 
 >
->```javascript
->function factorial(n, total) {
->  if (n === 1) return total;
->  return factorial(n - 1, n * total);
->}
->
->factorial(5, 1) // 120
->```
+```javascript
+function factorial(n, total) {
+  if (n === 1) return total;
+  return factorial(n - 1, n * total);
+}
+
+factorial(5, 1) // 120
+```
 >
 >还有一个比较著名的栗子, 就是计算 Fibonacci 数列, 也能充分说明尾递归优化的重要性. 
 >
 >非尾递归的 Fibonacci 数列实现如下. 
 >
->```javascript
->function Fibonacci (n) {
->  if ( n <= 1 ) {return 1};
->  return Fibonacci(n - 1) + Fibonacci(n - 2);
->}
->
->Fibonacci(10) // 89
->Fibonacci(100) // 超时
->Fibonacci(500) // 超时
->```
+```javascript
+function Fibonacci (n) {
+  if ( n <= 1 ) {return 1};
+  return Fibonacci(n - 1) + Fibonacci(n - 2);
+}
+
+Fibonacci(10) // 89
+Fibonacci(100) // 超时
+Fibonacci(500) // 超时
+```
 >
 >尾递归优化过的 Fibonacci 数列实现如下. 
 >
->```javascript
->function Fibonacci2 (n , ac1 = 1 , ac2 = 1) {
->  if( n <= 1 ) {return ac2};
->  return Fibonacci2 (n - 1, ac2, ac1 + ac2);
->}
->
->Fibonacci2(100) // 573147844013817200000
->Fibonacci2(1000) // 7.0330367711422765e+208
->Fibonacci2(10000) // Infinity
->```
+```javascript
+function Fibonacci2 (n , ac1 = 1 , ac2 = 1) {
+  if( n <= 1 ) {return ac2};
+  return Fibonacci2 (n - 1, ac2, ac1 + ac2);
+}
+
+Fibonacci2(100) // 573147844013817200000
+Fibonacci2(1000) // 7.0330367711422765e+208
+Fibonacci2(10000) // Infinity
+```
 >
 >由此可见, [ 尾调用优化 ]对递归操作意义重大, 所以一些函数式编程语言将其写入了语言规格. ES6 亦是如此, 第一次明确规定, 所有 ECMAScript 的实现, 都必须部署 [ 尾调用优化 ]. 这就是说, `ES6 中只要使用尾递归, 就不会发生栈溢出 (或者层层递归造成的超时), 相对节省内存`. 
 
@@ -2701,50 +2696,49 @@ var fix = f => (x => f(v => x(x)(v)))
 >
 >两个方法可以解决这个问题. 方法一是在尾递归函数之外, 再提供一个正常形式的函数. 
 >
->```javascript
->function tailFactorial(n, total) {
->  if (n === 1) return total;
->  return tailFactorial(n - 1, n * total);
->}
->
->function factorial(n) { return tailFactorial(n, 1); }
->
->factorial(5) // 120
->```
->
+```javascript
+function tailFactorial(n, total) {
+  if (n === 1) return total;
+  return tailFactorial(n - 1, n * total);
+}
+
+function factorial(n) { return tailFactorial(n, 1); }
+
+factorial(5) // 120
+```
 >上面代码通过一个正常形式的阶乘函数`factorial`, 调用尾递归函数`tailFactorial`, 看起来就正常多了. 
 >
 >函数式编程有一个概念, 叫做`柯里化 (currying)`, 意思是将多参数的函数转换成单参数的形式. 这里也可以使用柯里化. -->不懂的看上方[④ 嵌套的箭头函数中的函数柯里化](#④ 嵌套的箭头函数 ) 
 >
->```javascript
->function currying(fn, n) {
->  return function (m) {
->    return fn.call(this, m, n);
->  };
->}
->
->function tailFactorial(n, total) {
->  if (n === 1) return total;
->  return tailFactorial(n - 1, n * total);
->}
->
->const factorial = currying(tailFactorial, 1);
->
->factorial(5) // 120
->```
+```javascript
+function currying(fn, n) {
+  return function (m) {
+    return fn.call(this, m, n);
+  };
+}
+
+function tailFactorial(n, total) {
+  if (n === 1) return total;
+  return tailFactorial(n - 1, n * total);
+}
+
+const factorial = currying(tailFactorial, 1);
+
+factorial(5) // 120
+```
 >
 >上面代码通过柯里化, 将尾递归函数`tailFactorial`变为只接受一个参数的`factorial`. 
 >
 >第二种方法就简单多了, 就是采用 ES6 的函数默认值. 
 >
->```javascript
->function factorial(n, total = 1) {
->  if (n === 1) return total;
->  return factorial(n - 1, n * total);
->}
->
->factorial(5) // 120
->```
+```javascript
+function factorial(n, total = 1) {
+  if (n === 1) return total;
+  return factorial(n - 1, n * total);
+}
+
+factorial(5) // 120
+```
 >
 >上面代码中, 参数`total`有默认值`1`, 所以调用时不用提供这个值. 
 >
@@ -2761,15 +2755,15 @@ var fix = f => (x => f(v => x(x)(v)))
 >
 >尾调用优化发生时, 函数的调用栈会改写, 因此上面两个变量就会失真. 严格模式禁用这两个变量, 所以尾调用模式仅在严格模式下生效. 
 >
->```javascript
->function restricted() {
->  'use strict';
->  restricted.caller;    // 报错
->  restricted.arguments; // 报错
->}
->restricted();
->```
->
+```javascript
+function restricted() {
+  'use strict';
+  restricted.caller;    // 报错
+  restricted.arguments; // 报错
+}
+restricted();
+```
+
 
 #### ⑥ 利用 循环 替换 尾递归 优化的实现
 
@@ -2779,30 +2773,30 @@ var fix = f => (x => f(v => x(x)(v)))
 >
 >下面是一个正常的递归函数. 
 >
->```javascript
->function sum(x, y) {
->  if (y > 0) return sum(x + 1, y - 1);
->   else  return x;
->}
->
->sum(1, 100000)
->// Uncaught RangeError: Maximum call stack size exceeded(…)
->// 未捕获的RangeError:最大调用堆栈大小超过(…)  
->```
+```javascript
+function sum(x, y) {
+  if (y > 0) return sum(x + 1, y - 1);
+   else  return x;
+}
+
+sum(1, 100000)
+// Uncaught RangeError: Maximum call stack size exceeded(…)
+// 未捕获的RangeError:最大调用堆栈大小超过(…)  
+```
 >
 >上面代码中, `sum`是一个递归函数, 参数`x`是需要累加的值, 参数`y`控制递归次数. 一旦指定`sum`递归 100000 次, 就会报错, 提示超出调用栈的最大次数. 
->
+
 
 ##### a)  蹦床函数
 
 >蹦床函数（trampoline）可以将递归执行转为循环执行. 
->
->```javascript
->function trampoline(f) {
->  while (f && f instanceof Function) { f = f();}
->  return f;
->}
->```
+
+```javascript
+function trampoline(f) {
+  while (f && f instanceof Function) { f = f();}
+  return f;
+}
+```
 >
 >上面就是蹦床函数的一个实现, 它接受一个函数`f`作为参数. 只要`f`执行后返回一个函数, 就继续执行. 
 >
@@ -2810,55 +2804,55 @@ var fix = f => (x => f(v => x(x)(v)))
 >
 >然后, 要做的就是将原来的递归函数, 改写为每一步返回另一个函数. 
 >
->```javascript
->function sum(x, y) {
->  if (y > 0)  return sum.bind(null, x + 1, y - 1);
->   else return x;
->}
->```
+```javascript
+function sum(x, y) {
+  if (y > 0)  return sum.bind(null, x + 1, y - 1);
+   else return x;
+}
+```
 >
 >上面代码中, `sum`函数的每次执行, 都会返回自身的另一个版本. 
 >
 >现在, 使用蹦床函数执行`sum`, 就不会发生调用栈溢出. 
 >
->```javascript
->trampoline(sum(1, 100000))
->// 100001
->```
->
+```javascript
+trampoline(sum(1, 100000))
+// 100001
+```
+
 
 ##### b) 真正的尾递归优化
 
 >蹦床函数并不是真正的尾递归优化, 下面的实现才是. 
 >
->```javascript
->function tco(f) {
->  var value;
->  var active = false;
->  var accumulated = [];
->
->  return function accumulator() {
->    accumulated.push(arguments);
->    if (!active) {
->      active = true;
->      while (accumulated.length) {
->        value = f.apply(this, accumulated.shift());
->      }
->      active = false;
->      return value;
->    }
->  };
->}
->
->var sum = tco(function(x, y) {
->  if (y > 0) return sum(x + 1, y - 1)
->  else return x
->});
->
->sum(1, 100000)
->// 100001
->```
->
+```javascript
+function tco(f) {
+  var value;
+  var active = false;
+  var accumulated = [];
+
+  return function accumulator() {
+    accumulated.push(arguments);
+    if (!active) {
+      active = true;
+      while (accumulated.length) {
+        value = f.apply(this, accumulated.shift());
+      }
+      active = false;
+      return value;
+    }
+  };
+}
+
+var sum = tco(function(x, y) {
+  if (y > 0) return sum(x + 1, y - 1)
+  else return x
+});
+
+sum(1, 100000)
+// 100001
+```
+
 >上面代码中, `tco`函数是尾递归优化的实现, 它的奥妙就在于状态变量`active`. 默认情况下, 这个变量是不激活的. 一旦进入尾递归优化的过程, 这个变量就激活了. 然后, 每一轮递归`sum`返回的都是 **undefined** , 所以就避免了递归执行；而`accumulated`数组存放每一轮`sum`执行的参数, 总是有值的, 这就保证了`accumulator`函数内部的`while`循环总是会执行. 这样就很巧妙地将“递归”改成了“循环”, 而后一轮的参数会取代前一轮的参数, 保证了调用栈只有一层. 
 
 #### ⑦ 尾调用优化默认关闭
@@ -2881,183 +2875,181 @@ var fix = f => (x => f(v => x(x)(v)))
 
 ### Ⅰ- 概括总结
 
->> **对象的新增方法与用法**
->
->1. **简洁表示法**: 直接写入变量和函数作为对象的属性和方法(`{ prop, method() {} }`)
->2.  **属性名表达式**: 字面量定义对象时使用`[]`定义键(`[prop]`, 不能与上同时使用)
->3. **方法的name属性**: 返回方法函数名 -->此处与函数很像,因为本质上函数就是一种特殊对象
->   - 取值函数(getter)和存值函数(setter): `get/set 函数名`(属性的描述对象在`get`和`set`上)
->   - bind返回的函数: `bound 函数名`
->   - Function构造函数返回的函数实例: `anonymous`
->4.  **属性的可枚举性和遍历**: 描述对象的`enumerable`
->5.  **super关键字**: 指向当前对象的原型对象(只能用在对象的简写方法中`method() {}`)
->6.  **Object.is()**: 对比两值是否相等
->7.  **Object.assign()**: 合并对象(浅拷贝), 返回原对象  (`常用`)
->8.  **Object.getPrototypeOf()**: 返回对象的原型对象
->9.  **Object.setPrototypeOf()**: 设置对象的原型对象
->10.  **__proto__**: 返回或设置对象的原型对象
->
->> **属性遍历**
->
->1. 描述: `自身`、`可继承`、`可枚举`、`非枚举`、`Symbol`
->2. 遍历
->   -  [ for-in ] : 遍历对象`自身可继承可枚举`属性
->   -  [Object.keys()] : 返回对象`自身可枚举`属性键 [ key ] 组成的数组
->   -  [Object.getOwnPropertyNames()] : 返回对象`自身非Symbol`属性键 [ key ] 组成的数组
->   - `Object.getOwnPropertySymbols()`: 返回对象`自身Symbol`属性键 [ key ] 组成的数组
->   - `Reflect.ownKeys()`: 返回对象`自身全部`属性键 [ key ] 组成的数组
->3. 规则
->   - 首先遍历所有数值键, 按照数值升序排列
->   - 其次遍历所有字符串键, 按照加入时间升序排列
->   - 最后遍历所有Symbol键, 按照加入时间升序排列
+> **对象的新增方法与用法**
+
+1. **简洁表示法**: 直接写入变量和函数作为对象的属性和方法(`{ prop, method() {} }`)
+2.  **属性名表达式**: 字面量定义对象时使用`[]`定义键(`[prop]`, 不能与上同时使用)
+3. **方法的name属性**: 返回方法函数名 -->此处与函数很像,因为本质上函数就是一种特殊对象
+   - 取值函数(getter)和存值函数(setter): `get/set 函数名`(属性的描述对象在`get`和`set`上)
+   - bind返回的函数: `bound 函数名`
+   - Function构造函数返回的函数实例: `anonymous`
+4.  **属性的可枚举性和遍历**: 描述对象的`enumerable`
+5.  **super关键字**: 指向当前对象的原型对象(只能用在对象的简写方法中`method() {}`)
+6.  **Object.is()**: 对比两值是否相等
+7.  **Object.assign()**: 合并对象(浅拷贝), 返回原对象  (`常用`)
+8.  **Object.getPrototypeOf()**: 返回对象的原型对象
+9.  **Object.setPrototypeOf()**: 设置对象的原型对象
+10.  **__proto__**: 返回或设置对象的原型对象
+
+> **属性遍历**
+
+1. 描述: `自身`、`可继承`、`可枚举`、`非枚举`、`Symbol`
+2. 遍历
+   -  [ for-in ] : 遍历对象`自身可继承可枚举`属性
+   -  [Object.keys()] : 返回对象`自身可枚举`属性键 [ key ] 组成的数组
+   -  [Object.getOwnPropertyNames()] : 返回对象`自身非Symbol`属性键 [ key ] 组成的数组
+   - `Object.getOwnPropertySymbols()`: 返回对象`自身Symbol`属性键 [ key ] 组成的数组
+   - `Reflect.ownKeys()`: 返回对象`自身全部`属性键 [ key ] 组成的数组
+3. 规则
+   - 首先遍历所有数值键, 按照数值升序排列
+   - 其次遍历所有字符串键, 按照加入时间升序排列
+   - 最后遍历所有Symbol键, 按照加入时间升序排列
 
 ### Ⅱ - 属性的简洁表示
 
 #### ① 属性的简写
 
 >ES6 允许在大括号里面, 直接写入变量和函数, 作为对象的属性和方法. 这样的书写更加简洁. 
->
->```javascript
->const foo = 'bar';
->const baz = {foo};
->//baz == {foo: "bar"}
->
->// 等同于
->const baz = {foo: foo};
->```
->
+
+```javascript
+const foo = 'bar';
+const baz = {foo};
+//baz == {foo: "bar"}
+
+// 等同于
+const baz = {foo: foo};
+```
+
 >上面代码中, 变量`foo`直接写在大括号里面. 这时, 属性名就是变量名, 属性值就是变量值. 下面是另一个栗子. 
->
->```javascript
->function f(x, y) { return {x, y};}
->// 等同于
->function f(x, y) { return {x: x, y: y};}
->f(1, 2) // Object {x: 1, y: 2}
->```
->
+
+```javascript
+function f(x, y) { return {x, y};}
+// 等同于
+function f(x, y) { return {x: x, y: y};}
+f(1, 2) // Object {x: 1, y: 2}
+```
+
 
 #### ② 方法的简写
 
 >除了属性简写, 方法也可以简写. 
->
->```javascript
->const o = {
->method() {  return "Hello!";}
->};
->
->// 等同于
->const o = {
->method: function() {return "Hello!"; }
->};
->```
->
+
+```javascript
+const o = {
+method() {  return "Hello!";}
+};
+
+// 等同于
+const o = {
+method: function() {return "Hello!"; }
+};
+```
+
 >下面是一个实际的栗子. 
->
->```javascript
->let birth = '2000/01/01';
->
->const Person = {
->name: '张三',
->//等同于birth: birth
->birth,
->// 等同于hello: function ()...
->hello() { console.log('我的名字是', this.name); }
->};
->```
->
+
+```javascript
+let birth = '2000/01/01';
+
+const Person = {
+name: '张三',
+//等同于birth: birth
+birth,
+// 等同于hello: function ()...
+hello() { console.log('我的名字是', this.name); }
+};
+```
+
 >这种写法用于函数的返回值, 将会非常方便. 
 >
->```javascript
->function getPoint() {
->const x = 1;
->const y = 10;
->return {x, y};
->}
->
->getPoint()
->// {x:1, y:10}
->```
->
+```javascript
+function getPoint() {
+const x = 1;
+const y = 10;
+return {x, y};
+}
+
+getPoint()
+// {x:1, y:10}
+```
+
 
 #### ③ 简洁写法在CommonJS 模块的应用
 
->
+
 >CommonJS 模块输出一组变量, 就非常合适使用简洁写法. 
->
->```javascript
->let ms = {};
->
->function getItem (key) {
->return key in ms ? ms[key] : null; //属性名表达式+三元表达式
->}
->
->function setItem (key, value) {
->ms[key] = value;
->}
->
->function clear () {
->ms = {};
->}
->
->module.exports = { getItem, setItem, clear };
->// 等同于
->module.exports = {
->getItem: getItem,
->setItem: setItem,
->clear: clear
->};
->```
->
+
+```javascript
+let ms = {};
+
+function getItem (key) {
+return key in ms ? ms[key] : null; //属性名表达式+三元表达式
+}
+
+function setItem (key, value) {
+ms[key] = value;
+}
+
+function clear () {
+ms = {};
+}
+
+module.exports = { getItem, setItem, clear };
+// 等同于
+module.exports = {
+getItem: getItem,
+setItem: setItem,
+clear: clear
+};
+```
 
 #### ④ 简洁写法在 属性 赋值器 和 取值器 中的应用
 
->
+
 >属性的赋值器（setter）和取值器（getter）, 事实上也是采用这种写法. 
->
->```javascript
->const cart = {
->_wheels: 4,
->
->get wheels () {
->return this._wheels;
->},
->
->set wheels (value) {
->if (value < this._wheels) {
->throw new Error('数值太小了！');
->}
->this._wheels = value;
->}
->}
->```
+
+```javascript
+const cart = {
+_wheels: 4,
+
+get wheels () {
+return this._wheels;
+},
+
+set wheels (value) {
+if (value < this._wheels) {
+throw new Error('数值太小了！');
+}
+this._wheels = value;
+}
+}
+```
 
 #### ⑤ 简洁写法在打印对象时的应用
 
 >简洁写法在打印对象时也很有用. 
->
->```javascript
->let user = {name: 'test'};
->
->let foo = {bar: 'baz'};
->
->console.log(user, foo)
->// {name: "test"} {bar: "baz"}
->console.log({user, foo})
->// {user: {name: "test"}, foo: {bar: "baz"}}
->```
->
+
+```javascript
+let user = {name: 'test'};
+
+let foo = {bar: 'baz'};
+
+console.log(user, foo)
+// {name: "test"} {bar: "baz"}
+console.log({user, foo})
+// {user: {name: "test"}, foo: {bar: "baz"}}
+```
+
 >上面代码中, `console.log`直接输出`user`和`foo`两个对象时, 就是两组键值对, 可能会混淆. 把它们放在大括号里面输出, 就变成了对象的简洁表示法, 每组键值对前面会打印对象名, 这样就比较清晰了. 
 >
 >注意, 简写的对象方法不能用作构造函数, 会报错. 
 >
->```javascript
->const obj = {
->f() {this.foo = 'bar';}
->};
->
->new obj.f() // 报错
->```
->
+```javascript
+const obj = {
+f() {this.foo = 'bar';}
+};
+
+new obj.f() // 报错
+```
 >上面代码中, `f`是一个简写的对象方法, 所以`obj.f`不能当作构造函数使用. 
 
 ### Ⅲ - 方法的 name 属性
@@ -3066,60 +3058,60 @@ var fix = f => (x => f(v => x(x)(v)))
 >
 >函数的`name`属性, 返回函数名. 对象方法也是函数, 因此也有`name`属性. 
 >
->```javascript
->const person = {
->  sayName() {
->    console.log('hello!');
->  },
->};
->
->person.sayName.name   // "sayName"
->```
->
+```javascript
+const person = {
+  sayName() {
+    console.log('hello!');
+  },
+};
+
+person.sayName.name   // "sayName"
+```
+
 >上面代码中, 方法的`name`属性返回函数名（即方法名）. 
 >
 >如果对象的方法使用了取值函数（`getter`）和存值函数（`setter`）, 则`name`属性不是在该方法上面, 而是该方法的属性的描述对象的`get`和`set`属性上面, 返回值是方法名前加上`get`和`set`. 
 >
->```javascript
->const obj = {
->  get foo() {},
->  set foo(x) {}
->};
->
->obj.foo.name
->// TypeError: Cannot read property 'name' of undefined
->
->const descriptor = Object.getOwnPropertyDescriptor(obj, 'foo');
->//返回指定对象上一个自有属性对应的属性描述符. （自有属性指的是直接赋予该对象的属性, 不需要从原型链上进行查找的属性）
->
->descriptor.get.name // "get foo"
->descriptor.set.name // "set foo"
->```
->
+```javascript
+const obj = {
+  get foo() {},
+  set foo(x) {}
+};
+
+obj.foo.name
+// TypeError: Cannot read property 'name' of undefined
+
+const descriptor = Object.getOwnPropertyDescriptor(obj, 'foo');
+//返回指定对象上一个自有属性对应的属性描述符. （自有属性指的是直接赋予该对象的属性, 不需要从原型链上进行查找的属性）
+
+descriptor.get.name // "get foo"
+descriptor.set.name // "set foo"
+```
+
 >有两种特殊情况: `bind`方法创造的函数, `name`属性返回`bound`加上原函数的名字；`Function`构造函数创造的函数, `name`属性返回`anonymous`. 
 >
->```javascript
->(new Function()).name // "anonymous"
->
->var doSomething = function() {
->  // ...
->};
->doSomething.bind().name // "bound doSomething"
->```
->
+```javascript
+(new Function()).name // "anonymous"
+
+var doSomething = function() {
+  // ...
+};
+doSomething.bind().name // "bound doSomething"
+```
+
 >如果对象的方法是一个 Symbol 值, 那么`name`属性返回的是这个 Symbol 值的描述. 
 >
->```javascript
->const key1 = Symbol('description');
->const key2 = Symbol();
->let obj = {
->  [key1]() {},
->  [key2]() {},
->};
->obj[key1].name // "[description]"
->obj[key2].name // ""
->```
->
+```javascript
+const key1 = Symbol('description');
+const key2 = Symbol();
+let obj = {
+  [key1]() {},
+  [key2]() {},
+};
+obj[key1].name // "[description]"
+obj[key2].name // ""
+```
+
 >上面代码中, `key1`对应的 Symbol 值有描述, `key2`没有. 
 
 ### Ⅳ - 属性的可枚举性和遍历
@@ -3128,44 +3120,44 @@ var fix = f => (x => f(v => x(x)(v)))
 
 >对象的每个属性都有一个描述对象（Descriptor）, 用来控制该属性的行为.   [ Object.getOwnPropertyDescriptor ] 方法可以获取该属性的描述对象.   -->[详见,点我传送](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyDescriptor)
 >
->```javascript
->let obj = { foo: 123 };
->Object.getOwnPropertyDescriptor(obj, 'foo')
->//  {
->//    value: 123,
->//    writable: true,
->//    enumerable: true,
->//    configurable: true
->//  }
->```
->
+```javascript
+let obj = { foo: 123 };
+Object.getOwnPropertyDescriptor(obj, 'foo')
+//  {
+//    value: 123,
+//    writable: true,
+//    enumerable: true,
+//    configurable: true
+//  }
+```
+
 >描述对象的` [ enumerable ] 属性, 称为“可枚举性”`, 如果该属性为 [ false ], 就表示某些操作会忽略当前属性. 
 >
 >目前, 有四个操作会忽略`enumerable`为 [ false ] 的属性. 
->
->1. **for...in循环**: 只遍历对象自身的和继承的可枚举的属性. 
->2. **Object.keys()**: 返回对象自身的所有可枚举的属性的键名. 
->3. **JSON.stringify()**: 只串行化对象自身的可枚举的属性. 
->4. **Object.assign()**:  忽略`enumerable`为`false`的属性, 只拷贝对象自身的可枚举的属性. 
->
+
+1. **for...in循环**: 只遍历对象自身的和继承的可枚举的属性. 
+2. **Object.keys()**: 返回对象自身的所有可枚举的属性的键名. 
+3. **JSON.stringify()**: 只串行化对象自身的可枚举的属性. 
+4. **Object.assign()**:  忽略`enumerable`为`false`的属性, 只拷贝对象自身的可枚举的属性. 
+
 >这四个操作之中, 前三个是 ES5 就有的, 最后一个 [ Object.assign() ] 是 ES6 新增的. 其中, 只有`for...in`会返回继承的属性, 其他三个方法都会忽略继承的属性, 只处理对象自身的属性. 实际上, 引入“可枚举”（`enumerable`）这个概念的最初目的, 就是让某些属性可以规避掉`for...in`操作, 不然所有内部属性和方法都会被遍历到. 比如, 对象原型的`toString`方法, 以及数组的`length`属性, 就通过“可枚举性”, 从而避免被`for...in`遍历到. 
->
->```javascript
->Object.getOwnPropertyDescriptor(Object.prototype, 'toString').enumerable
->// false
->Object.getOwnPropertyDescriptor([], 'length').enumerable
->// false
->```
->
+
+```javascript
+Object.getOwnPropertyDescriptor(Object.prototype, 'toString').enumerable
+// false
+Object.getOwnPropertyDescriptor([], 'length').enumerable
+// false
+```
+
 >上面代码中, `toString`和`length`属性的`enumerable`都是`false`, 因此`for...in`不会遍历到这两个继承自原型的属性. 
 >
 >另外 , ES6 规定, 所有 Class 的原型的方法都是不可枚举的. 
 >
->```javascript
->Object.getOwnPropertyDescriptor(class {foo() {}}.prototype, 'foo').enumerable
->// false
->```
->
+```javascript
+Object.getOwnPropertyDescriptor(class {foo() {}}.prototype, 'foo').enumerable
+// false
+```
+
 >总的来说, 操作中引入继承的属性会让问题复杂化, 大多数时候, 我们只关心对象自身的属性. 所以, `尽量不要用 [ for...in ] 循环, 而用 [ Object.keys() ] 代替`. 
 
 #### ② 属性的遍历方法
@@ -3193,83 +3185,83 @@ var fix = f => (x => f(v => x(x)(v)))
 >`Reflect.ownKeys`返回一个数组, 包含对象自身的（不含继承的）所有键名, 不管键名是 Symbol 或字符串, 也不管是否可枚举. 
 >
 >以上的 5 种方法遍历对象的键名, 都遵守同样的属性遍历的次序规则. 
->
->1. 首先遍历所有数值键, 按照数值升序排列. 
->2. 其次遍历所有字符串键, 按照加入时间升序排列. 
->3. 最后遍历所有 Symbol 键, 按照加入时间升序排列. 
->
->```javascript
->Reflect.ownKeys({ [Symbol()]:0, b:0, 10:0, 2:0, a:0 })
->// ['2', '10', 'b', 'a', Symbol()]
->```
->
->上面代码中, `Reflect.ownKeys`方法返回一个数组, 包含了参数对象的所有属性. 这个数组的属性次序是这样的, 首先是数值属性`2`和`10`, 其次是字符串属性`b`和`a`, 最后是 Symbol 属性. 
+
+1. 首先遍历所有数值键, 按照数值升序排列. 
+2. 其次遍历所有字符串键, 按照加入时间升序排列. 
+3. 最后遍历所有 Symbol 键, 按照加入时间升序排列. 
+
+```javascript
+Reflect.ownKeys({ [Symbol()]:0, b:0, 10:0, 2:0, a:0 })
+// ['2', '10', 'b', 'a', Symbol()]
+```
+
+上面代码中, `Reflect.ownKeys`方法返回一个数组, 包含了参数对象的所有属性. 这个数组的属性次序是这样的, 首先是数值属性`2`和`10`, 其次是字符串属性`b`和`a`, 最后是 Symbol 属性. 
 
 ### Ⅴ- super 关键字
 
 >我们知道, `this`关键字总是指向函数所在的当前对象 , ES6 又新增了另一个类似的关键字 [ super ], `指向当前对象的原型对象`. 
->
->```javascript
->const proto = { foo: 'hello'};
->
->const obj = {
->  foo: 'world',
->  find() {
->    return super.foo;
->  }
->};
->
->Object.setPrototypeOf(obj, proto);
->obj.find() // "hello"
->```
->
+
+```javascript
+const proto = { foo: 'hello'};
+
+const obj = {
+  foo: 'world',
+  find() {
+    return super.foo;
+  }
+};
+
+Object.setPrototypeOf(obj, proto);
+obj.find() // "hello"
+```
+
 >上面代码中, 对象`obj.find()`方法之中, 通过`super.foo`引用了原型对象`proto`的`foo`属性. 
 >
 >注意, `super`关键字表示原型对象时, 只能用在对象的方法之中, 用在其他地方都会报错. 
 >
->```javascript
->// 报错
->const obj = {
->  foo: super.foo
->}
->
->// 报错
->const obj = {
->  foo: () => super.foo
->}
->
->// 报错
->const obj = {
->  foo: function () {
->    return super.foo
->  }
->}
->```
->
+```javascript
+// 报错
+const obj = {
+  foo: super.foo
+}
+
+// 报错
+const obj = {
+  foo: () => super.foo
+}
+
+// 报错
+const obj = {
+  foo: function () {
+    return super.foo
+  }
+}
+```
+
 >上面三种`super`的用法都会报错, 因为对于 JavaScript 引擎来说, 这里的`super`都没有用在对象的方法之中. 第一种写法是`super`用在属性里面, 第二种和第三种写法是`super`用在一个函数里面, 然后赋值给`foo`属性. 目前, 只有对象方法的简写法可以让 JavaScript 引擎确认, 定义的是对象的方法. 
 >
 >JavaScript 引擎内部, `super.foo`等同于`Object.getPrototypeOf(this).foo`（属性）或`Object.getPrototypeOf(this).foo.call(this)`（方法）. 
 >
->```javascript
->const proto = {
->  x: 'hello',
->  foo() {
->    console.log(this.x);
->  },
->};
->
->const obj = {
->  x: 'world',
->  foo() {
->    super.foo();
->  }
->}
->
->Object.setPrototypeOf(obj, proto);
->
->obj.foo() // "world"
->```
->
+```javascript
+const proto = {
+  x: 'hello',
+  foo() {
+    console.log(this.x);
+  },
+};
+
+const obj = {
+  x: 'world',
+  foo() {
+    super.foo();
+  }
+}
+
+Object.setPrototypeOf(obj, proto);
+
+obj.foo() // "world"
+```
+
 >上面代码中, `super.foo`指向原型对象`proto`的`foo`方法, 但是绑定的`this`却还是当前对象`obj`, 因此输出的就是`world`. 
 
 ### Ⅵ -  对象的拓展运算符  ( `...` )
@@ -3277,243 +3269,241 @@ var fix = f => (x => f(v => x(x)(v)))
 #### ① 对象的赋值解构
 
 >对象的解构赋值用于从一个对象取值, 相当于将目标对象自身的所有可遍历的（enumerable）、但尚未被读取的属性, 分配到指定的对象上面. 所有的键和它们的值, 都会拷贝到新对象上面. 
->
->```javascript
->let { x, y, ...z } = { x: 1, y: 2, a: 3, b: 4 };
->//x == 1
->//y == 2
->//z == { a: 3, b: 4 }
->```
->
+
+```javascript
+let { x, y, ...z } = { x: 1, y: 2, a: 3, b: 4 };
+//x == 1
+//y == 2
+//z == { a: 3, b: 4 }
+```
+
 >上面代码中, 变量 [ z ] 是解构赋值所在的对象. 它获取等号右边的所有尚未读取的键（`a`和`b`）, 将它们连同值一起拷贝过来. 
 >
 >由于解构赋值要求等号右边是一个对象, 所以如果等号右边是 **undefined** 或 **null** , 就会报错, 因为它们无法转为对象. 
 >
->```javascript
->let { ...z } = null; // 运行时错误
->let { ...z } = undefined; // 运行时错误
->```
->
+```javascript
+let { ...z } = null; // 运行时错误
+let { ...z } = undefined; // 运行时错误
+```
+
 >解构赋值必须是最后一个参数, 否则会报错. 
->
->```javascript
->let { ...x, y, z } = someObject; // 句法错误
->let { x, ...y, ...z } = someObject; // 句法错误
->```
->
+
+```javascript
+let { ...x, y, z } = someObject; // 句法错误
+let { x, ...y, ...z } = someObject; // 句法错误
+```
+
 >上面代码中, 解构赋值不是最后一个参数, 所以会报错. 
 >
 >注意 : `解构赋值的拷贝是浅拷贝`, 即如果一个键的值是复合类型的值（数组、对象、函数）、那么解构赋值拷贝的是这个值的引用, 而不是这个值的副本. 
->
->```javascript
->let obj = { a: { b: 1 } };
->let { ...x } = obj;
->obj.a.b = 2; //对原对象进行修改操作
->x.a.b // 2  赋值解构出来的[x]对应的值也同样进行了修改
->```
->
+
+```javascript
+let obj = { a: { b: 1 } };
+let { ...x } = obj;
+obj.a.b = 2; //对原对象进行修改操作
+x.a.b // 2  赋值解构出来的[x]对应的值也同样进行了修改
+```
+
 >上面代码中, `x`是解构赋值所在的对象, 拷贝了对象`obj`的`a`属性. `a`属性引用了一个对象, 修改这个对象的值, 会影响到解构赋值对它的引用. 
 
 #### ② 扩展运算符的解构赋值
 
 >
 >另外, 扩展运算符的解构赋值, 不能复制继承自原型对象的属性. 
->
->```javascript
->let o1 = { a: 1 };
->let o2 = { b: 2 };
->o2.__proto__ = o1;
->let { ...o3 } = o2;
->o3 // { b: 2 }
->o3.a // undefined
->```
->
+
+```javascript
+let o1 = { a: 1 };
+let o2 = { b: 2 };
+o2.__proto__ = o1;
+let { ...o3 } = o2;
+o3 // { b: 2 }
+o3.a // undefined
+```
+
 >上面代码中, 对象`o3`复制了`o2`, 但是只复制了`o2`自身的属性, 没有复制它的原型对象`o1`的属性. 
 >
 >下面是另一个栗子. 
->
->```javascript
->const o = Object.create({ x: 1, y: 2 });
->o.z = 3;
->
->let { x, ...newObj } = o;
->let { y, z } = newObj;
->x // 1
->y // undefined
->z // 3
->```
->
+
+```javascript
+const o = Object.create({ x: 1, y: 2 });//创建一个空的对象 {}
+o.z = 3;
+
+let { x, ...newObj } = o;
+let { y, z } = newObj;
+x // 1
+y // undefined
+z // 3
+```
+
 >上面代码中, 变量`x`是单纯的解构赋值, 所以可以读取对象`o`继承的属性；变量`y`和`z`是扩展运算符的解构赋值, 只能读取对象`o`自身的属性, 所以变量`z`可以赋值成功, 变量`y`取不到值. ES6 规定, 变量声明语句之中, 如果使用解构赋值, 扩展运算符后面必须是一个变量名, 而不能是一个解构赋值表达式, 所以上面代码引入了中间变量`newObj`, 如果写成下面这样会报错. 
 >
->```javascript
->let { x, ...{ y, z } } = o;
->// SyntaxError: ... must be followed by an identifier in declaration contexts
->// SyntaxError:… 在声明上下文中必须后跟标识符  
->```
+```javascript
+let { x, ...{ y, z } } = o;
+// SyntaxError: ... must be followed by an identifier in declaration contexts
+// SyntaxError:… 在声明上下文中必须后跟标识符  
+```
 >
 >解构赋值的一个用处, 是扩展某个函数的参数, 引入其他操作. 
->
->```javascript
->function baseFunction({ a, b }) {
->// ...
->}
->function wrapperFunction({ x, y, ...restConfig }) {
->// 使用 x 和 y 参数进行操作
->// 其余参数传给原始函数
->return baseFunction(restConfig);
->}
->```
->
+
+```javascript
+function baseFunction({ a, b }) {
+// ...
+}
+function wrapperFunction({ x, y, ...restConfig }) {
+// 使用 x 和 y 参数进行操作
+// 其余参数传给原始函数
+return baseFunction(restConfig);
+}
+```
+
 >上面代码中, 原始函数`baseFunction`接受`a`和`b`作为参数, 函数`wrapperFunction`在`baseFunction`的基础上进行了扩展, 能够接受多余的参数, 并且保留原始函数的行为. 
 
 #### ③ 扩展运算符
 
 >对象的扩展运算符（`...`）用于取出参数对象的所有可遍历属性, 拷贝到当前对象之中. 
 >
->```javascript
->let z = { a: 3, b: 4 };
->let n = { ...z };
->// n == { a: 3, b: 4 }
->```
->
+```javascript
+let z = { a: 3, b: 4 };
+let n = { ...z };
+// n == { a: 3, b: 4 }
+```
+
 >由于数组是特殊的对象, 所以对象的扩展运算符也可以用于数组. 
->
->```javascript
->let foo = { ...['a', 'b', 'c'] };
->foo
->// {0: "a", 1: "b", 2: "c"}
->```
->
+
+```javascript
+let foo = { ...['a', 'b', 'c'] };
+foo
+// {0: "a", 1: "b", 2: "c"}
+```
+
 >如果扩展运算符后面是一个空对象, 则没有任何效果. 
->
->```javascript
->{...{}, a: 1}
->// { a: 1 }
->```
->
+
+```javascript
+{...{}, a: 1}
+// { a: 1 }
+```
+
 >如果扩展运算符后面不是对象, 则会自动将其转为对象. 
->
->```javascript
->// 等同于 {...Object(1)}
->{...1} // {}
->```
->
+
+```javascript
+// 等同于 {...Object(1)}
+{...1} // {}
+```
+
 >上面代码中, 扩展运算符后面是整数`1`, 会自动转为数值的包装对象`Number{1}`. 由于该对象没有自身属性, 所以返回一个空对象. 
 >
 >下面的栗子都是类似的道理. 
 >
->```javascript
->// 等同于 {...Object(true)}
->{...true} // {}
->
->// 等同于 {...Object(undefined)}
->{...undefined} // {}
->
->// 等同于 {...Object(null)}
->{...null} // {}
->```
->
+```javascript
+// 等同于 {...Object(true)}
+{...true} // {}
+
+// 等同于 {...Object(undefined)}
+{...undefined} // {}
+
+// 等同于 {...Object(null)}
+{...null} // {}
+```
+
 >但是, 如果扩展运算符后面是字符串, 它会自动转成一个类似数组的对象, 因此返回的不是空对象. 
 >
->```javascript
->{...'hello'}
->// {0: "h", 1: "e", 2: "l", 3: "l", 4: "o"}
->```
->
+```javascript
+{...'hello'}
+// {0: "h", 1: "e", 2: "l", 3: "l", 4: "o"}
+```
 >对象的扩展运算符等同于使用 [ Object.assign() ] 方法. 
->
->```javascript
->let aClone = { ...a };
->// 等同于 浅拷贝
->let aClone = Object.assign({}, a);
->```
->
+
+```javascript
+let aClone = { ...a };
+// 等同于 浅拷贝
+let aClone = Object.assign({}, a);
+```
+
 >上面的栗子只是拷贝了对象实例的属性, 如果想完整克隆一个对象, 还拷贝对象原型的属性, 可以采用下面的写法. 
 >
->```javascript
->// 写法一
->const clone1 = {
->  __proto__: Object.getPrototypeOf(obj), //利用[getPrototypeOf]获取原型,将其附加到自身原型上
->  ...obj
->};
->
->// 写法二
->const clone2 = Object.assign(
->  Object.create(Object.getPrototypeOf(obj)),
->  obj
->);
->
->// 写法三
->const clone3 = Object.create(
->  Object.getPrototypeOf(obj),
->  Object.getOwnPropertyDescriptors(obj)
->)
->```
->
+```javascript
+// 写法一
+const clone1 = {
+  __proto__: Object.getPrototypeOf(obj), //利用[getPrototypeOf]获取原型,将其附加到自身原型上
+  ...obj
+};
+
+// 写法二
+const clone2 = Object.assign(
+  Object.create(Object.getPrototypeOf(obj)),
+  obj
+);
+
+// 写法三
+const clone3 = Object.create(
+  Object.getPrototypeOf(obj),
+  Object.getOwnPropertyDescriptors(obj)
+)
+```
+
 >上面代码中, 写法一的 [  [ `__proto__` ]  ] 属性在非浏览器的环境不一定部署, 因此推荐使用写法二和写法三. 
 >
 >扩展运算符可以用于合并两个对象. 
 >
->```javascript
->let ab = { ...a, ...b };
->// 等同于
->let ab = Object.assign({}, a, b);
->```
->
+```javascript
+let ab = { ...a, ...b };
+// 等同于
+let ab = Object.assign({}, a, b);
+```
+
 >如果用户自定义的属性, 放在扩展运算符后面, 则扩展运算符内部的同名属性会被覆盖掉. 
 >
->```javascript
->let aWithOverrides = { ...a, x: 1, y: 2 };
->// 等同于
->let aWithOverrides = { ...a, ...{ x: 1, y: 2 } };
->// 等同于
->let x = 1, y = 2, aWithOverrides = { ...a, x, y };
->// 等同于
->let aWithOverrides = Object.assign({}, a, { x: 1, y: 2 });
->```
->
+```javascript
+let aWithOverrides = { ...a, x: 1, y: 2 };
+// 等同于
+let aWithOverrides = { ...a, ...{ x: 1, y: 2 } };
+// 等同于
+let x = 1, y = 2, aWithOverrides = { ...a, x, y };
+// 等同于
+let aWithOverrides = Object.assign({}, a, { x: 1, y: 2 });
+```
+
 >上面代码中,`a`对象的 [ x ] 属性和 [ y ] 属性, `拷贝到新对象后会被同名的 [x,y] 属性覆盖掉`. 
 >
 >这用来修改现有对象部分的属性就很方便了. 
 >
->```javascript
->let newVersion = {
->  ...previousVersion,
->  name: 'New Name' //  重写name属性
->};
->```
+```javascript
+let newVersion = {
+  ...previousVersion,
+  name: 'New Name' //  重写name属性
+};
+```
 >
 >上面代码中, `newVersion`对象自定义了`name`属性, 其他属性全部复制自`previousVersion`对象. 
 >
 >如果把自定义属性放在扩展运算符前面, 就变成了设置新对象的默认属性值. 
 >
->```javascript
->let aWithDefaults = { x: 1, y: 2, ...a }; //如果a中没有 x、y 属性,则相当于赋默认值.有则覆盖
->// 等同于
->let aWithDefaults = Object.assign({}, { x: 1, y: 2 }, a);
->// 等同于
->let aWithDefaults = Object.assign({ x: 1, y: 2 }, a);
->```
+```javascript
+let aWithDefaults = { x: 1, y: 2, ...a }; //如果a中没有 x、y 属性,则相当于赋默认值.有则覆盖
+// 等同于
+let aWithDefaults = Object.assign({}, { x: 1, y: 2 }, a);
+// 等同于
+let aWithDefaults = Object.assign({ x: 1, y: 2 }, a);
+```
 >
 >与数组的扩展运算符一样, 对象的扩展运算符后面可以跟表达式. 
 >
->```javascript
->const obj = {
->  ...(x > 1 ? {a: 1} : {}),
->  b: 2,
->};
->```
+```javascript
+const obj = {
+  ...(x > 1 ? {a: 1} : {}),
+  b: 2,
+};
+```
 >
 >扩展运算符的参数对象之中, 如果有取值函数`get`, 这个函数是会执行的. 
 >
->```javascript
->let a = {
->  get x() {throw new Error('not throw yet');}
->    }
->  
->let aWithXGetter = { ...a }; // 报错  -->因为[get]会自动执行,就不是赋值解构操作了
->```
->
+```javascript
+let a = {
+  get x() {throw new Error('not throw yet');}
+    }
+let aWithXGetter = { ...a }; // 报错  -->因为[get]会自动执行,就不是赋值解构操作了
+```
+
 >上面栗子中, 取值函数`get`在扩展`a`对象时会自动执行, 导致报错. 
 
 ### Ⅶ -  对象的新增方法
@@ -3528,41 +3518,39 @@ var fix = f => (x => f(v => x(x)(v)))
 >
 >ES6 提出“Same-value equality”（同值相等）算法, 用来解决这个问题.  [ Object.is ] 就是部署这个算法的新方法. 它用来比较两个值是否严格相等, 与严格比较运算符（===）的行为基本一致. 
 >
->```javascript
->Object.is('foo', 'foo')
->// true
->Object.is({}, {})
->// false
->```
->
+```javascript
+Object.is('foo', 'foo')
+// true
+Object.is({}, {})
+// false
+```
+
 >不同之处只有两个: 一是`+0`不等于`-0`, 二是`NaN`等于自身. 
 >
->```javascript
->+0 === -0 //true
->NaN === NaN // false
->Object.is(+0, -0) // false
->Object.is(NaN, NaN) // true
->```
->
+```javascript
++0 === -0 //true
+NaN === NaN // false
+Object.is(+0, -0) // false
+Object.is(NaN, NaN) // true
+```
+
 >ES5 可以通过下面的代码, 部署 [ Object.is ] . -->其实就是将无法判断的两个特殊清空特殊处理
 >
->```javascript
->Object.defineProperty(Object, 'is', {
->  value: function(x, y) {
->    if (x === y) {
->      // 针对+0 不等于 -0的情况
->      return x !== 0 || 1 / x === 1 / y;
->    }
->    // 针对NaN的情况
->    return x !== x && y !== y;
->  },
->  configurable: true,
->  enumerable: false,
->  writable: true
->});
->```
->
-
+```javascript
+Object.defineProperty(Object, 'is', {
+  value: function(x, y) {
+    if (x === y) {
+      // 针对+0 不等于 -0的情况
+      return x !== 0 || 1 / x === 1 / y;
+    }
+    // 针对NaN的情况
+    return x !== x && y !== y;
+  },
+  configurable: true,
+  enumerable: false,
+  writable: true
+});
+```
 #### ② Object.assign()
 
 > 开发中常能见到,这个方法还是要着重了解的,需要注意的就是此方法为:** `浅拷贝` **
@@ -3571,126 +3559,126 @@ var fix = f => (x => f(v => x(x)(v)))
 
 > [ Object.assign() ] 方法用于对象的合并, 将源对象（source）的所有可枚举属性, 复制到目标对象（target）. 
 >
->```javascript
->const target = { a: 1 };
->const source1 = { b: 2 };
->const source2 = { c: 3 };
->
->Object.assign(target, source1, source2);
->target // {a:1, b:2, c:3}
->```
+```javascript
+const target = { a: 1 };
+const source1 = { b: 2 };
+const source2 = { c: 3 };
+
+Object.assign(target, source1, source2);
+target // {a:1, b:2, c:3}
+```
 >
 > [ Object.assign() ] 方法的第一个参数是目标对象, 后面的参数都是源对象. 
 >
 >注意: 如果目标对象与源对象有同名属性, 或多个源对象有同名属性, 则`后面的属性会覆盖前面的属性`. 
 >
->```javascript
->const target = { a: 1, b: 1 };
->
->const source1 = { b: 2, c: 2 };
->const source2 = { c: 3 };
->
->Object.assign(target, source1, source2);
->target // {a:1, b:2, c:3}
->```
->
+```javascript
+const target = { a: 1, b: 1 };
+
+const source1 = { b: 2, c: 2 };
+const source2 = { c: 3 };
+
+Object.assign(target, source1, source2);
+target // {a:1, b:2, c:3}
+```
+
 >如果只有一个参数,  [ Object.assign() ] 会直接返回该参数. 
 >
->```javascript
->const obj = {a: 1};
->Object.assign(obj) === obj // true
->```
->
+```javascript
+const obj = {a: 1};
+Object.assign(obj) === obj // true
+```
+
 >如果该参数不是对象, 则会先转成对象, 然后返回. 
 >
->```javascript
->typeof Object.assign(2) // "object"
->```
->
+```javascript
+typeof Object.assign(2) // "object"
+```
+
 >由于 **undefined** 和 **null** 无法转成对象, 所以如果它们作为参数, 就会报错. 
->
->```javascript
->Object.assign(undefined) // 报错
->Object.assign(null) // 报错
->```
->
+
+```javascript
+Object.assign(undefined) // 报错
+Object.assign(null) // 报错
+```
+
 >如果非对象参数出现在源对象的位置（即非首参数）, 那么处理规则有所不同. 首先, 这些参数都会转成对象, 如果无法转成对象, 就会跳过. 这意味着, 如果 **undefined** 和 **null** 不在首参数, 就不会报错. 
->
->```javascript
->let obj = {a: 1};
->Object.assign(obj, undefined) === obj // true
->Object.assign(obj, null) === obj // true
->```
->
+
+```javascript
+let obj = {a: 1};
+Object.assign(obj, undefined) === obj // true
+Object.assign(obj, null) === obj // true
+```
+
 >其他类型的值（即数值、字符串和布尔值）不在首参数, 也不会报错. 但是, 除了字符串会以数组形式, 拷贝入目标对象, 其他值都不会产生效果. 
->
->```javascript
->const v1 = 'abc';
->const v2 = true;
->const v3 = 10;
->
->const obj = Object.assign({}, v1, v2, v3);
->console.log(obj); // { "0": "a", "1": "b", "2": "c" }
->```
+
+```javascript
+const v1 = 'abc';
+const v2 = true;
+const v3 = 10;
+
+const obj = Object.assign({}, v1, v2, v3);
+console.log(obj); // { "0": "a", "1": "b", "2": "c" }
+```
 >
 >上面代码中, `v1`、`v2`、`v3`分别是字符串、布尔值和数值, 结果只有字符串合入目标对象（以字符数组的形式）, 数值和布尔值都会被忽略. 这是因为只有字符串的包装对象, 会产生可枚举属性. 
 >
->```javascript
->Object(true) // {[[PrimitiveValue]]: true}
->Object(10)  //  {[[PrimitiveValue]]: 10}
->Object('abc') // {0: "a", 1: "b", 2: "c", length: 3, [[PrimitiveValue]]: "abc"}
->```
+```javascript
+Object(true) // {[[PrimitiveValue]]: true}
+Object(10)  //  {[[PrimitiveValue]]: 10}
+Object('abc') // {0: "a", 1: "b", 2: "c", length: 3, [[PrimitiveValue]]: "abc"}
+```
 >
 >上面代码中, 布尔值、数值、字符串分别转成对应的包装对象, 可以看到它们的原始值都在包装对象的内部属性`[[PrimitiveValue]]`上面, 这个属性是不会被 [ Object.assign() ] 拷贝的. 只有字符串的包装对象, 会产生可枚举的实义属性, 那些属性则会被拷贝. 
 >
 > [ Object.assign() ] 拷贝的属性是有限制的, 只拷贝源对象的自身属性（不拷贝继承属性）, 也不拷贝不可枚举的属性（`enumerable: false`）. 
 >
->```javascript
->Object.assign({b: 'c'},
->  Object.defineProperty({}, 'invisible', {
->    enumerable: false,
->    value: 'hello'
->  })
->)
->// { b: 'c' }
->```
->
+```javascript
+Object.assign({b: 'c'},
+  Object.defineProperty({}, 'invisible', {
+    enumerable: false,
+    value: 'hello'
+  })
+)
+// { b: 'c' }
+```
+
 >上面代码中,  [ Object.assign() ] 要拷贝的对象只有一个不可枚举属性`invisible`, 这个属性并没有被拷贝进去. 
 >
 >属性名为 Symbol 值的属性, 也会被 [ Object.assign() ] 拷贝. 
->
->```javascript
->Object.assign({ a: 'b' }, { [Symbol('c')]: 'd' })
->// { a: 'b', Symbol(c): 'd' }
->```
->
+
+```javascript
+Object.assign({ a: 'b' }, { [Symbol('c')]: 'd' })
+// { a: 'b', Symbol(c): 'd' }
+```
+
 
 ##### b) 注意点
 
 ###### ( 1 ) 浅拷贝
 
 > [ Object.assign() ] 方法实行的是浅拷贝, 而不是深拷贝. 也就是说, 如果源对象某个属性的值是对象, 那么目标对象拷贝得到的是这个对象的引用. 
->
->```javascript
->const obj1 = {a: {b: 1}};
->const obj2 = Object.assign({}, obj1);
->
->obj1.a.b = 2;
->obj2.a.b // 2
->```
->
+
+```javascript
+const obj1 = {a: {b: 1}};
+const obj2 = Object.assign({}, obj1);
+
+obj1.a.b = 2;
+obj2.a.b // 2
+```
+
 >上面代码中, 源对象`obj1`的`a`属性的值是一个对象,  [ Object.assign() ] 拷贝得到的是这个对象的引用. 这个对象的任何变化, 都会反映到目标对象上面. 
 
 ###### ( 2 ) 同名属性的替换
 
 >对于这种嵌套的对象, 一旦遇到同名属性,  [ Object.assign() ] 的处理方法是替换, 而不是添加. 
 >
->```javascript
->const target = { a: { b: 'c', d: 'e' } }
->const source = { a: { b: 'hello' } }
->Object.assign(target, source)
->// { a: { b: 'hello' } }
->```
+```javascript
+const target = { a: { b: 'c', d: 'e' } }
+const source = { a: { b: 'hello' } }
+Object.assign(target, source)
+// { a: { b: 'hello' } }
+```
 >
 >上面代码中, `target`对象的`a`属性被`source`对象的`a`属性整个替换掉了, 而不会得到 **{ a: { b: 'hello', d: 'e' } }** 的结果. 这通常不是开发者想要的, 需要特别小心. 
 >
@@ -3700,123 +3688,123 @@ var fix = f => (x => f(v => x(x)(v)))
 
 > [ Object.assign() ] 可以用来处理数组, 但是会把数组视为对象. 
 >
->```javascript
->Object.assign([1, 2, 3], [4, 5])
->// [4, 5, 3]
->```
->
+```javascript
+Object.assign([1, 2, 3], [4, 5])
+// [4, 5, 3]
+```
+
 >上面代码中,  [ Object.assign() ] 把数组视为属性名为 0、1、2 的对象, 因此源数组的 0 号属性`4`覆盖了目标数组的 0 号属性`1`. 
 
 ###### ( 4 ) 取值函数的处理
 
 > [ Object.assign() ] 只能进行值的复制, 如果要复制的值是一个取值函数, 那么将求值后再复制. 
->
->```javascript
->const source = {  get foo() { return 1 }};
->const target = {};
->
->Object.assign(target, source)
->// { foo: 1 }
->```
->
+
+```javascript
+const source = {  get foo() { return 1 }};
+const target = {};
+
+Object.assign(target, source)
+// { foo: 1 }
+```
+
 >上面代码中, `source`对象的`foo`属性是一个取值函数,  [ Object.assign() ] 不会复制这个取值函数, 只会拿到值以后, 将这个值复制过去
 
 ##### c) 常见用途
 
 ###### ( 1 ) 为对象添加属性
 
->```javascript
->class Point {
->  constructor(x, y) {   Object.assign(this, {x, y}) }
->}
->```
->
+```javascript
+class Point {
+  constructor(x, y) {   Object.assign(this, {x, y}) }
+}
+```
+
 >上面方法通过 [ Object.assign() ] 方法, 将`x`属性和`y`属性添加到`Point`类的对象实例. 
 
 ###### ( 2 ) 为对象添加方法
 
->```javascript
->Object.assign(SomeClass.prototype, {
->  someMethod(arg1, arg2) {},
->  anotherMethod() { }
->});
->
->// 等同于下面的写法
->SomeClass.prototype.someMethod = function (arg1, arg2) {};
->SomeClass.prototype.anotherMethod = function () {};
->```
->
+```javascript
+Object.assign(SomeClass.prototype, {
+  someMethod(arg1, arg2) {},
+  anotherMethod() { }
+});
+
+// 等同于下面的写法
+SomeClass.prototype.someMethod = function (arg1, arg2) {};
+SomeClass.prototype.anotherMethod = function () {};
+```
+
 >上面代码使用了对象属性的简洁表示法, 直接将两个函数放在大括号中, 再使用`assign()`方法添加到`SomeClass.prototype`之中. 
 
 ###### ( 3 ) 克隆对象
 
->```javascript
->function clone(origin) { return Object.assign({}, origin) }
->```
->
+```javascript
+function clone(origin) { return Object.assign({}, origin) }
+```
+
 >上面代码将原始对象拷贝到一个空对象, 就得到了原始对象的克隆. 
 >
 >不过, 采用这种方法克隆, 只能克隆原始对象自身的值, 不能克隆它继承的值. 如果想要保持继承链, 可以采用下面的代码. 
->
->```javascript
->function clone(origin) {
->  let originProto = Object.getPrototypeOf(origin);
->  return Object.assign(Object.create(originProto), origin);
->}
->```
->
+
+```javascript
+function clone(origin) {
+  let originProto = Object.getPrototypeOf(origin);
+  return Object.assign(Object.create(originProto), origin);
+}
+```
+
 >[ Object.getPrototypeOf() ] 方法:返回指定对象的原型（内部`[[Prototype]]`属性的值）. 
 
 ###### ( 4 ) 合并多个对象
 
 >将多个对象合并到某个对象. 
 >
->```javascript
->const merge =(target, ...sources) => Object.assign(target, ...sources);
->```
+```javascript
+const merge =(target, ...sources) => Object.assign(target, ...sources);
+```
 >
 >如果希望合并后返回一个新对象, 可以改写上面函数, 对一个空对象合并. 
 >
->```javascript
->const merge =(...sources) => Object.assign({}, ...sources);
->```
->
+```javascript
+const merge =(...sources) => Object.assign({}, ...sources);
+```
+
 
 ###### ( 5 ) 为属性指定默认值
 
->```javascript
->const DEFAULTS = {
->  logLevel: 0,
->  outputFormat: 'html'
->};
->
->function processContent(options) {
->  options = Object.assign({}, DEFAULTS, options); //利用其如果有同名属性,后面属性值会覆盖前面属性值的特性实现
->  console.log(options);
->}
->```
->
+```javascript
+const DEFAULTS = {
+  logLevel: 0,
+  outputFormat: 'html'
+};
+
+function processContent(options) {
+  options = Object.assign({}, DEFAULTS, options); //利用其如果有同名属性,后面属性值会覆盖前面属性值的特性实现
+  console.log(options);
+}
+```
+
 >上面代码中,  [ DEFAULTS ] 对象是默认值,  **options**  对象是用户提供的参数.  [ Object.assign() ] 方法将 [ DEFAULTS ] 和 **options** 合并成一个新对象, 如果两者有同名属性, 则 **options** 的属性值会覆盖 [ DEFAULTS ] 的属性值. 
 >
 >注意, 由于存在浅拷贝的问题,  [ DEFAULTS ] 对象和 **options**  对象的所有属性的值, 最好都是简单类型, 不要指向另一个对象. 否则,  [ DEFAULTS ] 对象的该属性很可能不起作用. 
 >
->```javascript
->const DEFAULTS = {
->  url: {
->    host: 'example.com',
->    port: 7070
->  },
->};
->function processContent(options) {
->  options = Object.assign({}, DEFAULTS, options); //利用其如果有同名属性,后面属性值会覆盖前面属性值的特性实现
->  console.log(options);
->}
->processContent({ url: {port: 8000} })
->// {
->//   url: {port: 8000}
->// }
->```
->
+```javascript
+const DEFAULTS = {
+  url: {
+    host: 'example.com',
+    port: 7070
+  },
+};
+function processContent(options) {
+  options = Object.assign({}, DEFAULTS, options); //利用其如果有同名属性,后面属性值会覆盖前面属性值的特性实现
+  console.log(options);
+}
+processContent({ url: {port: 8000} })
+// {
+//   url: {port: 8000}
+// }
+```
+
 >上面代码的原意是将`url.port`改成 8000，`url.host`不变. 实际结果却是`options.url`覆盖掉`DEFAULTS.url`, 所以`url.host`就不存在了. 
 
 ####  ③ getOwnPropertyDescriptors()
@@ -3827,43 +3815,51 @@ var fix = f => (x => f(v => x(x)(v)))
 
 >ES5 的  [ Object.getOwnPropertyDescriptor() ] 方法用来获取一个对象的所有自身属性的描述符. . ES2017 引入了 [ Object.getOwnPropertyDescriptors() ] 方法, 返回指定对象所有自身属性（非继承属性）的描述对象. 
 >
->```javascript
->const obj = {
->  foo: 123,
->  get bar() { return 'abc' }
->};
->
->Object.getOwnPropertyDescriptors(obj)
->// { foo:
->//    { value: 123,
->//      writable: true,
->//      enumerable: true,
->//      configurable: true },
->//   bar:
->//    { get: [Function: get bar],
->//      set: undefined,
->//      enumerable: true,
->//      configurable: true }
->// }
->```
->
+```javascript
+const obj = {
+  foo: 123,
+  get bar() { return 'abc' }
+};
+
+Object.getOwnPropertyDescriptors(obj)
+// { foo:
+//    { value: 123,
+//      writable: true,
+//      enumerable: true,
+//      configurable: true },
+//   bar:
+//    { get: [Function: get bar],
+//      set: undefined,
+//      enumerable: true,
+//      configurable: true }
+// }
+
+Object.getOwnPropertyDescriptor(obj,'foo')
+//{
+//    "value": 123,
+//    "writable": true,
+//    "enumerable": true,
+//    "configurable": true
+//}
+```
+
 >上面代码中,  [ Object.getOwnPropertyDescriptors() ] 方法返回一个对象, 所有原对象的属性名都是该对象的属性名, 对应的属性值就是该属性的描述对象. 
 
 ##### b) 方法的实现
 
 >该方法的实现非常容易. 
->
->```javascript
->function getOwnPropertyDescriptors(obj) {
->const result = {};
->//静态方法 Reflect.ownKeys() 返回一个由目标对象自身的属性键组成的数组. 
->for (let key of Reflect.ownKeys(obj)) {
->result[key] = Object.getOwnPropertyDescriptor(obj, key);
->}
->return result;
->}
->```
->
+
+```javascript
+function getOwnPropertyDescriptors(obj) {
+const result = {};
+//静态方法 Reflect.ownKeys() 返回一个由目标对象自身的属性键组成的数组. 
+for (let key of Reflect.ownKeys(obj)) {
+result[key] = Object.getOwnPropertyDescriptor(obj, key);
+}
+return result;
+}
+```
+
 
 ##### c) 此方法引入目的与常用用法
 
@@ -3871,73 +3867,73 @@ var fix = f => (x => f(v => x(x)(v)))
 
 >该方法的引入目的, 主要是为了解决`Object.assign()`无法正确拷贝`get`属性和`set`属性的问题. 
 >
->```javascript
->const source = {
->set foo(value) {
->console.log(value);
->}
->};
->const target1 = {};
->Object.assign(target1, source);  //结果该属性的值变成了 undefined . 
->//此时获取其属性信息进行查看
->Object.getOwnPropertyDescriptor(target1, 'foo')
->// { value: undefined,
->//   writable: true,
->//   enumerable: true,
->//   configurable: true }
->```
->
+```javascript
+const source = {
+set foo(value) {
+console.log(value);
+}
+};
+const target1 = {};
+Object.assign(target1, source);  //结果该属性的值变成了 undefined . 
+//此时获取其属性信息进行查看
+Object.getOwnPropertyDescriptor(target1, 'foo')
+// { value: undefined,
+//   writable: true,
+//   enumerable: true,
+//   configurable: true }
+```
+
 >上面代码中, `source`对象的`foo`属性的值是一个赋值函数, `Object.assign`方法将这个属性拷贝给`target1`对象, 结果该属性的值变成了 **undefined** . 这是因为`Object.assign`方法总是拷贝一个属性的值, 而不会拷贝它背后的赋值方法或取值方法. 
 >
 >这时,  [ Object.getOwnPropertyDescriptors() ] 方法配合`Object.defineProperties()`方法, 就可以实现正确拷贝. 
 >
->```javascript
->const source = {
->set foo(value) {
->console.log(value);
->}
->};
->
->const target2 = {};
->//1. Object.defineProperties()方法直接在一个对象上定义新的属性或修改现有属性, 并返回该对象. 
->//2. 先将[source]属性获取出来,配合 [ Object.defineProperties() ]方法实现正确拷贝
->Object.defineProperties(target2, Object.getOwnPropertyDescriptors(source));
->//此时再次获取其属性信息进行查看
->Object.getOwnPropertyDescriptor(target2, 'foo')
->// { get: undefined,
->//   set: [Function: set foo],
->//   enumerable: true,
->//   configurable: true }
->```
->
+```javascript
+const source = {
+set foo(value) {
+console.log(value);
+}
+};
+
+const target2 = {};
+//1. Object.defineProperties()方法直接在一个对象上定义新的属性或修改现有属性, 并返回该对象. 
+//2. 先将[source]属性获取出来,配合 [ Object.defineProperties() ]方法实现正确拷贝
+Object.defineProperties(target2, Object.getOwnPropertyDescriptors(source));
+//此时再次获取其属性信息进行查看
+Object.getOwnPropertyDescriptor(target2, 'foo')
+// { get: undefined,
+//   set: [Function: set foo],
+//   enumerable: true,
+//   configurable: true }
+```
+
 >上面代码中, 两个对象合并的逻辑可以写成一个函数. 
 >
->```javascript
->//其实就是用[ Object.defineProperties() ]方法返回的数据再用 [Object.defineProperties()]方法进行修改或定义属性
->const shallowMerge = (target, source) => Object.defineProperties(
->target,
->Object.getOwnPropertyDescriptors(source)
->);
->```
->
+```javascript
+//其实就是用[ Object.getOwnPropertyDescriptors() ]方法返回的数据再用 [Object.defineProperties()]方法进行修改或定义属性
+const shallowMerge = (target, source) => Object.defineProperties(
+target,
+Object.getOwnPropertyDescriptors(source)
+);
+```
+
 
 ###### ( 2 ) 将对象属性克隆到一个新对象  --> `浅拷贝`
 
 >[ Object.getOwnPropertyDescriptors() ] 方法的另一个用处, 是配合`Object.create()`方法, 将对象属性克隆到一个新对象. 这属于浅拷贝. 
 >
->```javascript
->//该Object.create()方法创建一个新对象, 使用现有对象作为新创建对象的原型( proto ). 
->//Object.getPrototypeOf() 方法返回指定对象的原型（内部[[Prototype]]属性的值）. 
->const clone = Object.create(Object.getPrototypeOf(obj),
->Object.getOwnPropertyDescriptors(obj));
->
->// 或者 -->本质上一摸一样,只是用了箭头函数的方式写了,更简洁明了
->
->const shallowClone = (obj) => Object.create(
->Object.getPrototypeOf(obj),
->Object.getOwnPropertyDescriptors(obj)
->);
->```
+```javascript
+//该Object.create()方法创建一个新对象, 使用现有对象作为新创建对象的原型( proto ). 
+//Object.getPrototypeOf() 方法返回指定对象的原型（内部[[Prototype]]属性的值）. 
+const clone = Object.create(Object.getPrototypeOf(obj),
+Object.getOwnPropertyDescriptors(obj));
+
+// 或者 -->本质上一摸一样,只是用了箭头函数的方式写了,更简洁明了
+
+const shallowClone = (obj) => Object.create(
+Object.getPrototypeOf(obj),
+Object.getOwnPropertyDescriptors(obj)
+);
+```
 >
 >上面代码会克隆对象`obj`. 
 
@@ -3946,62 +3942,62 @@ var fix = f => (x => f(v => x(x)(v)))
 >
 >另外,  [ Object.getOwnPropertyDescriptors() ] 方法可以实现一个对象继承另一个对象. 以前, 继承另一个对象, 常常写成下面这样. 
 >
->```javascript
->const obj = {
->__proto__: prot,
->foo: 123,
->};
->```
+```javascript
+const obj = {
+__proto__: prot,
+foo: 123,
+};
+```
 >
 >ES6 规定 [  [ `__proto__` ]  ] 只有浏览器要部署, 其他环境不用部署. 如果去除 [  [ `__proto__` ]  ] , 上面代码就要改成下面这样. 
 >
->```javascript
->//该Object.create()方法创建一个新对象, 使用现有对象作为新创建对象的原型( proto ). 
->const obj = Object.create(prot);
->obj.foo = 123;
->
->// 或者
->
->const obj = Object.assign(
->Object.create(prot),
->{foo: 123}
->);
->```
+```javascript
+//该Object.create()方法创建一个新对象, 使用现有对象作为新创建对象的原型( proto ). 
+const obj = Object.create(prot);
+obj.foo = 123;
+
+// 或者
+
+const obj = Object.assign(
+Object.create(prot),
+{foo: 123}
+);
+```
 >
 >有了 [ Object.getOwnPropertyDescriptors() ] , 我们就有了另一种写法. 
 >
->```javascript
->const obj = Object.create(
->prot,
->//获取对象原型属性
->Object.getOwnPropertyDescriptors({foo: 123})
->);
->```
->
+```javascript
+const obj = Object.create(
+prot,
+//获取对象原型属性
+Object.getOwnPropertyDescriptors({foo: 123})
+);
+```
+
 
 ###### ( 4 ) 实现 Mixin（混入）模式
 
 >[ Object.getOwnPropertyDescriptors() ] 也可以用来实现 Mixin（混入）模式. 
 >
->```javascript
->let mix = (object) => ({
->with: (...mixins) => mixins.reduce(
->(c, mixin) => Object.create(
->c, Object.getOwnPropertyDescriptors(mixin)
->), object)
->});
->
->// multiple mixins example
->let a = {a: 'a'};
->let b = {b: 'b'};
->let c = {c: 'c'};
->let d = mix(c).with(a, b);
->
->d.c // "c"
->d.b // "b"
->d.a // "a"
->```
->
+```javascript
+let mix = (object) => ({
+with: (...mixins) => mixins.reduce(
+(c, mixin) => Object.create(
+c, Object.getOwnPropertyDescriptors(mixin)
+), object)
+});
+
+// multiple mixins example
+let a = {a: 'a'};
+let b = {b: 'b'};
+let c = {c: 'c'};
+let d = mix(c).with(a, b);
+
+d.c // "c"
+d.b // "b"
+d.a // "a"
+```
+
 >上面代码返回一个新的对象`d`, 代表了对象`a`和`b`被混入了对象`c`的操作. 
 >
 >出于完整性的考虑,  [ Object.getOwnPropertyDescriptors() ] 进入标准以后, 以后还会新增`Reflect.getOwnPropertyDescriptors()`方法. 
