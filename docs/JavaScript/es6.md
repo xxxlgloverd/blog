@@ -4010,345 +4010,345 @@ d.a // "a"
 
 > [  `__proto__`  ] 属性（前后各两个下划线）, 用来读取或设置当前对象的原型对象（prototype）. 目前, 所有浏览器（包括 IE11）都部署了这个属性. 
 >
->```javascript
->// es5 的写法
->const obj = {
->  method: function() { ... }
->};
->obj.__proto__ = someOtherObj;
->
->// es6 的写法
->var obj = Object.create(someOtherObj);
->obj.method = function() { ... };
->```
->
+```javascript
+// es5 的写法
+const obj = {
+  method: function() { ... }
+};
+obj.__proto__ = someOtherObj;
+
+// es6 的写法
+var obj = Object.create(someOtherObj);
+obj.method = function() { ... };
+```
+
 >该属性没有写入 ES6 的正文, 而是写入了附录, 原因是  [ `__proto__` ]  前后的双下划线, 说明它本质上是一个**内部属性**, 而不是一个正式的对外的 API，只是由于浏览器广泛支持, 才被加入了 ES6. 标准明确规定, 只有浏览器必须部署这个属性, 其他运行环境不一定需要部署, 而且新的代码最好认为这个属性是不存在的. 因此, 无论从语义的角度, 还是从兼容性的角度, 都不要使用这个属性, 而是使用下面的[ Object.setPrototypeOf() ]（`写操作`）、[ Object.getPrototypeOf() ]（`读操作`）、`Object.create()`（生成操作）代替. 
 >
 >实现上,  [  `__proto__`  ] 调用的是`Object.prototype.__proto__`, 具体实现如下. 
 >
->```javascript
->Object.defineProperty(Object.prototype, '__proto__', {
->  get() {
->    let _thisObj = Object(this);
->    return Object.getPrototypeOf(_thisObj);
->  },
->  set(proto) {
->    if (this === undefined || this === null) throw new TypeError();
->    if (!isObject(this))  return undefined;
->    if (!isObject(proto)) return undefined;
->    let status = Reflect.setPrototypeOf(this, proto);
->    if (!status)  throw new TypeError();
->  },
->});
->
->function isObject(value) {
->  return Object(value) === value;
->}
->```
->
+```javascript
+Object.defineProperty(Object.prototype, '__proto__', {
+  get() {
+    let _thisObj = Object(this);
+    return Object.getPrototypeOf(_thisObj);
+  },
+  set(proto) {
+    if (this === undefined || this === null) throw new TypeError();
+    if (!isObject(this))  return undefined;
+    if (!isObject(proto)) return undefined;
+    let status = Reflect.setPrototypeOf(this, proto);
+    if (!status)  throw new TypeError();
+  },
+});
+
+function isObject(value) {
+  return Object(value) === value;
+}
+```
+
 >如果一个对象本身部署了 [  [ `__proto__` ]  ] 属性, 该属性的值就是对象的原型. 
 >
->```javascript
->Object.getPrototypeOf({ __proto__: null })
->// null
->```
->
+```javascript
+Object.getPrototypeOf({ __proto__: null })
+// null
+```
+
 
 ##### b) Object.setPrototypeOf()  -->写操作
 
 > [ Object.setPrototypeOf() ] 方法的作用与 [ `__proto__` ] 相同, 用来设置一个对象的原型对象（prototype）, 返回参数对象本身. 它是 ES6 正式推荐的设置原型对象的方法. 
 >
->```javascript
->// 格式
->Object.setPrototypeOf(object, prototype)
->
->// 用法
->const o = Object.setPrototypeOf({}, null);
->```
+```javascript
+// 格式
+Object.setPrototypeOf(object, prototype)
+
+// 用法
+const o = Object.setPrototypeOf({}, null);
+```
 >
 >该方法等同于下面的函数. 
 >
->```javascript
->function setPrototypeOf(obj, proto) {
->  obj.__proto__ = proto;
->  return obj;
->}
->```
+```javascript
+function setPrototypeOf(obj, proto) {
+  obj.__proto__ = proto;
+  return obj;
+}
+```
 >
 >下面是一个例子. 
->
->```javascript
->let proto = {};
->let obj = { x: 10 };
->Object.setPrototypeOf(obj, proto);
->
->proto.y = 20;
->proto.z = 40;
->
->obj.x // 10
->obj.y // 20
->obj.z // 40
->```
->
+
+```javascript
+let proto = {};
+let obj = { x: 10 };
+Object.setPrototypeOf(obj, proto);
+
+proto.y = 20;
+proto.z = 40;
+
+obj.x // 10
+obj.y // 20
+obj.z // 40
+```
+
 >上面代码将`proto`对象设为`obj`对象的原型, 所以从`obj`对象可以读取`proto`对象的属性. 
 >
 >如果第一个参数不是对象, 会自动转为对象. 但是由于返回的还是第一个参数, 所以这个操作不会产生任何效果. 
 >
->```javascript
->Object.setPrototypeOf(1, {}) === 1 // true
->Object.setPrototypeOf('foo', {}) === 'foo' // true
->Object.setPrototypeOf(true, {}) === true // true
->```
->
+```javascript
+Object.setPrototypeOf(1, {}) === 1 // true
+Object.setPrototypeOf('foo', {}) === 'foo' // true
+Object.setPrototypeOf(true, {}) === true // true
+```
+
 >由于 **undefined** 和 **null** 无法转为对象, 所以如果第一个参数是 **undefined** 或 **null** , 就会报错. 
->
->```javascript
->Object.setPrototypeOf(undefined, {})
->// TypeError: Object.setPrototypeOf called on null or undefined
->
->Object.setPrototypeOf(null, {})
->// TypeError: Object.setPrototypeOf called on null or undefined
->```
->
+
+```javascript
+Object.setPrototypeOf(undefined, {})
+// TypeError: Object.setPrototypeOf called on null or undefined
+
+Object.setPrototypeOf(null, {})
+// TypeError: Object.setPrototypeOf called on null or undefined
+```
+
 
 ##### c) Object.getPrototypeOf()
 
 >该方法与 [ Object.setPrototypeOf() ] 方法配套, 用于读取一个对象的原型对象. 
->
->```javascript
->Object.getPrototypeOf(obj);
->```
->
+
+```javascript
+Object.getPrototypeOf(obj);
+```
+
 >下面是一个例子. 
->
->```javascript
->function Rectangle() {}
->const rec = new Rectangle();
->
->Object.getPrototypeOf(rec) === Rectangle.prototype// true
->Object.setPrototypeOf(rec, Object.prototype);
->Object.getPrototypeOf(rec) === Rectangle.prototype// false
->```
+
+```javascript
+function Rectangle() {}
+const rec = new Rectangle();
+
+Object.getPrototypeOf(rec) === Rectangle.prototype// true
+Object.setPrototypeOf(rec, Object.prototype);
+Object.getPrototypeOf(rec) === Rectangle.prototype// false
+```
 >
 >如果参数不是对象, 会被自动转为对象. 
 >
->```javascript
->// 等同于 Object.getPrototypeOf(Number(1))
->Object.getPrototypeOf(1)
->// Number {[[PrimitiveValue]]: 0}
->
->// 等同于 Object.getPrototypeOf(String('foo'))
->Object.getPrototypeOf('foo')
->// String {length: 0, [[PrimitiveValue]]: ""}
->
->// 等同于 Object.getPrototypeOf(Boolean(true))
->Object.getPrototypeOf(true)
->// Boolean {[[PrimitiveValue]]: false}
->
->Object.getPrototypeOf(1) === Number.prototype // true
->Object.getPrototypeOf('foo') === String.prototype // true
->Object.getPrototypeOf(true) === Boolean.prototype // true
->```
->
+```javascript
+// 等同于 Object.getPrototypeOf(Number(1))
+Object.getPrototypeOf(1)
+// Number {[[PrimitiveValue]]: 0}
+
+// 等同于 Object.getPrototypeOf(String('foo'))
+Object.getPrototypeOf('foo')
+// String {length: 0, [[PrimitiveValue]]: ""}
+
+// 等同于 Object.getPrototypeOf(Boolean(true))
+Object.getPrototypeOf(true)
+// Boolean {[[PrimitiveValue]]: false}
+
+Object.getPrototypeOf(1) === Number.prototype // true
+Object.getPrototypeOf('foo') === String.prototype // true
+Object.getPrototypeOf(true) === Boolean.prototype // true
+```
+
 >如果参数是 **undefined** 或 **null** , 它们无法转为对象, 所以会报错. 
->
->```javascript
->Object.getPrototypeOf(null)
->// TypeError: Cannot convert undefined or null to object
->
->Object.getPrototypeOf(undefined)
->// TypeError: Cannot convert undefined or null to object
->```
->
+
+```javascript
+Object.getPrototypeOf(null)
+// TypeError: Cannot convert undefined or null to object
+
+Object.getPrototypeOf(undefined)
+// TypeError: Cannot convert undefined or null to object
+```
+
 
 #### ⑤  对象的keys()、values()、entries() 方法
 
-> 这三个方法不得不说挺常用的,所以此处虽不是ES6的,但仍然在此处先给出 --> 推测有的同学会只看ES6部分就不继续看了:dog:
+> 这三个方法不得不说挺常用的,所以此处虽不是ES6的,但仍然在此处先给出:dog:
 
 ##### a) Object.keys()
 
 >ES5 引入了`Object.keys`方法, 返回一个数组, 成员是参数对象自身的（不含继承的）所有可遍历（enumerable）属性的键名. 
 >
->```javascript
->var obj = { foo: 'bar', baz: 42 };
->Object.keys(obj)
->// ["foo", "baz"]
->```
+```javascript
+var obj = { foo: 'bar', baz: 42 };
+Object.keys(obj)
+// ["foo", "baz"]
+```
 >
 >ES2017 [引入](https://github.com/tc39/proposal-object-values-entries)了跟`Object.keys`配套的 [ Object.values() ] 和 [ Object.entries() ] , 作为遍历一个对象的补充手段, 供`for...of`循环使用. 
 >
->```javascript
->let {keys, values, entries} = Object;
->let obj = { a: 1, b: 2, c: 3 };
->
->for (let key of keys(obj)) {  console.log(key); // 'a', 'b', 'c'}
->for (let value of values(obj)) { console.log(value); // 1, 2, 3}
->for (let [key, value] of entries(obj)) { console.log([key, value]); // ['a', 1], ['b', 2], ['c', 3]}
->```
->
+```javascript
+let {keys, values, entries} = Object;
+let obj = { a: 1, b: 2, c: 3 };
+
+for (let key of keys(obj)) {  console.log(key); // 'a', 'b', 'c'}
+for (let value of values(obj)) { console.log(value); // 1, 2, 3}
+for (let [key, value] of entries(obj)) { console.log([key, value]); // ['a', 1], ['b', 2], ['c', 3]}
+```
+
 
 ##### b) Object.values()
 
 > [ Object.values() ] 方法返回一个数组, 成员是参数对象自身的（不含继承的）所有可遍历（enumerable）属性的键值. 
 >
->```javascript
->const obj = { foo: 'bar', baz: 42 };
->Object.values(obj)
->// ["bar", 42]
->```
->
+```javascript
+const obj = { foo: 'bar', baz: 42 };
+Object.values(obj)
+// ["bar", 42]
+```
+
 >返回数组的成员顺序, 与本章的《属性的遍历》部分介绍的排列规则一致. 
 >
->```javascript
->const obj = { 100: 'a', 2: 'b', 7: 'c' };
->Object.values(obj)
->// ["b", "c", "a"]
->```
+```javascript
+const obj = { 100: 'a', 2: 'b', 7: 'c' };
+Object.values(obj)
+// ["b", "c", "a"]
+```
 >
 >上面代码中, 属性名为数值的属性, 是按照数值大小, 从小到大遍历的, 因此返回的顺序是`b`、`c`、`a`. 
 >
 > [ Object.values() ] 只返回对象自身的可遍历属性. 
->
->```javascript
->const obj = Object.create({}, {p: {value: 42}});
->Object.values(obj) // []
->```
->
+
+```javascript
+const obj = Object.create({}, {p: {value: 42}});
+Object.values(obj) // []
+```
+
 >上面代码中,  [ Object.create() ] 方法的第二个参数添加的对象属性（属性`p`）, 如果不显式声明, 默认是不可遍历的, 因为`p`的属性描述对象的`enumerable`默认是`false`,  [ Object.values() ] 不会返回这个属性. 只要把`enumerable`改成`true`,  [ Object.values() ] 就会返回属性`p`的值. 
 >
->```javascript
->const obj = Object.create({}, {p:
->  {
->    value: 42,
->    enumerable: true
->  }
->});
->Object.values(obj) // [42]
->```
+```javascript
+const obj = Object.create({}, {p:
+  {
+    value: 42,
+    enumerable: true
+  }
+});
+Object.values(obj) // [42]
+```
 >
 > [ Object.values() ] 会过滤属性名为 Symbol 值的属性. 
 >
->```javascript
->Object.values({ [Symbol()]: 123, foo: 'abc' });
->// ['abc']
->```
->
+```javascript
+Object.values({ [Symbol()]: 123, foo: 'abc' });
+// ['abc']
+```
+
 >如果 [ Object.values() ] 方法的参数是一个字符串, 会返回各个字符组成的一个数组. 
->
->```javascript
->Object.values('foo')
->// ['f', 'o', 'o']
->```
+
+```javascript
+Object.values('foo')
+// ['f', 'o', 'o']
+```
 >
 >上面代码中, 字符串会先转成一个类似数组的对象. 字符串的每个字符, 就是该对象的一个属性. 因此,  [ Object.values() ] 返回每个属性的键值, 就是各个字符组成的一个数组. 
 >
 >如果参数不是对象,  [ Object.values() ] 会先将其转为对象. 由于数值和布尔值的包装对象, 都不会为实例添加非继承的属性. 所以,  [ Object.values() ] 会返回空数组. 
 >
->```javascript
->Object.values(42) // []
->Object.values(true) // []
->```
->
+```javascript
+Object.values(42) // []
+Object.values(true) // []
+```
+
 
 ##### c) Object.entries()
 
 > [ Object.entries() ] 方法返回一个数组, 成员是参数对象自身的（不含继承的）所有可遍历（enumerable）属性的键值对数组. 
 >
->```javascript
->const obj = { foo: 'bar', baz: 42 };
->Object.entries(obj)
->// [ ["foo", "bar"], ["baz", 42] ]
->```
->
+```javascript
+const obj = { foo: 'bar', baz: 42 };
+Object.entries(obj)
+// [ ["foo", "bar"], ["baz", 42] ]
+```
+
 >除了返回值不一样, 该方法的行为与 [ Object.values() ] 基本一致. 
 >
 >如果原对象的属性名是一个 Symbol 值, 该属性会被忽略. 
->
->```javascript
->Object.entries({ [Symbol()]: 123, foo: 'abc' });
->// [ [ 'foo', 'abc' ] ]
->```
->
+
+```javascript
+Object.entries({ [Symbol()]: 123, foo: 'abc' });
+// [ [ 'foo', 'abc' ] ]
+```
+
 >上面代码中, 原对象有两个属性,  [ Object.entries() ] 只输出属性名非 Symbol 值的属性. 将来可能会有`Reflect.ownEntries()`方法, 返回对象自身的所有属性. 
 >
 > [ Object.entries() ] 的基本用途是遍历对象的属性. 
 >
->```javascript
->let obj = { one: 1, two: 2 };
->for (let [k, v] of Object.entries(obj)) {
->  console.log(
->    `${JSON.stringify(k)}: ${JSON.stringify(v)}`
->  );
->}
->// "one": 1
->// "two": 2
->```
->
+```javascript
+let obj = { one: 1, two: 2 };
+for (let [k, v] of Object.entries(obj)) {
+  console.log(
+    `${JSON.stringify(k)}: ${JSON.stringify(v)}`
+  );
+}
+// "one": 1
+// "two": 2
+```
+
 > [ Object.entries() ] 方法的另一个用处是, 将对象转为真正的`Map`结构. 
->
->```javascript
->const obj = { foo: 'bar', baz: 42 };
->const map = new Map(Object.entries(obj));
->map // Map { foo: "bar", baz: 42 }
->```
->
+
+```javascript
+const obj = { foo: 'bar', baz: 42 };
+const map = new Map(Object.entries(obj));
+map // Map { foo: "bar", baz: 42 }
+```
+
 >自己实现 [ Object.entries() ] 方法, 非常简单. 
 >
->```javascript
->// Generator函数的版本
->function* entries(obj) {
->  for (let key of Object.keys(obj)) {
->    yield [key, obj[key]];
->  }
->}
->
->// 非Generator函数的版本
->function entries(obj) {
->  let arr = [];
->  for (let key of Object.keys(obj)) {
->    arr.push([key, obj[key]]);
->  }
->  return arr;
->}
->```
->
+```javascript
+// Generator函数的版本
+function* entries(obj) {
+  for (let key of Object.keys(obj)) {
+    yield [key, obj[key]];
+  }
+}
+
+// 非Generator函数的版本
+function entries(obj) {
+  let arr = [];
+  for (let key of Object.keys(obj)) {
+    arr.push([key, obj[key]]);
+  }
+  return arr;
+}
+```
+
 
 #### ⑥ Object.fromEntries()
 
 >`Object.fromEntries()`方法是 [ Object.entries() ] 的逆操作, 用于将一个键值对数组转为对象. 
 >
->```javascript
->Object.fromEntries([
->  ['foo', 'bar'],
->  ['baz', 42]
->])
->// { foo: "bar", baz: 42 }
->```
->
+```javascript
+Object.fromEntries([
+  ['foo', 'bar'],
+  ['baz', 42]
+])
+// { foo: "bar", baz: 42 }
+```
+
 >该方法的主要目的, 是将键值对的数据结构还原为对象, 因此特别适合将 Map 结构转为对象. 
 >
->```javascript
->// 例一
->const entries = new Map([
->  ['foo', 'bar'],
->  ['baz', 42]
->]);
->
->Object.fromEntries(entries)
->// { foo: "bar", baz: 42 }
->
->// 例二
->const map = new Map().set('foo', true).set('bar', false);
->Object.fromEntries(map)
->// { foo: true, bar: false }
->```
+```javascript
+// 例一
+const entries = new Map([
+  ['foo', 'bar'],
+  ['baz', 42]
+]);
+
+Object.fromEntries(entries)
+// { foo: "bar", baz: 42 }
+
+// 例二
+const map = new Map().set('foo', true).set('bar', false);
+Object.fromEntries(map)
+// { foo: true, bar: false }
+```
 >
 >该方法的一个用处是配合`URLSearchParams`对象, 将查询字符串转为对象. 
 >
->```javascript
->Object.fromEntries(new URLSearchParams('foo=bar&baz=qux'))
->// { foo: "bar", baz: "qux" }
->```
+```javascript
+Object.fromEntries(new URLSearchParams('foo=bar&baz=qux'))
+// { foo: "bar", baz: "qux" }
+```
 
 ## 8、数组的拓展
 
@@ -4356,41 +4356,41 @@ d.a // "a"
 
 ### Ⅰ- 概括与总结
 
->> **新增的拓展**
->
->-  **扩展运算符(...)**: 转换数组为用逗号分隔的参数序列(`[...arr]`, 相当于`rest/spread参数`的逆运算)
->-  **Array.from()**: 转换具有 [ Iterator接口 ] 的数据结构为真正数组, 返回新数组
->   1. 类数组对象: `包含length的对象`、`Arguments对象`、`NodeList对象`
->   2. 可遍历对象: `String`、`Set结构`、`Map结构`、`Generator函数`
->
->-  **Array.of()**: 转换一组值为真正数组, 返回新数组
->-  **实例方法**
->   1. **copyWithin()**: 把指定位置的成员复制到其他位置, 返回原数组
->   2. **find()**: 返回第一个符合条件的成员
->   3. **findIndex()**: 返回第一个符合条件的成员索引值
->   4. **fill()**: 根据指定值填充整个数组, 返回原数组
->   5. **keys()**: 返回以索引值为遍历器的对象
->   6. **values()**: 返回以属性值为遍历器的对象
->   7. **entries()**: 返回以索引值和属性值为遍历器的对象
->   8. **其他**:毕竟只是概述,不过多列举,详细看下方
->-  **其他常用方法**:此处将数组常用方法在下方详细部分列出 (不仅是ES6)
->-  **数组空位**: ES6明确将数组空位转为 **undefined** (空位处理规不一, 建议避免出现)
->
->> **扩展运算符在数组中的应用**
->
->- 克隆数组: `const arr = [...arr1]`
->- 合并数组: `const arr = [...arr1, ...arr2]`
->- 拼接数组: `arr.push(...arr1)`
->- 代替apply: `Math.max.apply(null, [x, y])` => `Math.max(...[x, y])`
->- 转换字符串为数组: `[..."hello"]`
->- 转换类数组对象为数组: `[...Arguments, ...NodeList]`
->- 转换可遍历对象为数组: `[...String, ...Set, ...Map, ...Generator]`
->- 与数组解构赋值结合: `const [x, ...rest/spread] = [1, 2, 3]`
->- 计算Unicode字符长度: `Array.from("hello").length` => `[..."hello"].length`
->
->> **重点难点**
->
->- 使用[ keys() ]、[ values() ]、[ entries() ]返回的遍历器对象, 可用 [ for-of ] 自动遍历或`next()`手动遍历
+> **新增的拓展**
+
+-  **扩展运算符(...)**: 转换数组为用逗号分隔的参数序列(`[...arr]`, 相当于`rest/spread参数`的逆运算)
+-  **Array.from()**: 转换具有 [ Iterator接口 ] 的数据结构为真正数组, 返回新数组
+   1. 类数组对象: `包含length的对象`、`Arguments对象`、`NodeList对象`
+   2. 可遍历对象: `String`、`Set结构`、`Map结构`、`Generator函数`
+
+-  **Array.of()**: 转换一组值为真正数组, 返回新数组
+-  **实例方法**
+   1. **copyWithin()**: 把指定位置的成员复制到其他位置, 返回原数组
+   2. **find()**: 返回第一个符合条件的成员
+   3. **findIndex()**: 返回第一个符合条件的成员索引值
+   4. **fill()**: 根据指定值填充整个数组, 返回原数组
+   5. **keys()**: 返回以索引值为遍历器的对象
+   6. **values()**: 返回以属性值为遍历器的对象
+   7. **entries()**: 返回以索引值和属性值为遍历器的对象
+   8. **其他**:毕竟只是概述,不过多列举,详细看下方
+-  **其他常用方法**:此处将数组常用方法在下方详细部分列出 (不仅是ES6)
+-  **数组空位**: ES6明确将数组空位转为 **undefined** (空位处理规不一, 建议避免出现)
+
+> **扩展运算符在数组中的应用**
+
+- 克隆数组: `const arr = [...arr1]`
+- 合并数组: `const arr = [...arr1, ...arr2]`
+- 拼接数组: `arr.push(...arr1)`
+- 代替apply: `Math.max.apply(null, [x, y])` => `Math.max(...[x, y])`
+- 转换字符串为数组: `[..."hello"]`
+- 转换类数组对象为数组: `[...Arguments, ...NodeList]`
+- 转换可遍历对象为数组: `[...String, ...Set, ...Map, ...Generator]`
+- 与数组解构赋值结合: `const [x, ...rest/spread] = [1, 2, 3]`
+- 计算Unicode字符长度: `Array.from("hello").length` => `[..."hello"].length`
+
+> **重点难点**
+
+- 使用[ keys() ]、[ values() ]、[ entries() ]返回的遍历器对象, 可用 [ for-of ] 自动遍历或`next()`手动遍历
 
 ### Ⅱ - 扩展运算符
 
@@ -4398,70 +4398,70 @@ d.a // "a"
 
 >扩展运算符（spread）是三个点（`...`）. 它好比 `rest 参数的逆运算`, 将一个数组转为用逗号分隔的参数序列. 
 >
->```javascript
->console.log(...[1, 2, 3])
->// 1 2 3
->
->console.log(1, ...[2, 3, 4], 5)
->// 1 2 3 4 5
->
->[...document.querySelectorAll('div')]
->// [<div>, <div>, <div>]
->```
->
+```javascript
+console.log(...[1, 2, 3])
+// 1 2 3
+
+console.log(1, ...[2, 3, 4], 5)
+// 1 2 3 4 5
+
+[...document.querySelectorAll('div')]
+// [<div>, <div>, <div>]
+```
+
 >`该运算符主要用于函数调用`. 
->
->```javascript
->function push(array, ...items) {
->  array.push(...items);
->}
->
->function add(x, y) {
->  return x + y;
->}
->
->const numbers = [4, 38];
->add(...numbers) // 42
->```
+
+```javascript
+function push(array, ...items) {
+  array.push(...items);
+}
+
+function add(x, y) {
+  return x + y;
+}
+
+const numbers = [4, 38];
+add(...numbers) // 42
+```
 >
 >上面代码中, `array.push(...items)`和`add(...numbers)`这两行, 都是函数的调用, 它们都使用了扩展运算符. 该运算符将一个数组, 变为参数序列. 
 >
 >扩展运算符与正常的函数参数可以结合使用, 非常灵活. 
 >
->```javascript
->function f(v, w, x, y, z) { }
->const args = [0, 1];
->f(-1, ...args, 2, ...[3]);
->```
->
+```javascript
+function f(v, w, x, y, z) { }
+const args = [0, 1];
+f(-1, ...args, 2, ...[3]);
+```
+
 >扩展运算符后面还可以放置表达式. 
 >
->```javascript
->const arr = [
->  ...(x > 0 ? ['a'] : []),
->  'b',
->];
->```
+```javascript
+const arr = [
+  ...(x > 0 ? ['a'] : []),
+  'b',
+];
+```
 >
 >如果扩展运算符后面是一个空数组, 则不产生任何效果. 
 >
->```javascript
->[...[], 1]
->// [1]
->```
->
+```javascript
+[...[], 1]
+// [1]
+```
+
 >注意, `只有函数调用时, 扩展运算符才可以放在圆括号中`, 否则会报错. 
 >
->```javascript
->(...[1, 2])
->// Uncaught SyntaxError: Unexpected number
->
->console.log((...[1, 2]))
->// Uncaught SyntaxError: Unexpected number
->
->console.log(...[1, 2])
->// 1 2
->```
+```javascript
+(...[1, 2])
+// Uncaught SyntaxError: Unexpected number
+
+console.log((...[1, 2]))
+// Uncaught SyntaxError: Unexpected number
+
+console.log(...[1, 2])
+// 1 2
+```
 >
 >上面三种情况, 扩展运算符都放在圆括号里面, 但是前两种情况会报错, 因为扩展运算符所在的括号不是函数调用. 
 
@@ -4469,101 +4469,101 @@ d.a // "a"
 
 >由于扩展运算符可以展开数组, 所以不再需要`apply`方法, 将数组转为函数的参数了. 
 >
->```javascript
->// ES5 的写法
->function f(x, y, z) {
->  // ...
->}
->var args = [0, 1, 2];
->f.apply(null, args);
->
->// ES6的写法
->function f(x, y, z) {
->  // ...
->}
->let args = [0, 1, 2];
->f(...args);
->```
+```javascript
+// ES5 的写法
+function f(x, y, z) {
+  // ...
+}
+var args = [0, 1, 2];
+f.apply(null, args);
+
+// ES6的写法
+function f(x, y, z) {
+  // ...
+}
+let args = [0, 1, 2];
+f(...args);
+```
 >
 >下面是扩展运算符取代`apply`方法的一个实际的栗子, 应用`Math.max`方法, 简化求出一个数组最大元素的写法. 
 >
->```javascript
->// ES5 的写法
->Math.max.apply(null, [14, 3, 77])
->
->// ES6 的写法
->Math.max(...[14, 3, 77])
->
->// 等同于
->Math.max(14, 3, 77);
->```
+```javascript
+// ES5 的写法
+Math.max.apply(null, [14, 3, 77])
+
+// ES6 的写法
+Math.max(...[14, 3, 77])
+
+// 等同于
+Math.max(14, 3, 77);
+```
 >
 >上面代码中, 由于 JavaScript 不提供求数组最大元素的函数, 所以只能套用`Math.max`函数, 将数组转为一个参数序列, 然后求最大值. 有了扩展运算符以后, 就可以直接用`Math.max`了. 
 >
 >另一个栗子是通过`push`函数, 将一个数组添加到另一个数组的尾部. 
 >
->```javascript
->// ES5的 写法
->var arr1 = [0, 1, 2];
->var arr2 = [3, 4, 5];
->Array.prototype.push.apply(arr1, arr2);
->
->// ES6 的写法
->let arr1 = [0, 1, 2];
->let arr2 = [3, 4, 5];
->arr1.push(...arr2);
->```
->
+```javascript
+// ES5的 写法
+var arr1 = [0, 1, 2];
+var arr2 = [3, 4, 5];
+Array.prototype.push.apply(arr1, arr2);
+
+// ES6 的写法
+let arr1 = [0, 1, 2];
+let arr2 = [3, 4, 5];
+arr1.push(...arr2);
+```
+
 >上面代码的 ES5 写法中, `push`方法的参数不能是数组, 所以只好通过`apply`方法变通使用`push`方法. 有了扩展运算符, 就可以直接将数组传入`push`方法. 
 >
 >下面是另外一个栗子. 
 >
->```javascript
->// ES5
->new (Date.bind.apply(Date, [null, 2015, 1, 1]))
->// ES6
->new Date(...[2015, 1, 1]);
->```
->
+```javascript
+// ES5
+new (Date.bind.apply(Date, [null, 2015, 1, 1]))
+// ES6
+new Date(...[2015, 1, 1]);
+```
+
 
 #### ③ 扩展运算符的应用
 
 ##### a) 复制数组
 
->数组是复合的数据类型, 直接复制的话, 只是复制了指向底层数据结构的指针, 而不是克隆一个全新的数组 [` 浅拷贝`]. 
+>数组是复合的数据类型, 直接复制的话, 只是复制了指向底层数据结构的指针, 而不是克隆一个全新的数组 [` 浅拷贝`].
 >
->```javascript
->const a1 = [1, 2];
->const a2 = a1;
->
->a2[0] = 2;
->a1 // [2, 2]
->```
->
+```javascript
+const a1 = [1, 2];
+const a2 = a1;
+
+a2[0] = 2;
+a1 // [2, 2]
+```
+
 >上面代码中, `a2`并不是`a1`的克隆, 而是指向同一份数据的另一个指针. 修改`a2`, 会直接导致`a1`的变化. 
 >
 >ES5 只能用变通方法来复制数组. 
 >
->```javascript
->const a1 = [1, 2];
->const a2 = a1.concat();
->
->a2[0] = 2;
->a1 // [1, 2]
->```
->
+```javascript
+const a1 = [1, 2];
+const a2 = a1.concat();
+
+a2[0] = 2;
+a1 // [1, 2]
+```
+
 >上面代码中, `a1`会返回原数组的克隆, 再修改`a2`就不会对`a1`产生影响. 
 >
 >扩展运算符提供了复制数组的简便写法.  -->这样就不会造成影响
 >
->```javascript
->const a1 = [1, 2];
->// 写法一
->const a2 = [...a1];
->// 写法二
->const [...a2] = a1;
->```
->
+```javascript
+const a1 = [1, 2];
+// 写法一
+const a2 = [...a1];
+// 写法二
+const [...a2] = a1;
+```
+
 >上面的两种写法, `a2`都是`a1`的克隆. 
 >
 >`注意`:如果内部是引用数据类型,是不会改动到内部的引用,不懂的继续看下面 [ 合并数组 ] 的举例
@@ -4572,224 +4572,222 @@ d.a // "a"
 
 >扩展运算符提供了数组合并的新写法. 
 >
->```javascript
->const arr1 = ['a', 'b'];
->const arr2 = ['c'];
->const arr3 = ['d', 'e'];
->
->// ES5 的合并数组
->arr1.concat(arr2, arr3);
->// [ 'a', 'b', 'c', 'd', 'e' ]
->
->// ES6 的合并数组
->[...arr1, ...arr2, ...arr3]
->// [ 'a', 'b', 'c', 'd', 'e' ]
->```
+```javascript
+const arr1 = ['a', 'b'];
+const arr2 = ['c'];
+const arr3 = ['d', 'e'];
+
+// ES5 的合并数组
+arr1.concat(arr2, arr3);
+// [ 'a', 'b', 'c', 'd', 'e' ]
+
+// ES6 的合并数组
+[...arr1, ...arr2, ...arr3]
+// [ 'a', 'b', 'c', 'd', 'e' ]
+```
 >
 >不过, 这两种方法都是浅拷贝 ( 指的是内部数据如 { foo: 1 } 是存地址 ) , 使用的时候需要注意. 
 >
->```javascript
->const a1 = [{ foo: 1 }];
->const a2 = [{ bar: 2 }];
->
->const a3 = a1.concat(a2);
->const a4 = [...a1, ...a2];
->
->a3[0] === a1[0] // true
->a4[0] === a1[0] // true
->```
->
+```javascript
+const a1 = [{ foo: 1 }];
+const a2 = [{ bar: 2 }];
+
+const a3 = a1.concat(a2);
+const a4 = [...a1, ...a2];
+
+a3[0] === a1[0] // true
+a4[0] === a1[0] // true
+```
+
 >上面代码中, `[ a3 ] 和 [ a4 ] 是用两种不同方法合并而成的新数组, 但是它们的成员都是对原数组成员的引用, 这就是浅拷贝`. 如果修改了引用指向的值, 会同步反映到新数组. 
 
 ##### c) 与解构赋值结合
 
 >扩展运算符可以与解构赋值结合起来, 用于生成数组. 
->
->```javascript
->// ES5
->a = list[0], rest = list.slice(1) //此处是先取出第一个,然后从下标1处将其后的数据截取出
->// ES6
->[a, ...rest] = list
->```
->
+
+```javascript
+// ES5
+a = list[0], rest = list.slice(1) //此处是先取出第一个,然后从下标1处将其后的数据截取出
+// ES6
+[a, ...rest] = list
+```
+
 >下面是另外一些栗子. 
 >
->```javascript
->const [first, ...rest] = [1, 2, 3, 4, 5];
->//first == 1
->//rest  == [2, 3, 4, 5]
->
->const [first, ...rest] = [];
->//first == undefined
->//rest  == []
->
->const [first, ...rest] = ["foo"];
->//first  == "foo"
->//rest   == []
->```
->
+```javascript
+const [first, ...rest] = [1, 2, 3, 4, 5];
+//first == 1
+//rest  == [2, 3, 4, 5]
+
+const [first, ...rest] = [];
+//first == undefined
+//rest  == []
+
+const [first, ...rest] = ["foo"];
+//first  == "foo"
+//rest   == []
+```
+
 >如果将扩展运算符用于数组赋值, 只能放在参数的最后一位, 否则会报错. 
->
->```javascript
->const [...butLast, last] = [1, 2, 3, 4, 5];
->// 报错
->
->const [first, ...middle, last] = [1, 2, 3, 4, 5];
->// 报错
->```
->
+
+```javascript
+const [...butLast, last] = [1, 2, 3, 4, 5];
+// 报错
+
+const [first, ...middle, last] = [1, 2, 3, 4, 5];
+// 报错
+```
+
 
 ##### d) 字符串
 
 >扩展运算符还可以将字符串转为真正的数组. 
 >
->```javascript
->[...'hello']
->// [ "h", "e", "l", "l", "o" ]
->```
->
+```javascript
+[...'hello']
+// [ "h", "e", "l", "l", "o" ]
+```
+
 >上面的写法, 有一个重要的好处, 那就是能够正确识别四个字节的 Unicode 字符. 
->
->```javascript
->'x\uD83D\uDE80y'.length // 4
->[...'x\uD83D\uDE80y'].length // 3
->```
->
+
+```javascript
+'x\uD83D\uDE80y'.length // 4
+[...'x\uD83D\uDE80y'].length // 3
+```
+
 >上面代码的第一种写法，JavaScript 会将四个字节的 Unicode 字符, 识别为 2 个字符, 采用扩展运算符就没有这个问题. 因此, 正确返回字符串长度的函数, 可以像下面这样写. 
 >
->```javascript
->function length(str) {
->  return [...str].length;
->}
->
->length('x\uD83D\uDE80y') // 3
->```
+```javascript
+function length(str) {
+  return [...str].length;
+}
+
+length('x\uD83D\uDE80y') // 3
+```
 >
 >凡是涉及到操作四个字节的 Unicode 字符的函数, 都有这个问题. 因此, 最好都用扩展运算符改写. 
 >
->```javascript
->let str = 'x\uD83D\uDE80y';
->
->str.split('').reverse().join('')
->// 'y\uDE80\uD83Dx'
->
->[...str].reverse().join('')
->// 'y\uD83D\uDE80x'
->```
->
+```javascript
+let str = 'x\uD83D\uDE80y';
+
+str.split('').reverse().join('')
+// 'y\uDE80\uD83Dx'
+
+[...str].reverse().join('')
+// 'y\uD83D\uDE80x'
+```
+
 >上面代码中, 如果不用扩展运算符, 字符串的`reverse`操作就不正确. 
 
 ##### e) 实现了 Iterator 接口的对象
 
 >任何定义了遍历器（Iterator）接口的对象 [此处不懂可以跳过先看下方,有给出详情], 都可以用扩展运算符转为真正的数组. 
 >
->```javascript
->let nodeList = document.querySelectorAll('div');
->let array = [...nodeList];
->```
+```javascript
+let nodeList = document.querySelectorAll('div');
+let array = [...nodeList];
+```
 >
 >上面代码中, `querySelectorAll`方法返回的是一个`NodeList`对象. 它不是数组, 而是一个类似数组的对象. 这时, 扩展运算符可以将其转为真正的数组, 原因就在于`NodeList`对象实现了 Iterator . 
->
->```javascript
->Number.prototype[Symbol.iterator] = function*() {
->  let i = 0;
->  let num = this.valueOf();
->  while (i < num) {  yield i++; }
->}
->console.log([...5]) // [0, 1, 2, 3, 4]
->```
->
+
+```javascript
+Number.prototype[Symbol.iterator] = function*() {
+  let i = 0;
+  let num = this.valueOf();
+  while (i < num) {  yield i++; }
+}
+console.log([...5]) // [0, 1, 2, 3, 4]
+```
+
 >上面代码中, 先定义了`Number`对象的遍历器接口, 扩展运算符将`5`自动转成`Number`实例以后, 就会调用这个接口, 就会返回自定义的结果. 
 >
 >对于那些没有部署 Iterator 接口的类似数组的对象, 扩展运算符就无法将其转为真正的数组. 
 >
->```javascript
->let arrayLike = {
->  '0': 'a',
->  '1': 'b',
->  '2': 'c',
->  length: 3
->};
->
->// TypeError: Cannot spread non-iterable object.
->let arr = [...arrayLike];
->```
->
+```javascript
+let arrayLike = {
+  '0': 'a',
+  '1': 'b',
+  '2': 'c',
+  length: 3
+};
+
+// TypeError: Cannot spread non-iterable object.
+let arr = [...arrayLike];
+```
+
 >上面代码中, `arrayLike`是一个类似数组的对象, 但是没有部署 Iterator 接口, 扩展运算符就会报错. 这时, 可以改为使用`Array.from`方法将`arrayLike`转为真正的数组. 
-<<<<<<< HEAD
+
 
 ##### f) Map 和 Set 结构，Generator 函数
 
 >扩展运算符内部调用的是数据结构的 Iterator 接口, 因此只要具有 Iterator 接口的对象, 都可以使用扩展运算符, 比如 Map 结构. 
 >
->```javascript
->let map = new Map([
->  [1, 'one'],
->  [2, 'two'],
->  [3, 'three'],
->]);
->
->let arr = [...map.keys()]; // [1, 2, 3]
->```
->
+```javascript
+let map = new Map([
+  [1, 'one'],
+  [2, 'two'],
+  [3, 'three'],
+]);
+
+let arr = [...map.keys()]; // [1, 2, 3]
+```
+
 >Generator 函数运行后, 返回一个遍历器对象, 因此也可以使用扩展运算符. 
 >
->```javascript
->const go = function*(){
->  yield 1;
->  yield 2;
->  yield 3;
->};
->
->[...go()] // [1, 2, 3]
->```
->
+```javascript
+const go = function*(){
+  yield 1;
+  yield 2;
+  yield 3;
+};
+
+[...go()] // [1, 2, 3]
+```
+
 >上面代码中, 变量`go`是一个 Generator 函数, 执行后返回的是一个遍历器对象, 对这个遍历器对象执行扩展运算符, 就会将内部遍历得到的值, 转为一个数组. 
 >
 >如果对没有 Iterator 接口的对象, 使用扩展运算符, 将会报错. 
->
->```javascript
->const obj = {a: 1, b: 2};
->let arr = [...obj]; // TypeError: Cannot spread non-iterable object
->```
->
-=======
+
+```javascript
+const obj = {a: 1, b: 2};
+let arr = [...obj]; // TypeError: Cannot spread non-iterable object
+```
 
 ##### f) Map 和 Set 结构，Generator 函数
 
 >扩展运算符内部调用的是数据结构的 Iterator 接口, 因此只要具有 Iterator 接口的对象, 都可以使用扩展运算符, 比如 Map 结构. 
 >
->```javascript
->let map = new Map([
->  [1, 'one'],
->  [2, 'two'],
->  [3, 'three'],
->]);
->
->let arr = [...map.keys()]; // [1, 2, 3]
->```
->
+```javascript
+let map = new Map([
+  [1, 'one'],
+  [2, 'two'],
+  [3, 'three'],
+]);
+
+let arr = [...map.keys()]; // [1, 2, 3]
+```
+
 >Generator 函数运行后, 返回一个遍历器对象, 因此也可以使用扩展运算符. 
 >
->```javascript
->const go = function*(){
->  yield 1;
->  yield 2;
->  yield 3;
->};
->
->[...go()] // [1, 2, 3]
->```
->
+```javascript
+const go = function*(){
+  yield 1;
+  yield 2;
+  yield 3;
+};
+
+[...go()] // [1, 2, 3]
+```
+
 >上面代码中, 变量`go`是一个 Generator 函数, 执行后返回的是一个遍历器对象, 对这个遍历器对象执行扩展运算符, 就会将内部遍历得到的值, 转为一个数组. 
 >
 >如果对没有 Iterator 接口的对象, 使用扩展运算符, 将会报错. 
->
->```javascript
->const obj = {a: 1, b: 2};
->let arr = [...obj]; // TypeError: Cannot spread non-iterable object
->```
->
+
+```javascript
+const obj = {a: 1, b: 2};
+let arr = [...obj]; // TypeError: Cannot spread non-iterable object
+```
+
 
 ### Ⅲ - Array.from()
 
@@ -4801,72 +4799,70 @@ d.a // "a"
 >
 >下面是一个类似数组的对象, `Array.from`将它转为真正的数组. 
 >
->```javascript
->let arrayLike = {
->'0': 'a',
->'1': 'b',
->'2': 'c',
->length: 3
->};
->
->// ES5的写法
->var arr1 = [].slice.call(arrayLike); // ['a', 'b', 'c']
->// ES6的写法
->let arr2 = Array.from(arrayLike); // ['a', 'b', 'c']
->```
->
+```javascript
+let arrayLike = {
+'0': 'a',
+'1': 'b',
+'2': 'c',
+length: 3
+};
+
+// ES5的写法
+var arr1 = [].slice.call(arrayLike); // ['a', 'b', 'c']
+// ES6的写法
+let arr2 = Array.from(arrayLike); // ['a', 'b', 'c']
+```
 
 #### ② 实际应用场景举栗
 
 >实际应用中, 常见的类似数组的对象是 DOM 操作返回的 NodeList 集合, 以及函数内部的`arguments`对象. `Array.from`都可以将它们转为真正的数组. 
->
->```javascript
->// NodeList对象
->let ps = document.querySelectorAll('p');
->Array.from(ps).filter(p => {
->return p.textContent.length > 100;
->});
->
->// arguments对象
->function foo() {
->var args = Array.from(arguments);
->// ...
->}
->```
+
+```javascript
+// NodeList对象
+let ps = document.querySelectorAll('p');
+Array.from(ps).filter(p => {
+return p.textContent.length > 100;
+});
+
+// arguments对象
+function foo() {
+var args = Array.from(arguments);
+// ...
+}
+```
 >
 >上面代码中, `querySelectorAll`方法返回的是一个类似数组的对象, 可以将这个对象转为真正的数组, 再使用`filter`方法. 
 >
 >只要是部署了 Iterator 接口的数据结构, `Array.from`都能将其转为数组. 
 >
->```javascript
->Array.from('hello')
->// ['h', 'e', 'l', 'l', 'o']
->
->let namesSet = new Set(['a', 'b'])
->Array.from(namesSet) // ['a', 'b']
->```
->
+```javascript
+Array.from('hello')
+// ['h', 'e', 'l', 'l', 'o']
+
+let namesSet = new Set(['a', 'b'])
+Array.from(namesSet) // ['a', 'b']
+```
+
 >上面代码中, 字符串和 Set 结构都具有 Iterator 接口, 因此可以被`Array.from`转为真正的数组. 
 >
 >如果参数是一个真正的数组, `Array.from`会返回一个一模一样的新数组. 
->
->```javascript
->Array.from([1, 2, 3])
->// [1, 2, 3]
->```
->
+
+```javascript
+Array.from([1, 2, 3])
+// [1, 2, 3]
+```
+
 >值得提醒的是, 扩展运算符（`...`）也可以将某些数据结构转为数组 (上面有提到). 
->
->```javascript
->// arguments对象
->function foo() {
->const args = [...arguments];
->}
->
->// NodeList对象
->[...document.querySelectorAll('div')]
->```
->
+
+```javascript
+// arguments对象
+function foo() {
+const args = [...arguments];
+}
+
+// NodeList对象
+[...document.querySelectorAll('div')]
+```
 
 #### ③ 不适用场景
 
@@ -4874,21 +4870,21 @@ d.a // "a"
 >
 >`Array.from`方法还支持类似数组的对象. 所谓类似数组的对象, 本质特征只有一点, 即必须有`length`属性. 因此, 任何有`length`属性的对象, 都可以通过`Array.from`方法转为数组, 而此时扩展运算符就无法转换. 
 >
->```javascript
->Array.from({ length: 3 });
->// [ undefined, undefined, undefined ]
->```
->
+```javascript
+Array.from({ length: 3 });
+// [ undefined, undefined, undefined ]
+```
+
 >上面代码中, `Array.from`返回了一个具有三个成员的数组, 每个位置的值都是 **undefined** . 扩展运算符转换不了这个对象. 
 >
 >对于还没有部署该方法的浏览器, 可以用`Array.prototype.slice`方法替代. 
 >
->```javascript
->const toArray = (() =>
->Array.from ? Array.from : obj => [].slice.call(obj)
->)();
->```
->
+```javascript
+const toArray = (() =>
+Array.from ? Array.from : obj => [].slice.call(obj)
+)();
+```
+
 
 #### ④ 第二个参数的作用
 
@@ -4901,6 +4897,7 @@ d.a // "a"
 >
 >Array.from([1, 2, 3], (x) => x * x)
 >// [1, 4, 9]
+
 >```
 >
 >下面的栗子是取出一组 DOM 节点的文本内容. 

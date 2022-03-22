@@ -1,3 +1,5 @@
+# 基础篇 #
+
 ## 1.Ajax-Fetch-Axios三者有什么区别?
 
 > 三者都是用于网络请求，只不过维度不同
@@ -177,7 +179,7 @@ for(let key in arr){
 }
 function foo(){
   for(let arg of arguments){
-    console.log(arg)//
+    console.log(arg)//100，200，'aaa'
   }
 }
 foo(100,200,'aaa')
@@ -354,3 +356,118 @@ options请求，是跨域请求之前的预检查；<br>
 浏览器自行发起的，无需我们干预；<br>
 不会影响实际功能；<br>
 
+# 算法篇 #
+
+!> 算法复杂度-程序执行时需要的计算量和内存空间，复杂度是数量级（颗粒度粗） <br>
+!>前端通常`重时间轻空间`<br>
+![复杂度](image/复杂度.jpg) 
+>**时间复杂度数量级**：
+>
+>O(1) 一次就够
+>
+>O(logn)数据量的对数(二分的思想)
+>
+>O(n)和传输的数量级一样(循环)
+>
+>O(nlogn)数据量*数据量的对数 (循环嵌套二分)
+>
+>O(n^2)数据量的平方 (嵌套循环)
+
+
+>**空间复杂度数量级**:
+>O(1) (定义简单数据类型？？？)
+>O(n) (定义复杂数据类型？？？)
+
+## 1.把一个数组旋转k步
+
+>题目：
+>
+>输入一个数组[1,2,3,4,5,6,7]
+>
+>k=3 即旋转3步
+>
+>输出[5,6,7,1,2,3,4]
+>
+>思路一：末尾元素pop,再unshift放到数组前面来
+>
+>思路二：数组切分后拼接concat到一起
+>
+
+`方法一：pop/unshift`
+```js
+function rotate1(arr:number[],k:number):number[]{
+  const length=arr.length
+  if(!k||length === 0)return arr
+  const step = Math.abs(k%length) //abs 取绝对值
+  //O(n^2)
+  for(let i=0;i<step;i++){
+    const n  = arr.pop()
+    console.log(n)
+    if(n){
+      arr.unshift(n)//O(n)
+    }
+  }
+  return arr
+}
+```
+`方法二：concat`
+
+```js
+function rotate2(arr:number[],k:number):number[]{
+  const length=arr.length
+  if(!k||length===0)return arr
+  const leftArr=arr.slice(0,length-k)
+  const rightArr=arr.slice(-k)
+  //O(1)
+  const newArr=rightArr.concat(leftArr)
+  return newArr
+}
+```
+
+!>jest进行单元测试
+
+```js
+//测试一些些伪代码 详见jest
+import {rotate1} from '../文件'
+describe('数组旋转',()=>{
+  it('正常情况',()=>{
+    const arr=[1,2,3,4,5,6,7]
+    const k=3
+    const res=rotate1(arr,k)
+    expect(res).toEqual([5,6,7,1,2,3,4])//断言 测试结果是否符合
+  })
+})
+```
+!>思路1：时间复杂度O(n^2),空间复杂度O(1) <br>
+!>思路2：时间复杂度O(1),空间复杂度O(n) <br>
+
+>**性能测试**
+```js
+const arr1=[]
+for(let i=0;i<100000;i++){
+  arr1.push(i)
+}
+console.time('rotate1')
+rotate1(arr1,9*10000)  //800多ms
+console.timeEnd('rotate1')
+
+const arr2=[]
+for(let i=0;i<100000;i++){
+  arr2.push(i)
+}
+console.time('rotate1')
+rotate1(arr1,9*10000)  //800多ms
+console.timeEnd('rotate1')
+
+
+const arr2=[]
+for(let i=0;i<100000;i++){
+  arr2.push(i)
+}
+console.time('rotate2')
+rotate2(arr2,9*10000) //1ms
+console.timeEnd('rotate2')
+
+```
+
+!>**因为时间复杂度方案二更快一些，所以最优解为方案二**
