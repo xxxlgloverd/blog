@@ -471,3 +471,94 @@ console.timeEnd('rotate2')
 ```
 
 !>**因为时间复杂度方案二更快一些，所以最优解为方案二**
+
+## 2.判断一个字符串是否括号匹配
+
+###　**知识点**　
+
+>先进后出
+>
+>API:push pop length
+>
+
+![栈](image/栈.jpg) 
+
+>栈VS数组
+>
+
+![栈VS数组](image/栈VS数组.jpg) 
+
+
+**解题思路：**
+
+>1.遇到左括号{([就压栈
+>
+>2.遇到右括号})]就判断栈顶，匹配则出栈
+>
+>最后判断length是否为0
+>
+
+```js
+/**
+ * @description 括号匹配
+ * 
+ * */
+/**
+ * 判断左右括号是否匹配
+ * @param left 左括号
+ * @param right 右括号
+ * */
+function isMatch(left:string,right:string):boolean{
+  if(left==='{'&&right==='}') return true
+  if(left==='['&&right===']') return true
+  if(left==='('&&right===')') return true
+  return false
+}
+/**
+ * 判断是否括号匹配
+ * @param str str
+ * */
+function matchBracket(str:string):boolean{
+  const length=str.length
+  if(length === 0) return true;
+  const stack= [] 
+  const leftSymbols='{[('
+  const rightSymbols='}])'
+  for(let i of str){
+    if(leftSymbols.includes(i)){
+      stack.push(i)
+    }else if(rightSymbols.includes(s)){
+      const top=stack[stack.length-1]
+      if(isMatch(top,s)){
+        stack.pop()
+      }else{
+        return false
+      }
+    }
+  }
+  return stack.lenght==0
+}
+
+//功能测试
+const str= '{a[b(c)d]e}f'
+console.info(matchBracket(str))
+```
+!>jest进行单元测试
+
+```js
+//测试一些些伪代码 详见jest
+import {matchBracket} from '../文件'
+describe('括号匹配',()=>{
+  it('正常情况',()=>{
+    const str='{a[b(c)d]e}f'
+    const res=matchBracket(arr,k)
+    expect(res).toBe(false)
+  })
+})
+```
+
+**性能分析：**
+>时间复杂度O(n)
+>
+>空间复杂度O(n)
+>

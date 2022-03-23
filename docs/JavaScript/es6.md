@@ -5531,7 +5531,7 @@ arr.sort(unstableSorting)
 >
 > 如果对于正则技术不是很急需的也可以先跳过,相对而言ES6正则刚需没那么大
 >
-> 对于正则基础笔记本人也有进行详细且系统的梳理,需要的可以去看看       -->  **[正则表达式学习笔记](https://gitee.com/hongjilin/hongs-study-notes/tree/master/编程_前端开发学习笔记/正则表达式学习笔记)** 
+
 
 ### Ⅰ- 概括与总结
 
