@@ -4890,64 +4890,64 @@ Array.from ? Array.from : obj => [].slice.call(obj)
 
 >`Array.from`还可以接受第二个参数, 作用类似于数组的`map`方法, 用来对每个元素进行处理, 将处理后的值放入返回的数组. 
 >
->```javascript
->Array.from(arrayLike, x => x * x);
->// 等同于
->Array.from(arrayLike).map(x => x * x);
->
->Array.from([1, 2, 3], (x) => x * x)
->// [1, 4, 9]
+```javascript
+Array.from(arrayLike, x => x * x);
+// 等同于
+Array.from(arrayLike).map(x => x * x);
 
->```
+Array.from([1, 2, 3], (x) => x * x)
+// [1, 4, 9]
+
+```
 >
 >下面的栗子是取出一组 DOM 节点的文本内容. 
 >
->```javascript
->let spans = document.querySelectorAll('span.name');
->
->// map()
->let names1 = Array.prototype.map.call(spans, s => s.textContent);
->
->// Array.from()
->let names2 = Array.from(spans, s => s.textContent)
->```
->
+```javascript
+let spans = document.querySelectorAll('span.name');
+
+// map()
+let names1 = Array.prototype.map.call(spans, s => s.textContent);
+
+// Array.from()
+let names2 = Array.from(spans, s => s.textContent)
+```
+
 >下面的栗子将数组中布尔值为`false`的成员转为`0`. 
->
->```javascript
->Array.from([1, , 2, , 3], (n) => n || 0)
->// [1, 0, 2, 0, 3]
->```
->
+
+```javascript
+Array.from([1, , 2, , 3], (n) => n || 0)
+// [1, 0, 2, 0, 3]
+```
+
 >另一个栗子是返回各种数据的类型. 
->
->```javascript
->function typesOf () {
->return Array.from(arguments, value => typeof value)
->}
->typesOf(null, [], NaN)
->// ['object', 'object', 'number']
->```
->
+
+```javascript
+function typesOf () {
+return Array.from(arguments, value => typeof value)
+}
+typesOf(null, [], NaN)
+// ['object', 'object', 'number']
+```
+
 >如果`map`函数里面用到了`this`关键字, 还可以传入`Array.from`的第三个参数, 用来绑定`this`. 
 >
 >`Array.from()`可以将各种值转为真正的数组, 并且还提供`map`功能. 这实际上意味着, 只要有一个原始的数据结构, 你就可以先对它的值进行处理, 然后转成规范的数组结构, 进而就可以使用数量众多的数组方法. 
 >
->```javascript
->Array.from({ length: 2 }, () => 'jack')
->// ['jack', 'jack']
->```
->
+```javascript
+Array.from({ length: 2 }, () => 'jack')
+// ['jack', 'jack']
+```
+
 >上面代码中, `Array.from`的第一个参数指定了第二个参数运行的次数. 这种特性可以让该方法的用法变得非常灵活. 
 >
 >`Array.from()`的另一个应用是: 将字符串转为数组, 然后返回字符串的长度. 因为它能正确处理各种 Unicode 字符, 可以避免 JavaScript 将大于`\uFFFF`的 Unicode 字符, 算作两个字符的 bug. 
 >
->```javascript
->function countSymbols(string) {
->return Array.from(string).length;
->}
->```
->
+```javascript
+function countSymbols(string) {
+return Array.from(string).length;
+}
+```
+
 
 ### Ⅳ- Array.of ( )
 
@@ -4955,43 +4955,43 @@ Array.from ? Array.from : obj => [].slice.call(obj)
 
 >[ Array.of ]方法用于将一组值, 转换为数组. 
 >
->```javascript
->Array.of(3, 11, 8) // [3,11,8]
->Array.of(3) // [3]
->Array.of(3).length // 1
->```
+```javascript
+Array.of(3, 11, 8) // [3,11,8]
+Array.of(3) // [3]
+Array.of(3).length // 1
+```
 >
 >这个方法的主要目的, 是弥补数组构造函数`Array()`的不足. 因为参数个数的不同, 会导致`Array()`的行为有差异. 
 >
->```javascript
->Array() // []
->Array(3) // [, , ,]
->Array(3, 11, 8) // [3, 11, 8]
->```
+```javascript
+Array() // []
+Array(3) // [, , ,]
+Array(3, 11, 8) // [3, 11, 8]
+```
 >
 >上面代码中, `Array`方法没有参数、一个参数、三个参数时, 返回结果都不一样. 只有当参数个数不少于 2 个时, `Array()`才会返回由参数组成的新数组. 参数个数只有一个时, 实际上是指定数组的长度. 
 >
 >[ Array.of ]基本上可以用来替代`Array()`或`new Array()`, 并且不存在由于参数不同而导致的重载. 它的行为非常统一. 
 >
->```javascript
->Array.of() // []
->Array.of(undefined) // [undefined]
->Array.of(1) // [1]
->Array.of(1, 2) // [1, 2]
->```
->
+```javascript
+Array.of() // []
+Array.of(undefined) // [undefined]
+Array.of(1) // [1]
+Array.of(1, 2) // [1, 2]
+```
+
 >[ Array.of ]总是返回参数值组成的数组. 如果没有参数, 就返回一个空数组. 
 
 #### ② 原生模拟 [ Array.of ]
 
 >`Array.of`方法可以用下面的代码模拟实现. 
 >
->```javascript
->function ArrayOf(){
->  return [].slice.call(arguments);
->}
->```
->
+```javascript
+function ArrayOf(){
+  return [].slice.call(arguments);
+}
+```
+
 
 ### Ⅴ- 数组的实例方法
 
@@ -5001,10 +5001,10 @@ Array.from ? Array.from : obj => [].slice.call(obj)
 
 >数组实例的 [ copyWithin() ] 方法, 在当前数组内部, 将指定位置的成员复制到其他位置（会覆盖原有成员）, 然后返回当前数组. 也就是说, 使用这个方法, `会修改当前数组`. 
 >
->```javascript
->Array.prototype.copyWithin(target, start = 0, end = this.length)
->```
->
+```javascript
+Array.prototype.copyWithin(target, start = 0, end = this.length)
+```
+
 >它接受三个参数. 
 >
 >- target（必需）: 从该位置开始替换数据. 如果为负值, 表示倒数. 
@@ -5012,165 +5012,165 @@ Array.from ? Array.from : obj => [].slice.call(obj)
 >- end（可选）: 到该位置前停止读取数据, 默认等于数组长度. 如果为负值, 表示从末尾开始计算. 
 >
 >这三个参数都应该是数值, 如果不是, 会自动转为数值. 
->
->```javascript
->[1, 2, 3, 4, 5].copyWithin(0, 3)
->// [4, 5, 3, 4, 5]
->```
->
+
+```javascript
+[1, 2, 3, 4, 5].copyWithin(0, 3)
+// [4, 5, 3, 4, 5]
+```
+
 >上面代码表示将从 3 号位直到数组结束的成员（4 和 5）, 复制到从 0 号位开始的位置, 结果覆盖了原来的 1 和 2. 
 >
 >下面是更多栗子. 
->
->```javascript
->// 将3号位复制到0号位
->[1, 2, 3, 4, 5].copyWithin(0, 3, 4) //从三号位开始读取,到四号位结束,得到[4],将其替换到0号位
->// [4, 2, 3, 4, 5]
->
->// -2相当于3号位, -1相当于4号位
->[1, 2, 3, 4, 5].copyWithin(0, -2, -1) //从倒数2号位开始读取,到倒数一号位结束,得到[4],将其替换到0号位
->// [4, 2, 3, 4, 5]
->
->// 将3号位复制到0号位
->[].copyWithin.call({length: 5, 3: 1}, 0, 3)
->// {0: 1, 3: 1, length: 5}
->
->// 将2号位到数组结束, 复制到0号位
->let i32a = new Int32Array([1, 2, 3, 4, 5]);
->i32a.copyWithin(0, 2);
->// Int32Array [3, 4, 5, 4, 5]
->
->// 对于没有部署 TypedArray 的 copyWithin 方法的平台
->// 需要采用下面的写法
->[].copyWithin.call(new Int32Array([1, 2, 3, 4, 5]), 0, 3, 4);
->// Int32Array [4, 2, 3, 4, 5]
->```
->
+
+```javascript
+// 将3号位复制到0号位
+[1, 2, 3, 4, 5].copyWithin(0, 3, 4) //从三号位开始读取,到四号位结束,得到[4],将其替换到0号位
+// [4, 2, 3, 4, 5]
+
+// -2相当于3号位, -1相当于4号位
+[1, 2, 3, 4, 5].copyWithin(0, -2, -1) //从倒数2号位开始读取,到倒数一号位结束,得到[4],将其替换到0号位
+// [4, 2, 3, 4, 5]
+
+// 将3号位复制到0号位
+[].copyWithin.call({length: 5, 3: 1}, 0, 3)
+// {0: 1, 3: 1, length: 5}
+
+// 将2号位到数组结束, 复制到0号位
+let i32a = new Int32Array([1, 2, 3, 4, 5]);
+i32a.copyWithin(0, 2);
+// Int32Array [3, 4, 5, 4, 5]
+
+// 对于没有部署 TypedArray 的 copyWithin 方法的平台
+// 需要采用下面的写法
+[].copyWithin.call(new Int32Array([1, 2, 3, 4, 5]), 0, 3, 4);
+// Int32Array [4, 2, 3, 4, 5]
+```
+
 
 #### ② 数组实例的 find() 和 findIndex()
 
 >数组实例的 [ find ] 方法, 用于找出第一个符合条件的数组成员. 它的参数是一个回调函数, 所有数组成员依次执行该回调函数, 直到找出第一个返回值为`true`的成员, 然后返回该成员. 如果没有符合条件的成员, 则返回 **undefined** . 
->
->```javascript
->[1, 4, -5, 10].find((n) => n < 0)
->// -5
->```
->
+
+```javascript
+[1, 4, -5, 10].find((n) => n < 0)
+// -5
+```
+
 >上面代码找出数组中第一个小于 0 的成员. 
->
->```javascript
->[1, 5, 10, 15].find(function(value, index, arr) {
->  return value > 9;
->}) // 10
->```
->
+
+```javascript
+[1, 5, 10, 15].find(function(value, index, arr) {
+  return value > 9;
+}) // 10
+```
+
 >上面代码中, [ find ] 方法的回调函数可以接受三个参数, 依次为`当前的值、当前的位置和原数组`. 
 >
 >数组实例的 [ findIndex] 方法的用法与 [ find ] 方法非常类似, 返回第一个符合条件的数组成员的位置, 如果所有成员都不符合条件, 则返回`-1`. 
->
->```javascript
->[1, 5, 10, 15].findIndex(function(value, index, arr) {
->  return value > 9;
->}) // 2
->```
->
+
+```javascript
+[1, 5, 10, 15].findIndex(function(value, index, arr) {
+  return value > 9;
+}) // 2
+```
+
 >这两个方法都可以接受第二个参数, 用来绑定回调函数的`this`对象. 
->
->```javascript
->function f(v){
->  return v > this.age;
->}
->let person = {name: 'John', age: 20};
->[10, 12, 26, 15].find(f, person);    // 26
->```
->
+
+```javascript
+function f(v){
+  return v > this.age;
+}
+let person = {name: 'John', age: 20};
+[10, 12, 26, 15].find(f, person);    // 26
+```
+
 >上面的代码中,  [ find ] 函数接收了第二个参数`person`对象, 回调函数中的`this`对象指向`person`对象. 
 >
 >另外, 这两个方法都可以发现`NaN`, 弥补了数组的 [ indexOf ] 方法的不足. 
->
->```javascript
->[NaN].indexOf(NaN) // -1
->[NaN].findIndex(y => Object.is(NaN, y)) // 0
->```
->
+
+```javascript
+[NaN].indexOf(NaN) // -1
+[NaN].findIndex(y => Object.is(NaN, y)) // 0
+```
+
 >上面代码中,  [ indexOf ] 方法无法识别数组的`NaN`成员, 但是 [ findIndex] 方法可以借助 [ Object.is ] 方法做到. 
 
 #### ③ 数组实例的 entries()，keys() 和 values()
 
 >ES6 提供三个新的方法——[ entries() ], [ keys() ] 和 [ values() ]——用于遍历数组. 它们都返回一个遍历器对象.可以用`for...of`循环进行遍历, 唯一的区别是[ keys() ]是对键名的遍历、[ values() ]是对键值的遍历, [ entries() ]是对键值对的遍历. 
->
->```javascript
->for (let index of ['a', 'b'].keys()) { console.log(index);}
->// 0
->// 1
->for (let elem of ['a', 'b'].values()) { console.log(elem);}
->// 'a'
->// 'b'
->for (let [index, elem] of ['a', 'b'].entries()) {  console.log(index, elem);}
->// 0 "a"
->// 1 "b"
->```
->
+
+```javascript
+for (let index of ['a', 'b'].keys()) { console.log(index);}
+// 0
+// 1
+for (let elem of ['a', 'b'].values()) { console.log(elem);}
+// 'a'
+// 'b'
+for (let [index, elem] of ['a', 'b'].entries()) {  console.log(index, elem);}
+// 0 "a"
+// 1 "b"
+```
+
 >如果不使用`for...of`循环, 可以手动调用遍历器对象的`next`方法, 进行遍历. 
->
->```javascript
->let letter = ['a', 'b', 'c'];
->let entries = letter.entries();
->console.log(entries.next().value); // [0, 'a']
->console.log(entries.next().value); // [1, 'b']
->console.log(entries.next().value); // [2, 'c']
->```
->
+
+```javascript
+let letter = ['a', 'b', 'c'];
+let entries = letter.entries();
+console.log(entries.next().value); // [0, 'a']
+console.log(entries.next().value); // [1, 'b']
+console.log(entries.next().value); // [2, 'c']
+```
+
 
 #### ④ 数组实例的 includes()
 
 >[ Array.prototype.includes ] 方法返回一个布尔值, 表示某个数组是否包含给定的值, 与字符串的 [ includes ] 方法类似. ES2016 引入了该方法. 
->
->```javascript
->[1, 2, 3].includes(2)     // true
->[1, 2, 3].includes(4)     // false
->[1, 2, NaN].includes(NaN) // true
->```
+
+```javascript
+[1, 2, 3].includes(2)     // true
+[1, 2, 3].includes(4)     // false
+[1, 2, NaN].includes(NaN) // true
+```
 >
 >该方法的第二个参数表示搜索的起始位置, 默认为`0`. 如果第二个参数为负数, 则表示倒数的位置, 如果这时它大于数组长度（比如第二个参数为`-4`, 但数组长度为`3`）, 则会重置为从`0`开始. 
 >
->```javascript
->[1, 2, 3].includes(3, 3);  // false
->[1, 2, 3].includes(3, -1); // true
->```
->
+```javascript
+[1, 2, 3].includes(3, 3);  // false
+[1, 2, 3].includes(3, -1); // true
+```
+
 >没有该方法之前, 我们通常使用数组的 [ indexOf ] 方法, 检查是否包含某个值. 
->
->```javascript
->if (arr.indexOf(el) !== -1) {
->  // ...
->}
->```
->
+
+```javascript
+if (arr.indexOf(el) !== -1) {
+  // ...
+}
+```
+
 > [ indexOf ] 方法有两个缺点, 一是不够语义化, 它的含义是找到参数值的第一个出现位置, 所以要去比较是否不等于`-1`, 表达起来不够直观. 二是, 它内部使用严格相等运算符（`===`）进行判断, 这会导致对`NaN`的误判. 
 >
->```javascript
->[NaN].indexOf(NaN)
->// -1
->```
->
+```javascript
+[NaN].indexOf(NaN)
+// -1
+```
+
 > [ includes ] 使用的是不一样的判断算法, 就没有这个问题. 
->
->```javascript
->[NaN].includes(NaN)
->// true
->```
->
+
+```javascript
+[NaN].includes(NaN)
+// true
+```
+
 >下面代码用来检查当前环境是否支持该方法, 如果不支持, 部署一个简易的替代版本. 
->
->```javascript
->const contains = (() =>
->  Array.prototype.includes
->    ? (arr, value) => arr.includes(value)
->    : (arr, value) => arr.some(el => el === value)
->)();
->contains(['foo', 'bar'], 'baz'); // => false
->```
+
+```javascript
+const contains = (() =>
+  Array.prototype.includes
+    ? (arr, value) => arr.includes(value)
+    : (arr, value) => arr.some(el => el === value)
+)();
+contains(['foo', 'bar'], 'baz'); // => false
+```
 >
 >另外，Map 和 Set 数据结构有一个`has`方法, 需要注意与 [ includes ] 区分. 
 >
@@ -5181,64 +5181,64 @@ Array.from ? Array.from : obj => [].slice.call(obj)
 
 >数组的成员有时还是数组, `Array.prototype.flat()`用于将嵌套的数组“拉平”, 变成一维的数组. 该方法返回一个新数组, 对原数据没有影响. 
 >
->```javascript
->[1, 2, [3, 4]].flat()
->// [1, 2, 3, 4]
->```
->
+```javascript
+[1, 2, [3, 4]].flat()
+// [1, 2, 3, 4]
+```
+
 >上面代码中, 原数组的成员里面有一个数组,  [ flat() ] 方法将子数组的成员取出来, 添加在原来的位置. 
 >
 > [ flat() ] 默认只会“拉平”一层, 如果想要“拉平”多层的嵌套数组, 可以将 [ flat() ] 方法的参数写成一个整数, 表示想要拉平的层数, 默认为1. 
 >
->```javascript
->[1, 2, [3, [4, 5]]].flat()
->// [1, 2, 3, [4, 5]]
->[1, 2, [3, [4, 5]]].flat(2)
->// [1, 2, 3, 4, 5]
->```
->
+```javascript
+[1, 2, [3, [4, 5]]].flat()
+// [1, 2, 3, [4, 5]]
+[1, 2, [3, [4, 5]]].flat(2)
+// [1, 2, 3, 4, 5]
+```
+
 >上面代码中,  [ flat() ] 的参数为2，表示要“拉平”两层的嵌套数组. 
 >
 >如果不管有多少层嵌套, 都要转成一维数组, 可以用`Infinity`关键字作为参数. 
->
->```javascript
->[1, [2, [3]]].flat(Infinity)
->// [1, 2, 3]
->```
->
+
+```javascript
+[1, [2, [3]]].flat(Infinity)
+// [1, 2, 3]
+```
+
 >`如果原数组有空位,  [ flat() ] 方法会跳过空位`.  --> 这个可以用作去除数组中空位,特殊场景好用
->
->```javascript
->[1, 2, , 4, 5].flat()
->// [1, 2, 4, 5]
->```
->
+
+```javascript
+[1, 2, , 4, 5].flat()
+// [1, 2, 4, 5]
+```
+
 > [ flatMap() ] 方法对原数组的每个成员执行一个函数（相当于执行`Array.prototype.map()`）, 然后对返回值组成的数组执行 [ flat() ] 方法. 该方法返回一个新数组, 不改变原数组. 
->
->```javascript
->// 相当于 [[2, 4], [3, 6], [4, 8]].flat()
->[2, 3, 4].flatMap((x) => [x, x * 2])
->// [2, 4, 3, 6, 4, 8]
->```
->
+
+```javascript
+// 相当于 [[2, 4], [3, 6], [4, 8]].flat()
+[2, 3, 4].flatMap((x) => [x, x * 2])
+// [2, 4, 3, 6, 4, 8]
+```
+
 > [ flatMap() ] 只能展开一层数组. 
->
->```javascript
->// 相当于 [[[2]], [[4]], [[6]], [[8]]].flat()
->[1, 2, 3, 4].flatMap(x => [[x * 2]])
->// [[2], [4], [6], [8]]
->```
->
+
+```javascript
+// 相当于 [[[2]], [[4]], [[6]], [[8]]].flat()
+[1, 2, 3, 4].flatMap(x => [[x * 2]])
+// [[2], [4], [6], [8]]
+```
+
 >上面代码中, 遍历函数返回的是一个双层的数组, 但是默认只能展开一层, 因此 [ flatMap() ] 返回的还是一个嵌套数组. 
 >
 > [ flatMap() ] 方法的参数是一个遍历函数, 该函数可以接受三个参数, 分别是当前数组成员、当前数组成员的位置（从零开始）、原数组. 
->
->```javascript
->arr.flatMap(function callback(currentValue[, index[, array]]) {
->  // ...
->}[, thisArg])
->```
->
+
+```javascript
+arr.flatMap(function callback(currentValue[, index[, array]]) {
+  // ...
+}[, thisArg])
+```
+
 > [ flatMap() ] 方法还可以有第二个参数, 用来绑定遍历函数里面的`this`. 
 
 #### ⑥ 数组实例的 filter() -->`常用`
@@ -5249,76 +5249,76 @@ Array.from ? Array.from : obj => [].slice.call(obj)
 
 ##### a) 筛选对象数组中符合条件的
 
->```js
->const Arr = [
->  { look: '帅', name: '@hongjilin'},
->  { look: '很帅', name: '努力学习的汪'}
->]
->console.log(Arr.filter(item => item.name === '努力学习的汪' )) //{ look: '很帅', name: '努力学习的汪' }
->```
+```js
+const Arr = [
+  { look: 'xxii', name: 'zs'},
+  { look: 'hhaa', name: 'ls'}
+]
+console.log(Arr.filter(item => item.name === 'ls' )) //{ look: 'hhaa', name: 'ls' }
+```
 
 ##### b) 筛选对象数组中不符合条件的
 
 >同样操作上面的数组
 >
->```js
->console.log(Arr.filter(item => item.look !== '很帅' )) //{ look: '帅', name: '@hongjilin'}
->```
+```js
+console.log(Arr.filter(item => item.look !== 'hhaa' )) //{ look: 'xxii', name: 'zs'}
+```
 
 ##### c) 去除数组中的空字符串、undefined、null
 
->```js
->const undefinedArr = ['这是undefined数组','2',undefined, '努力学习的汪',undefined]
->const nullArr = ['这是null数组','2',null, '努力学习的汪',null]
->const stringArr = ['这是空字符串数组','2','', '努力学习的汪',''] //空字符串里面不能包含空格
->let newArr =[] //定义一个新数组来测试承接
->//过滤 undefined
->newArr= undefinedArr.filter(item => item) 
->console.log(newArr)  //log: ["这是undefined数组", "2", "努力学习的汪"]
->//过滤 null
->newArr = nullArr.filter(item => item)
->console.log(newArr) //log: ["这是null数组", "2", "努力学习的汪"]
->//过滤空字符串
-> newArr = stringArr.filter(item => item)
->console.log(newArr) //log: ["这是空字符串数组", "2", "努力学习的汪"]
->```
+```js
+const undefinedArr = ['这是undefined数组','2',undefined, undefined]
+const nullArr = ['这是null数组','2',null, null]
+const stringArr = ['这是空字符串数组','2','',''] //空字符串里面不能包含空格
+let newArr =[] //定义一个新数组来测试承接
+//过滤 undefined
+newArr= undefinedArr.filter(item => item) 
+console.log(newArr)  //log: ["这是undefined数组", "2"]
+//过滤 null
+newArr = nullArr.filter(item => item)
+console.log(newArr) //log: ["这是null数组", "2"]
+//过滤空字符串
+ newArr = stringArr.filter(item => item)
+console.log(newArr) //log: ["这是空字符串数组", "2"]
+```
 
 ##### d) 筛选字符串、数字数组符合条件项
 
 >其实与上方对象数组筛选差不多,但稍微还是有所差别,举例出来,方便理解
 >
->```js
->const numberArr = [20,30,50, 96,50]
->const stringArr = ['10','12','23','44','42']
->let newArr = []
->//筛选数组中符合条件项
->newArr= numberArr.filter(item => item>40)  
->console.log(newArr)   //log: [50, 96, 50]
->//过滤字符串数组符合条件项
->//item.indexOf('2')是查找字符串中含有['2']的下标,当不含有时,返回-1
->newArr = stringArr.filter(item => item.indexOf('2')<0) 
->console.log(newArr)   //log: ["10", "44"]
->```
+```js
+const numberArr = [20,30,50, 96,50]
+const stringArr = ['10','12','23','44','42']
+let newArr = []
+//筛选数组中符合条件项
+newArr= numberArr.filter(item => item>40)  
+console.log(newArr)   //log: [50, 96, 50]
+//过滤字符串数组符合条件项
+//item.indexOf('2')是查找字符串中含有['2']的下标,当不含有时,返回-1
+newArr = stringArr.filter(item => item.indexOf('2')<0) 
+console.log(newArr)   //log: ["10", "44"]
+```
 
 ##### e) 数组去重
 
 >可以利用 [ filter ] 方法实现去重,当然去重方式非常多,这里也是一种思路
 >
->```js
->const arr = [1, 2, 2, 3, 4, 5, 5, 6, 7, 7,8,8,0,8,6,3,4,56,2];
->let arr2 = arr.filter((x, index,self)=>self.indexOf(x)===index)  
->console.log(arr2); //[1, 2, 3, 4, 5, 6, 7, 8, 0, 56]
->```
+```js
+const arr = [1, 2, 2, 3, 4, 5, 5, 6, 7, 7,8,8,0,8,6,3,4,56,2];
+let arr2 = arr.filter((x, index,self)=>self.indexOf(x)===index)  
+console.log(arr2); //[1, 2, 3, 4, 5, 6, 7, 8, 0, 56]
+```
 >
 >这里列一个ES6提供的去重新方法 
 >
->```js
->//具体详情在下方 [Set] 相关知识点笔记中会给出
->const arr=[1,2,1,'1',null,null,undefined,undefined,NaN,NaN]
->let res=Array.from(new Set(arr));//{1,2,"1",null,undefined,NaN}
->//or
->let newarr=[...new Set(arr)]
->```
+```js
+//具体详情在下方 [Set] 相关知识点笔记中会给出
+const arr=[1,2,1,'1',null,null,undefined,undefined,NaN,NaN]
+let res=Array.from(new Set(arr));//{1,2,"1",null,undefined,NaN}
+//or
+let newarr=[...new Set(arr)]
+```
 
 #### ⑦ 数组实例的 map() -->`常用`
 
@@ -5328,33 +5328,33 @@ Array.from ? Array.from : obj => [].slice.call(obj)
 
 ##### a) 常用方法举例
 
->```js
->const array = [1, 3, 6, 9];
->const newArray = array.map( value => value + 1 ); //此处用的箭头函数写法,看不懂的要回头看前方函数部分
->console.log(newArray); //log: [2, 4, 7, 10]
->console.log(array);    //log: [1, 3, 6, 9]
->```
+```js
+const array = [1, 3, 6, 9];
+const newArray = array.map( value => value + 1 ); //此处用的箭头函数写法,看不懂的要回头看前方函数部分
+console.log(newArray); //log: [2, 4, 7, 10]
+console.log(array);    //log: [1, 3, 6, 9]
+```
 
 ##### b) 类似方法
 
 >类似效果实现方法:  for in , for , foreach
->
->```js
->const array = [1, 3, 6, 9];
->
->const newArray2 = [];
->for (var i in array) { newArray2.push(array[i] + 1)}
->const newArray3 = [];
->for (var i = 0; i < array.length; i++) { newArray3.push(array[i] + 1)}
->const newArray4 = [];
->array.forEach(function (key) { newArray4.push(key * key)})
-> 
->console.log(newArray2); //log: [2, 4, 7, 10]
->console.log(newArray3); //log: [2, 4, 7, 10]
->console.log(newArray4); //log: [1, 9, 36, 81]
->console.log(array);		//log: [1, 3, 6, 9]
->```
->
+
+```js
+const array = [1, 3, 6, 9];
+
+const newArray2 = [];
+for (var i in array) { newArray2.push(array[i] + 1)}
+const newArray3 = [];
+for (var i = 0; i < array.length; i++) { newArray3.push(array[i] + 1)}
+const newArray4 = [];
+array.forEach(function (key) { newArray4.push(key * key)})
+ 
+console.log(newArray2); //log: [2, 4, 7, 10]
+console.log(newArray3); //log: [2, 4, 7, 10]
+console.log(newArray4); //log: [1, 9, 36, 81]
+console.log(array);		//log: [1, 3, 6, 9]
+```
+
 >与上述方法的区别:
 >
 >* .map()方法使用return，进行回调；其他方法可不需要. 
@@ -5363,9 +5363,9 @@ Array.from ? Array.from : obj => [].slice.call(obj)
 
 ##### c) 与 filter() 区别
 
->  [ filter() ] 主要用作筛选,并不会对数组中元素进行处理,只会根据匹配条件返回数组中符合条件元素;
->
-> [ map() ] 常用作将符合条件的元素进行加工,再返回出去的场景
+!>  [ filter() ] 主要用作筛选,并不会对数组中元素进行处理,只会根据匹配条件返回数组中符合条件元素;<br>
+!><br>
+!> [ map() ] 常用作将符合条件的元素进行加工,再返回出去的场景<br>
 
 #### ⑧ 数组实例的 some() 、every()
 
@@ -5377,18 +5377,18 @@ Array.from ? Array.from : obj => [].slice.call(obj)
 
 >数组的空位指, 数组的某一个位置没有任何值. 比如, `Array`构造函数返回的数组都是空位. 
 >
->```javascript
->Array(3) // [, , ,]
->```
+```javascript
+Array(3) // [, , ,]
+```
 >
 >上面代码中, `Array(3)`返回一个具有 3 个空位的数组. 
 >
 >注意, 空位不是**undefined**, 一个位置的值等于**undefined**, 依然是有值的. `空位是没有任何值`, [ in ]运算符可以说明这一点. 
 >
->```javascript
->0 in [undefined, undefined, undefined] // true
->0 in [, , ,] // false
->```
+```javascript
+0 in [undefined, undefined, undefined] // true
+0 in [, , ,] // false
+```
 >
 >上面代码说明, 第一个数组的 0 号位置是有值的, 第二个数组的 0 号位置没有值. 
 >
@@ -5398,126 +5398,126 @@ Array.from ? Array.from : obj => [].slice.call(obj)
 >-  map() 会跳过空位, 但会保留这个值
 >-  join()  和 toString() 会将空位视为 undefined , 而 **undefined** 和 **null**会被处理成空字符串. 
 >
->```javascript
->// forEach方法
->[,'a'].forEach((x,i) => console.log(i)); // 1
->
->// filter方法
->['a',,'b'].filter(x => true) // ['a','b']
->
->// every方法
->[,'a'].every(x => x==='a') // true
->
->// reduce方法
->[1,,2].reduce((x,y) => x+y) // 3
->
->// some方法
->[,'a'].some(x => x !== 'a') // false
->
->// map方法
->[,'a'].map(x => 1) // [,1]
->
->// join方法
->[,'a',undefined,null].join('#') // "#a##"
->
->// toString方法
->[,'a',undefined,null].toString() // ",a,,"
->```
->
+```javascript
+// forEach方法
+[,'a'].forEach((x,i) => console.log(i)); // 1
+
+// filter方法
+['a',,'b'].filter(x => true) // ['a','b']
+
+// every方法
+[,'a'].every(x => x==='a') // true
+
+// reduce方法
+[1,,2].reduce((x,y) => x+y) // 3
+
+// some方法
+[,'a'].some(x => x !== 'a') // false
+
+// map方法
+[,'a'].map(x => 1) // [,1]
+
+// join方法
+[,'a',undefined,null].join('#') // "#a##"
+
+// toString方法
+[,'a',undefined,null].toString() // ",a,,"
+```
+
 >ES6 则是明确将空位转为 **undefined**. 
 >
 >`Array.from`方法会将数组的空位, 转为 **undefined**, 也就是说, 这个方法不会忽略空位. 
 >
->```javascript
->Array.from(['a',,'b'])
->// [ "a", undefined, "b" ]
->```
+```javascript
+Array.from(['a',,'b'])
+// [ "a", undefined, "b" ]
+```
 >
 >扩展运算符（`...`）也会将空位转为 **undefined**. 
 >
->```javascript
->[...['a',,'b']]
->// [ "a", undefined, "b" ]
->```
->
+```javascript
+[...['a',,'b']]
+// [ "a", undefined, "b" ]
+```
+
 >`copyWithin()`会连空位一起拷贝. 
 >
->```javascript
->[,'a','b',,].copyWithin(2,0) // [,"a",,"a"]
->```
+```javascript
+[,'a','b',,].copyWithin(2,0) // [,"a",,"a"]
+```
 >
 >`fill()`会将空位视为正常的数组位置. 
 >
->```javascript
->new Array(3).fill('a') // ["a","a","a"]
->```
+```javascript
+new Array(3).fill('a') // ["a","a","a"]
+```
 >
 >`for...of`循环也会遍历空位. 
 >
->```javascript
->let arr = [, ,];
->for (let i of arr) {
->  console.log(1);
->}
->// 1
->// 1
->```
+```javascript
+let arr = [, ,];
+for (let i of arr) {
+  console.log(1);
+}
+// 1
+// 1
+```
 >
 >上面代码中, 数组`arr`有两个空位, `for...of`并没有忽略它们. 如果改成`map`方法遍历, 空位是会跳过的. 
 >
 >[ entries() ]、[ keys() ]、[ values() ]、`find()`和`findIndex()`会将空位处理成 **undefined**. 
 >
->```javascript
->// entries()
->[...[,'a'].entries()] // [[0,undefined], [1,"a"]]
->
->// keys()
->[...[,'a'].keys()] // [0,1]
->
->// values()
->[...[,'a'].values()] // [undefined,"a"]
->
->// find()
->[,'a'].find(x => true) // undefined
->
->// findIndex()
->[,'a'].findIndex(x => true) // 0
->```
->
+```javascript
+// entries()
+[...[,'a'].entries()] // [[0,undefined], [1,"a"]]
+
+// keys()
+[...[,'a'].keys()] // [0,1]
+
+// values()
+[...[,'a'].values()] // [undefined,"a"]
+
+// find()
+[,'a'].find(x => true) // undefined
+
+// findIndex()
+[,'a'].findIndex(x => true) // 0
+```
+
 >由于空位的处理规则非常不统一, 所以建议避免出现空位. 
 
 ### Ⅶ - Array.prototype.sort() 的排序稳定性
 
 >排序稳定性（stable sorting）是排序算法的重要属性, 指的是排序关键字相同的项目, 排序前后的顺序不变. 
 >
->```javascript
->const arr = [
->  'peach',
->  'straw',
->  'apple',
->  'spork'
->];
->
->const stableSorting = (s1, s2) => {
->  if (s1[0] < s2[0]) return -1;
->  return 1;
->};
->
->arr.sort(stableSorting)
->// ["apple", "peach", "straw", "spork"]
->```
+```javascript
+const arr = [
+  'peach',
+  'straw',
+  'apple',
+  'spork'
+];
+
+const stableSorting = (s1, s2) => {
+  if (s1[0] < s2[0]) return -1;
+  return 1;
+};
+
+arr.sort(stableSorting)
+// ["apple", "peach", "straw", "spork"]
+```
 >
 >上面代码对数组`arr`按照首字母进行排序. 排序结果中, `straw`在`spork`的前面, 跟原始顺序一致, 所以排序算法`stableSorting`是稳定排序. 
 >
->```javascript
->const unstableSorting = (s1, s2) => {
->  if (s1[0] <= s2[0]) return -1;
->  return 1;
->};
->
->arr.sort(unstableSorting)
->// ["apple", "peach", "spork", "straw"]
->```
+```javascript
+const unstableSorting = (s1, s2) => {
+  if (s1[0] <= s2[0]) return -1;
+  return 1;
+};
+
+arr.sort(unstableSorting)
+// ["apple", "peach", "spork", "straw"]
+```
 >
 >上面代码中, 排序结果是`spork`在`straw`前面, 跟原始顺序相反, 所以排序算法`unstableSorting`是不稳定的. 
 >
