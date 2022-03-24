@@ -562,3 +562,93 @@ describe('括号匹配',()=>{
 >
 >空间复杂度O(n)
 >
+
+## 3.用两个栈实现一个队列
+
+>栈先进后出 队列先进先出
+>
+>API都是add delete length
+>
+
+![队列VS数组](image/队列VS数组.jpg) 
+
+
+```js
+/**
+ * 两个栈 - 一个队列
+ * 
+ * */
+class MyQueue{
+  private stack1:number[]=[]
+  private stack2:number[]=[]
+  /*
+  *入队
+  */
+ add(n:number){
+   this.stack1.push(n)
+ }
+ /*
+ *出队
+ **/
+delete():number||null{
+   let res
+   const stack1=this.stack1
+   const stack2=this.stack2
+   //将stack1所有元素移动到stack2中
+   while(stack1.length){
+     const n=stack1.pop()
+     if(n !=null){
+       stack2.push(n)
+     }
+   }
+   //stack pop
+   res=stack2.pop()
+   //将stack2所有元素还给stack1
+    while(stack2.length){
+     const n=stack2.pop()
+     if(n !=null){
+       stack1.push(n)
+     }s
+   }
+   return res||null
+}
+get length():number{
+return this.stack1.length
+}
+}
+```
+
+!>jest进行单元测试
+
+```js
+//测试一些些伪代码 详见jest
+import {MyQueue} from '../文件'
+describe('两个栈一个队列',()=>{
+  it('add and length',()=>{
+    const q=new MyQueue()
+    expect(q.length).toBe(0)
+    q.add(100)
+    q.add(200)
+    q.add(300)
+    expect(q.length).toBe(3)
+  })
+  it('delete',()=>{
+    const q=new MyQueue()
+    expect(q.delete()).toBe(null)
+    q.add(100)
+    q.add(200)
+    q.add(300)
+    expect(q.delete()).toBe(100)
+    expect(q.length).toBe(2)
+    expect(q.delete()).toBe(200)
+    expect(q.length).toBe(1)
+  })
+})
+```
+
+
+**性能分析：**
+>时间复杂度:add O(1);delete O(n)
+>
+>空间复杂度,整体是O(n)
+>
