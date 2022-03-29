@@ -652,3 +652,109 @@ describe('两个栈一个队列',()=>{
 >
 >空间复杂度,整体是O(n)
 >
+
+## 4.使用JS反转单向链表-什么是链表
+
+![链表](image/链表.jpg) 
+
+>链表vs数组
+
+![链表VS数组](image/链表VS数组.jpg) 
+
+>解题思路：
+* 反转，即节点next指向前一个节点
+* 但这很容易造成nextNode 的丢失
+* 需要三个指针prevNode curNode nextNode
+
+```js
+interface ILinkListNode{
+  value:number
+  next?:ILinkListNode
+}
+/**
+ * 、反转单向链表，并返回反转之后的head node
+ * @param listNode list head node
+ * 
+ * */
+function reverseLinkList(listNode:ILinkListNode):ILinkListNode{
+  //定义三个指针
+  let prevNode:ILinkListNode | undefined = undefined
+  let curNode:ILinkListNode | undefined = undefined
+  let nextNode:ILinkListNode | undefined = undefined
+
+  //以nextNode 为主遍历链表
+  while(nextNode){
+    //第一个元素，删除 next 防止循环引用
+    if(curNode && !prevNode){
+      delete curNode.next
+    }
+    //反转指针
+    if(curNode&&prevNode){
+      curNode.next=prevNode
+    }
+    //整体向后移动指针
+    prevNode = curNode
+    curNode = nextNode
+    nextNode = nextNode?.next
+  }
+  //最后一个的补充：当nextNode 空时，此时 curNode 尚未设置 next
+  curNode!.next=prevNode
+  return curNode!
+}
+/**
+ * 根据数组创建单向链表
+ * @param arr number arr
+ * 
+ * */
+
+function createLinkList(arr:number[]):ILinkListNode{
+  const length = arr.length
+  if(length===0)throw new Error('arr is empty')
+  let curNode:ILinkListNode = {
+    value:arr[length-1]
+  }
+  if(length === 1)return curNode
+  for(let i=length -2;i>=0;i++){
+    curNode= {
+      value:arr[i],
+      next:curNode
+    }
+  }
+  return curNode
+}
+
+const arr = [100,200,300,400,500]
+const list = createLinkList(arr)
+console.info('list:',list)
+
+const linst1= reverseLinkList(list)
+console.info() 
+```
+
+!>jest进行单元测试
+
+```js
+//测试一些些伪代码 详见jest
+import {ILinkListNode,createLinkList,reverseLinkList} from '../文件'
+describe('反转单向链表',()=>{
+  it('单个元素',()=>{
+  const node:ILinkListNode={value:100}
+  const node1=reverseLinkList(node)
+  expect(node1).toEqual({value:100})
+  })
+  it('多个元素',()=>{
+  const node=createLinkList([100,200,300])
+  const node1=reverseLinkList(node)
+  expect(node1).toEqual({
+    value:300,
+    next:{
+      value:200,
+      next:{
+        value:100
+      }
+    }
+  })
+  })
+ 
+})
+```
