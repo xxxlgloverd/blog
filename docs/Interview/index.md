@@ -758,3 +758,149 @@ describe('反转单向链表',()=>{
  
 })
 ```
+### _链表和数组哪个实现队列更快
+>链表和数组都是物理结构，队列则是逻辑结构
+>
+>数组是连续存储，push很快 shift很慢
+>
+>链表是非连续存储，add和delete都很快但是查询很慢
+>
+>结论：链表实现队列更快；
+>
+
+**链表实现队列**
+* 单向链表，但是同时记录head和tail(头和尾)；
+* 要从tail入队，从head出队，否则出队时tail不好定位；
+* length要实时记录，不可遍历链表获取；
+
+```js
+/***
+ * 链表实现队列
+ * 
+ * */
+interface IListNode{
+  value:number,
+  next:IListNode|null
+}
+
+class MyQueue{
+  private head:IListNode | null = null
+  private tail:IListNode | null = null
+  private len = 0
+  /**
+   * 入队，在tail入
+   * @ param n number
+   * */
+  add(n:number){
+    const newNode:IListNode={
+     value:n,
+     next:null
+    }
+    //处理head边界
+    if(this.head==null){
+      this.head=newNode
+    }
+    //处理tail
+    const tailNode =this.tail
+    if(tailNode){
+      tailNode.next=newNode
+    }
+    this.tail=newNode
+    this.len++
+  }
+    /**
+   * 出队，在head出
+   * @ param n number
+   * */
+  delete():number|null{
+     const headNode = this.head
+     if(headNode == null|| this.len <= 0)return null
+     //取值
+     const value=headNode.value
+     //处理head
+     this.head=headNode.next
+     //记录长度
+     this.len--
+  }
+  get length():number{
+    return this.len
+  }
+}
+
+//功能测试
+const q= new MyQueue()
+q.add(100)
+q.add(200)
+q.add(300)
+console.info('length1',q.length)
+console.info(q.delete())
+console.info('length2',q.length)
+console.info(q.delete())
+console.info('length3',q.length)
+console.info(q.delete())
+console.info('length4',q.length)
+console.info(q.delete())
+console.info('length5',q.length)
+
+//性能测试
+const q1 = new MyQueue()
+console.time('queue with list')
+for(let i=0;i<10*10000;i++){
+  q1.add(i)
+}
+for(let ii=0;i<10*10000;i++){
+  q1.delete()
+}
+console.timeEnd('queue with list') //17ms
+
+const q2 =[]
+console.time('queue with array')
+for(let i=0;i<10*10000;i++){
+  q2.push(i)  //入队
+}
+for(let ii=0;i<10*10000;i++){
+  q2.shift()  //出队
+}
+console.timeEnd('queue with array') //431ms
+```
+
+!>jest进行单元测试
+
+```js
+//测试一些些伪代码 详见jest
+import {MyQueue} from '../文件'
+describe('链表实现一个队列',()=>{
+  it('add and length',()=>{
+    const q=new MyQueue()
+    expect(q.length).toBe(0)
+    q.add(100)
+    q.add(200)
+    q.add(300)
+    expect(q.length).toBe(3)
+  })
+  it('delete',()=>{
+    const q=new MyQueue()
+    expect(q.delete()).toBeNull()//toBe(null)
+    q.add(100)
+    q.add(200)
+    q.add(300)
+    expect(q.delete()).toBe(100)
+    expect(q.length).toBe(2)
+    expect(q.delete()).toBe(200)
+    expect(q.length).toBe(1)
+    expect(q.delete()).toBe(300)
+    expect(q.length).toBe(0)
+    expect(q.delete()).toBeNull()
+  })
+})
+```
+
+**性能分析：**
+>时间复杂度:
+>
+>* 数组：add O(1);delete O(n)
+>* 链表：add O(1);delete O(1)
+>
+>空间复杂度,整体是O(n)
+>
+
