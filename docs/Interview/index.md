@@ -358,8 +358,7 @@ options请求，是跨域请求之前的预检查；<br>
 
 # 算法篇 #
 
-!> 算法复杂度-程序执行时需要的计算量和内存空间，复杂度是数量级（颗粒度粗） <br>
-!>前端通常`重时间轻空间`<br>
+!> 算法复杂度-程序执行时需要的计算量和内存空间，复杂度是数量级（颗粒度粗） <br>前端通常`重时间轻空间`<br>
 ![复杂度](image/复杂度.jpg) 
 >**时间复杂度数量级**：
 >
@@ -439,7 +438,7 @@ describe('数组旋转',()=>{
 })
 ```
 !>思路1：时间复杂度O(n^2),空间复杂度O(1) <br>
-!>思路2：时间复杂度O(1),空间复杂度O(n) <br>
+思路2：时间复杂度O(1),空间复杂度O(n) <br>
 
 >**性能测试**
 ```js
@@ -450,15 +449,6 @@ for(let i=0;i<100000;i++){
 console.time('rotate1')
 rotate1(arr1,9*10000)  //800多ms
 console.timeEnd('rotate1')
-
-const arr2=[]
-for(let i=0;i<100000;i++){
-  arr2.push(i)
-}
-console.time('rotate1')
-rotate1(arr1,9*10000)  //800多ms
-console.timeEnd('rotate1')
-
 
 const arr2=[]
 for(let i=0;i<100000;i++){
@@ -608,7 +598,7 @@ delete():number||null{
      const n=stack2.pop()
      if(n !=null){
        stack1.push(n)
-     }s
+     }
    }
    return res||null
 }
