@@ -894,3 +894,196 @@ describe('链表实现一个队列',()=>{
 >空间复杂度,整体是O(n)
 >
 
+## 5.实现二分查找
+
+>
+>二分查找 
+>
+>时间复杂度：O(logn)
+>
+>思路：1.递归2.循环（更快）
+
+```js
+/**
+* 二分查找（循环）
+* @param arr arr
+* @param target target
+* */
+function binarySearch1(arr:number[],target:number):number{
+const length = arr.length
+if(length ===0)return -1;
+
+let startIndex=0//开始位置
+let endIndex=length-1 //结束位置
+
+while(startIndex<=endIndex){
+    const midIndex=Math.floor((startIndex+endIndex)/2)
+    const midValue=arr[midIndex]
+    if(target<midValue){
+      //目标值较小，则继续在左侧查找
+      endIndex=midIndex-1
+    }else if(target>midValue){
+      //目标值较大，则继续在右侧查找
+      startIndex=midIndex+1
+    }else{
+     return midIndex
+    }
+}
+return -1
+}
+
+//功能测试
+const arr=[10,20,30,40,50,60]
+const target=20;
+console.info(binarySearch1(arr,target))
+
+/**
+* 二分查找（循环）
+* @param arr arr
+* @param target target
+* @param startIndex startIndex
+* @param endIndex endIndex
+* */
+function binarySearch2(arr:number[],target:number,startIndex?:number,endIndex?:number):number{
+const length = arr.length
+if(length ===0)return -1;
+//开始和结束范围
+if(startIndex==null)startIndex=0//开始位置
+if(endIndex==null)endIndex=length-1 //结束位置
+
+if(startIndex>endIndex)return -1
+
+//中间位置
+const midIndex=Math.floor((startIndex+endIndex)/2)
+const midValue=arr[midIndex]
+   if(target<midValue){
+      //目标值较小，则继续在左侧查找
+      return binarySearch2(arr,target,startIndex,midIndex-1)
+    }else if(target>midValue){
+      //目标值较大，则继续在右侧查找
+     return binarySearch2(arr,target,midIndex+1,endIndex)
+    }else{
+     return midIndex
+    }
+}
+
+//功能测试
+const arr=[10,20,30,40,50,60]
+const target=20;
+console.info(binarySearch2(arr,target))
+
+```
+
+!>jest进行单元测试
+
+```js
+//测试一些些伪代码 详见jest
+import {binarySearch1,binarySearch2} from '../文件'
+describe('二分查找',()=>{
+  it('正常情况',()=>{
+    const arr=[10,20,30,40,50,60]
+    const target=20;
+    const index=binarySearch1(arr,target)
+    expect(index).toBe(1)
+  })
+  it('空数组',()=>{
+    expect(binarySearch1([],100)).toBe(-1)
+  })
+  it('找不到target',()=>{
+    expect(binarySearch1([10,20,30,40,50],500)).toBe(-1)
+  })
+})
+```
+
+## 6.一个数组中和为n的两个数
+
+>嵌套循环(不是最优解，双指针！！！)
+>
+>时间复杂度（O(n^2)）,不可用(数据量大且复杂！！)
+>
+>双指针
+>
+>概念其主要就是引用
+>
+>时间复杂度（O(n)）
+>
+>凡有序，必二分
+>
+>优化嵌套循环，可以用双指针来优化！！！
+>
+```js
+
+// @嵌套循环
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[]}
+ */
+ function findeTwoSum(nums:number[], target:number):number[] { 
+   const res:number[]=[]
+   let len=nums.length
+   if(len==0) return res
+    for (let i = 0; i < nums.length; i++) { 
+        for (let j = i+1; j < nums.length; j++) { 
+            let sum=nums[i]+nums[j]
+            if (sum == target) { 
+                return res=[i,j]
+            }
+        }
+    }
+};
+
+// @双指针
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[]}
+ */
+ function findeTwoSum1(nums:number[], target:number):number[] { 
+   const res:number[]=[]
+   let len=nums.length
+   if(len==0) return res
+   let i=0 //头
+   let j=len-1 //尾
+   while(i<j){
+     const sum=nums[i]+nums[j]
+     if(sum<target){
+       i++
+     }else if(sum>target){
+       j--
+     }else{
+       return [i,j]
+     }
+   }
+};
+```
+
+
+!>jest进行单元测试
+
+```js
+//测试一些些伪代码 详见jest
+import {findeTwoSum，findeTwoSum1} from '../文件'
+describe('两数之和',()=>{
+  it('正常情况',()=>{
+     const nums = [2,7,11,15]
+     const target = 9
+     const res=findeTwoSum(nums,target)
+    expect(res).toEqual([0,1])
+  })
+  it('空数组',()=>{
+     const res=findeTwoSum([],9)
+    expect(res).toEqual([])
+  })
+ it('找不到结果',()=>{
+     const nums = [2,7,11,15]
+     const res=findeTwoSum(nums,100)
+    expect(res).toEqual([])
+  })
+})
+```
+
+
+
+
+
