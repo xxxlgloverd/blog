@@ -1083,7 +1083,208 @@ describe('两数之和',()=>{
 })
 ```
 
+## 7.求二叉搜索树的第K小值-二叉树和三种遍历
+
+### I.二叉树概念
+>>是一棵树
+>>每个节点，最多只能有2个子节点
+>>数据结构，value,left,right
+### II.二叉树遍历
+>> 前序遍历  root->left->right
+>> 中序遍历  left->root->right
+>> 后序遍历  left->right->root
+
+```js
+interface ITreeNode{
+  value:number,
+  left:ITreeNode|null
+  right:ITreeNode|null
+}
+
+/**
+ * 二叉树前序遍历
+ * @param node tree node
+ */
+function preOrderTraverse(node:ITreeNode|null){
+    if(node == null) return
+      console.log(node.value)
+    preOrderTraverse(node.left)
+    preOrderTraverse(node.right)
+}//5,3,2,4,7,6,8
+
+/**
+ * 二叉树中序遍历
+ * @param node tree node
+ */
+function inOrderTraverse(node:ITreeNode|null){
+    if(node == null) return
+    inOrderTraverse(node.left)
+    console.log(node.value)
+    inOrderTraverse(node.right)
+}//2,3,4,5,6,7,8
+
+/**
+ * 二叉树后序遍历
+ * @param node tree node
+ */
+function postOrderTraverse(node:ITreeNode|null){
+    if(node == null) return
+    postOrderTraverse(node.left)
+    postOrderTraverse(node.right)
+    console.log(node.value)
+}//2,4,3,6,8,7,5
+
+const tree:ITreeNode ={
+  value:5,
+  left:{
+    value:3,
+    left:{
+      value:2,
+      left:null,
+      right:null
+    },
+     right:{
+      value:4,
+      left:null,
+      right:null
+    }
+  },
+  right:{
+    value:7,
+    left:{
+      value:6,
+      left:null,
+      right:null
+    },
+    right:{
+      value:8,
+      left:null,
+      right:null
+    }
+  }
+}
 
 
+```
+
+### III.二叉搜索树
+
+>>left(包括其后代) value<=root value
+>>right(包括其后代) value>=root value
+>> 可使用二分法进行快速查找
+>>左比右大，从小到大递增
+
+**解题思路**
+* BST中序遍历，即从小到大的排序
+* 找到排序后的第K值即可
+
+```js
+
+export interface ITreeNode{
+  value:number,
+  left:ITreeNode|null
+  right:ITreeNode|null
+}
+
+arr:number[]=[]
+/**
+ * 二叉树中序遍历
+ * @param node tree node
+ */
+function inOrderTraverse(node:ITreeNode|null){
+    if(node == null) return
+    inOrderTraverse(node.left)
+    arr.push(node.value)
+    inOrderTraverse(node.right)
+}//2,3,4,5,6,7,8
+/**
+ * 寻找BST里最小值
+ * @param node tree node
+ * @param k 第几个值
+ */
+export function getKthValue(node:ITreeNode,k:number):number|null{
+    inOrderTraverse(node)
+    return arr[k]||null
+}//getKthValue(bstTree,3) //5
+
+const bstTree:ITreeNode ={
+  value:5,
+  left:{
+    value:3,
+    left:{
+      value:2,
+      left:null,
+      right:null
+    },
+     right:{
+      value:4,
+      left:null,
+      right:null
+    }
+  },
+  right:{
+    value:7,
+    left:{
+      value:6,
+      left:null,
+      right:null
+    },
+    right:{
+      value:8,
+      left:null,
+      right:null
+    }
+  }
+}
+```
+
+!>jest进行单元测试
+
+```js
+//测试一些些伪代码 详见jest
+import {ITreeNode,getKthValue} from '../文件'
+
+describe('二叉搜索树',()=>{
+  const bstTree:ITreeNode ={
+  value:5,
+  left:{
+    value:3,
+    left:{
+      value:2,
+      left:null,
+      right:null
+    },
+     right:{
+      value:4,
+      left:null,
+      right:null
+    }
+  },
+  right:{
+    value:7,
+    left:{
+      value:6,
+      left:null,
+      right:null
+    },
+    right:{
+      value:8,
+      left:null,
+      right:null
+    }
+  }
+}
+  it('正常情况',()=>{
+    const res=getKthValue(bstTree,3)
+    expect(res).toBe(5)
+  })
+  it('k不在正常范围',()=>{
+    const res1=getKthValue(bstTree,0)
+    expect(res1).toBeNull()
+    const res2=getKthValue(bstTree,1000)
+    expect(res2).toBeNull()
+  })
+})
+```
 
 
