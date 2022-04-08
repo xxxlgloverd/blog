@@ -1086,13 +1086,19 @@ describe('两数之和',()=>{
 ## 7.求二叉搜索树的第K小值-二叉树和三种遍历
 
 ### I.二叉树概念
->>是一棵树
->>每个节点，最多只能有2个子节点
->>数据结构，value,left,right
+>
+>是一棵树
+>
+>每个节点，最多只能有2个子节点
+>
+>数据结构，value,left,right
 ### II.二叉树遍历
->> 前序遍历  root->left->right
->> 中序遍历  left->root->right
->> 后序遍历  left->right->root
+>
+> 前序遍历  root->left->right
+>
+> 中序遍历  left->root->right
+>
+> 后序遍历  left->right->root
 
 ```js
 interface ITreeNode{
@@ -1169,10 +1175,14 @@ const tree:ITreeNode ={
 
 ### III.二叉搜索树
 
->>left(包括其后代) value<=root value
->>right(包括其后代) value>=root value
->> 可使用二分法进行快速查找
->>左比右大，从小到大递增
+>
+>left(包括其后代) value<=root value
+>
+>right(包括其后代) value>=root value
+>
+> 可使用二分法进行快速查找
+>
+>左比右大，从小到大递增
 
 **解题思路**
 * BST中序遍历，即从小到大的排序
@@ -1312,6 +1322,91 @@ describe('二叉搜索树',()=>{
 ?>堆有什么特点，和二叉树有什么关系
 
 **堆栈模型**
->>js代码执行时
->>值类型变量，存储在栈
->>引用类型变量，存储在堆
+>
+>js代码执行时
+>
+>值类型变量，存储在栈
+>
+>引用类型变量，存储在堆
+
+**堆**
+
+* 完全二叉树
+* 最大堆：父节点>=子节点
+* 最小堆：父节点<=子节点
+
+>
+>堆 逻辑结构是一颗二叉树
+>
+>但物理结构是一个数组
+>
+>数组：适合连续存储+节省空间（回顾堆栈模型）
+
+
+![堆](image/堆.jpg) 
+
+!> **堆 vs BST**<br/>
+ 查找比BST慢 <br/>
+ 增删比BST快，维持平衡更快 <br/>
+ 但是整体时间复杂度都在O(logn)级别，即树的高度 <br/>
+ 应用：堆栈模型 <br/>
+ 堆的数据都是在栈中引用的，不需要从root遍历 <br/>
+ 堆恰巧是数组形式，根据栈的地址，可用O(1)找到目标<br/>
+
+![堆栈模型](image/堆栈模型.jpg) 
+
+## 8.求斐波那契数列的第n值-递归算法会导致运行崩溃
+
+![斐波那契-递归](image/斐波那契-递归.jpg) 
+
+```js
+// @斐波那契数列
+
+
+/**
+ * @param {number} n
+ * @return {number}
+ */
+//递归实现 时间复杂度非常高O(2^n)
+ function fibonacci(n:number):number { 
+  if(n<=0)return 0
+  if(n==1) return 1
+  return fibonacci(n-1)+fibonacci(n-2)
+};
+//循环实现
+ function fibonacci(n:number):number { 
+  if(n<=0)return 0
+  if(n==1) return 1
+  let n1=0
+  let n2=1
+  let res=0
+  for(let i=2;i<=n;i++){
+    res= n1+n2
+    //记录 n1,n2数据
+    n1=n2
+    n2=res
+  }
+  return res
+};
+```
+
+
+!>jest进行单元测试
+
+```js
+//测试一些些伪代码 详见jest
+import {fibonacci} from '../文件'
+describe('斐波那契数列',()=>{
+  //0,1,1,2,3,5,8,13,21,34
+  it('正常情况',()=>{
+    expect(fibonacci(0)).toBe(0)
+    expect(fibonacci(1)).toBe(1)
+    expect(fibonacci(2)).toBe(1)
+    expect(fibonacci(3)).toBe(2)
+    expect(fibonacci(9)).toBe(34)
+  })
+  it('小于0',()=>{
+     expect(fibonacci(0)).toBe(0)
+  })
+})
+```
