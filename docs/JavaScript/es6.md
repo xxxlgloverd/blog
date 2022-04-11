@@ -6145,71 +6145,71 @@ Array.from(string.matchAll(regex))
 
 ### Ⅰ- 概述与总结
 
->ES5 的对象属性名都是字符串, 这容易造成属性名的冲突. 比如, 你使用了一个他人提供的对象, 但又想为这个对象添加新的方法（mixin 模式）, 新方法的名字就有可能与现有方法产生冲突. 如果有一种机制, 保证每个属性的名字都是独一无二的就好了, 这样就从根本上防止属性名的冲突. 这就是 ES6 引入`Symbol`的原因. 
->
->ES6 引入了一种新的原始数据类型`Symbol`, 表示独一无二的值. 它是 JavaScript 语言的`第七种数据类型`, 前六种是: `undefined`、`null`、布尔值（Boolean）、字符串（String）、数值（Number）、对象（Object）. 
->
->1. 定义: 独一无二的值,类似于一种标识唯一性的ID
->2. 声明: `const set = Symbol(str)`
->3. 入参: 字符串(可选)
->4. 方法: 
->  - **Symbol()**: 创建以参数作为描述的`Symbol值`(不登记在全局环境)
->  - **Symbol.for()**: 创建以参数作为描述的`Symbol值`, 如存在此参数则返回原有的`Symbol值`(先搜索后创建, 登记在全局环境)
->  - **Symbol.keyFor()**: 返回已登记的`Symbol值`的描述(只能返回`Symbol.for()`的`key`)
->  - **Object.getOwnPropertySymbols()**: 返回对象中所有用作属性名的`Symbol值`的数组
->5. 内置
->  - **Symbol.hasInstance**: 指向一个内部方法, 当其他对象使用`instanceof运算符`判断是否为此对象的实例时会调用此方法
->  - **Symbol.isConcatSpreadable**: 指向一个布尔, 定义对象用于`Array.prototype.concat()`时是否可展开
->  - **Symbol.species**: 指向一个构造函数, 当实例对象使用自身构造函数时会调用指定的构造函数
->  - **Symbol.match**: 指向一个函数, 当实例对象被`String.prototype.match()`调用时会重新定义`match()`的行为
->  - **Symbol.replace**: 指向一个函数, 当实例对象被`String.prototype.replace()`调用时会重新定义`replace()`的行为
->  - **Symbol.search**: 指向一个函数, 当实例对象被`String.prototype.search()`调用时会重新定义`search()`的行为
->  - **Symbol.split**: 指向一个函数, 当实例对象被`String.prototype.split()`调用时会重新定义`split()`的行为
->  - **Symbol.iterator**: 指向一个默认遍历器方法, 当实例对象执行 [ for-of ] 时会调用指定的默认遍历器
->  - **Symbol.toPrimitive**: 指向一个函数, 当实例对象被转为原始类型的值时会返回此对象对应的原始类型值
->  - **Symbol.toStringTag**: 指向一个函数, 当实例对象被`Object.prototype.toString()`调用时其返回值会出现在`toString()`返回的字符串之中表示对象的类型
->  - **Symbol.unscopables**: 指向一个对象, 指定使用`with`时哪些属性会被`with环境`排除
->
->> 数据类型
->
->- **Undefined**
->- **Null**
->- **String**
->- **Number**
->- **Boolean**
->- **Object**(包含`Array`、`Function`、`Date`、`RegExp`、`Error`)
->- **Symbol**
->- [bigint](https://developer.mozilla.org/zh-CN/docs/Glossary/BigInt),   -->**BigInt** 是一种数字类型的数据
->
->> 应用场景
->
->1. 唯一化对象属性名: 属性名属于Symbol类型, 就都是独一无二的, 可保证不会与其他属性名产生冲突
->
->2. 消除`魔术字符串`: 在代码中多次出现且与代码形成强耦合的某一个具体的字符串或数值
->
->  - 魔术字符串指的是, 在代码之中多次出现、与代码形成强耦合的某一个具体的字符串或者数值. 风格良好的代码, 应该尽量消除魔术字符串, 改由含义清晰的变量代替. 
->
->  - ```js
->    function getResults(param){
->    	if(param == '努力学习的汪') console.log('魔术字符串')
->    }
->    // 函数中赋值 '努力学习的汪',所以 '努力学习的汪' 这个字符串就是魔术字符串
->    getResults('努力学习的汪')
->    ```
->
->3. 遍历属性名: 无法通过 [ for-in ] 、 [ for-of ] 、 [Object.keys()] 、 [Object.getOwnPropertyNames()] 、`JSON.stringify()`返回, 只能通过`Object.getOwnPropertySymbols`返回
->
->4. 启用模块的Singleton模式: 调用一个类在任何时候返回同一个实例(`window`和`global`), 使用`Symbol.for()`来模拟全局的`Singleton模式`
->
->> 重点难点
->
->- `Symbol()`生成一个原始类型的值不是对象, 因此`Symbol()`前不能使用`new命令`
->- `Symbol()`参数表示对当前`Symbol值`的描述, 相同参数的`Symbol()`返回值不相等
->- `Symbol值`不能与其他类型的值进行运算
->- `Symbol值`可通过`String()`或`toString()`显式转为字符串
->- `Symbol值`作为对象属性名时, 此属性是公开属性, 但不是私有属性
->- `Symbol值`作为对象属性名时, 只能用方括号运算符(`[]`)读取, 不能用点运算符(`.`)读取
->- `Symbol值`作为对象属性名时, 不会被常规方法遍历得到, 可利用此特性为对象定义`非私有但又只用于内部的方法`
+ES5 的对象属性名都是字符串, 这容易造成属性名的冲突. 比如, 你使用了一个他人提供的对象, 但又想为这个对象添加新的方法（mixin 模式）, 新方法的名字就有可能与现有方法产生冲突. 如果有一种机制, 保证每个属性的名字都是独一无二的就好了, 这样就从根本上防止属性名的冲突. 这就是 ES6 引入`Symbol`的原因. 
+
+ES6 引入了一种新的原始数据类型`Symbol`, 表示独一无二的值. 它是 JavaScript 语言的`第七种数据类型`, 前六种是: `undefined`、`null`、布尔值（Boolean）、字符串（String）、数值（Number）、对象（Object）. 
+
+1. 定义: 独一无二的值,类似于一种标识唯一性的ID
+2. 声明: `const set = Symbol(str)`
+3. 入参: 字符串(可选)
+4. 方法: 
+  - **Symbol()**: 创建以参数作为描述的`Symbol值`(不登记在全局环境)
+  - **Symbol.for()**: 创建以参数作为描述的`Symbol值`, 如存在此参数则返回原有的`Symbol值`(先搜索后创建, 登记在全局环境)
+  - **Symbol.keyFor()**: 返回已登记的`Symbol值`的描述(只能返回`Symbol.for()`的`key`)
+  - **Object.getOwnPropertySymbols()**: 返回对象中所有用作属性名的`Symbol值`的数组
+5. 内置
+  - **Symbol.hasInstance**: 指向一个内部方法, 当其他对象使用`instanceof运算符`判断是否为此对象的实例时会调用此方法
+  - **Symbol.isConcatSpreadable**: 指向一个布尔, 定义对象用于`Array.prototype.concat()`时是否可展开
+  - **Symbol.species**: 指向一个构造函数, 当实例对象使用自身构造函数时会调用指定的构造函数
+  - **Symbol.match**: 指向一个函数, 当实例对象被`String.prototype.match()`调用时会重新定义`match()`的行为
+  - **Symbol.replace**: 指向一个函数, 当实例对象被`String.prototype.replace()`调用时会重新定义`replace()`的行为
+  - **Symbol.search**: 指向一个函数, 当实例对象被`String.prototype.search()`调用时会重新定义`search()`的行为
+  - **Symbol.split**: 指向一个函数, 当实例对象被`String.prototype.split()`调用时会重新定义`split()`的行为
+  - **Symbol.iterator**: 指向一个默认遍历器方法, 当实例对象执行 [ for-of ] 时会调用指定的默认遍历器
+  - **Symbol.toPrimitive**: 指向一个函数, 当实例对象被转为原始类型的值时会返回此对象对应的原始类型值
+  - **Symbol.toStringTag**: 指向一个函数, 当实例对象被`Object.prototype.toString()`调用时其返回值会出现在`toString()`返回的字符串之中表示对象的类型
+  - **Symbol.unscopables**: 指向一个对象, 指定使用`with`时哪些属性会被`with环境`排除
+
+> 数据类型
+
+- **Undefined**
+- **Null**
+- **String**
+- **Number**
+- **Boolean**
+- **Object**(包含`Array`、`Function`、`Date`、`RegExp`、`Error`)
+- **Symbol**
+- [bigint](https://developer.mozilla.org/zh-CN/docs/Glossary/BigInt),   -->**BigInt** 是一种数字类型的数据
+
+> 应用场景
+
+1. 唯一化对象属性名: 属性名属于Symbol类型, 就都是独一无二的, 可保证不会与其他属性名产生冲突
+
+2. 消除`魔术字符串`: 在代码中多次出现且与代码形成强耦合的某一个具体的字符串或数值
+
+  - 魔术字符串指的是, 在代码之中多次出现、与代码形成强耦合的某一个具体的字符串或者数值. 风格良好的代码, 应该尽量消除魔术字符串, 改由含义清晰的变量代替. 
+
+  - ```js
+    function getResults(param){
+    	if(param == '努力学习鸭') console.log('魔术字符串')
+    }
+    // 函数中赋值 '努力学习鸭',所以 '努力学习鸭' 这个字符串就是魔术字符串
+    getResults('努力学习鸭')
+    ```
+
+3. 遍历属性名: 无法通过 [ for-in ] 、 [ for-of ] 、 [Object.keys()] 、 [Object.getOwnPropertyNames()] 、`JSON.stringify()`返回, 只能通过`Object.getOwnPropertySymbols`返回
+
+4. 启用模块的Singleton模式: 调用一个类在任何时候返回同一个实例(`window`和`global`), 使用`Symbol.for()`来模拟全局的`Singleton模式`
+
+> 重点难点
+
+- `Symbol()`生成一个原始类型的值不是对象, 因此`Symbol()`前不能使用`new命令`
+- `Symbol()`参数表示对当前`Symbol值`的描述, 相同参数的`Symbol()`返回值不相等
+- `Symbol值`不能与其他类型的值进行运算
+- `Symbol值`可通过`String()`或`toString()`显式转为字符串
+- `Symbol值`作为对象属性名时, 此属性是公开属性, 但不是私有属性
+- `Symbol值`作为对象属性名时, 只能用方括号运算符(`[]`)读取, 不能用点运算符(`.`)读取
+- `Symbol值`作为对象属性名时, 不会被常规方法遍历得到, 可利用此特性为对象定义`非私有但又只用于内部的方法`
 
 ### Ⅱ - 举个简单的例子
 
@@ -6218,110 +6218,107 @@ Array.from(string.matchAll(regex))
 > 注意, `Symbol`函数前不能使用`new`命令, 否则会报错. 这是因为生成的 Symbol 是一个原始类型的值, 不是对象. 也就是说, 由于 Symbol 值不是对象, 所以不能添加属性. 基本上, 它是一种`类似于字符串的数据类型`. 
 >
 > `Symbol`函数可以接受一个字符串作为参数, 表示对 Symbol 实例的描述, 主要是为了在控制台显示, 或者转为字符串时, 比较容易区分. 
->
-> ```javascript
-> let s1 = Symbol('努力学习的汪');
-> let s2 = Symbol('hongjilin');
-> 
-> s1 // Symbol(努力学习的汪)  注意:此处是 Symbol 值
-> s2 // Symbol(hongjilin)
-> 
-> s1.toString() // "Symbol(努力学习的汪)" 注意 此处是字符串
-> s2.toString() // "Symbol(hongjilin)"
-> ```
->
-> ![image-20210826181302853](ES全系列详细学习笔记中的图片/image-20210826181302853.png)  
->
+
+ ```javascript
+ let s1 = Symbol('努力学习鸭');
+ let s2 = Symbol('test');
+ 
+ s1 // Symbol(努力学习鸭)  注意:此处是 Symbol 值
+ s2 // Symbol(test)
+ 
+ s1.toString() // "Symbol(努力学习鸭)" 注意 此处是字符串
+ s2.toString() // "Symbol(test)"
+ ```
+
+
 > 上面代码中, `s1`和`s2`是两个 Symbol 值. 如果不加参数, 它们在控制台的输出都是`Symbol()`, 不利于区分. 有了参数以后, 就等于为它们加上了描述, 输出的时候就能够分清, 到底是哪一个值. 
 >
 > 如果 Symbol 的参数是一个对象, 就会调用该对象的`toString`方法, 将其转为字符串, 然后才生成一个 Symbol 值. 
 >
-> ```javascript
-> const obj = {
->   toString() {
->     return 'abc';
->   }
-> };
-> const sym = Symbol(obj);
-> sym // Symbol(abc)  --> [ Symbol 值 ]
-> ```
->
+ ```javascrip
+ const obj = {
+   toString() {
+     return 'abc';
+   }
+ };
+ const sym = Symbol(obj);
+ sym // Symbol(abc)  --> [ Symbol 值 ]
+ ```
+
 > 注意, `Symbol`函数的参数只是表示对当前 Symbol 值的描述, 因此相同参数的`Symbol`函数的返回值是不相等的. 
->
-> ```javascript
-> // 没有参数的情况
-> let s1 = Symbol();
-> let s2 = Symbol();
-> s1 === s2 // false
-> 
-> // 有参数的情况
-> let s1 = Symbol('努力学习的汪');
-> let s2 = Symbol('努力学习的汪');
-> s1 === s2 // false
-> ```
->
-> ![image-20210826181625657](ES全系列详细学习笔记中的图片/image-20210826181625657.png) 
->
+
+ ```javascript
+ // 没有参数的情况
+ let s1 = Symbol();
+ let s2 = Symbol();
+ s1 === s2 // false
+ 
+ // 有参数的情况
+ let s1 = Symbol('努力学习鸭');
+ let s2 = Symbol('努力学习鸭');
+ s1 === s2 // false
+ ```
+
+
 > 上面代码中, `s1`和`s2`都是`Symbol`函数的返回值, 而且参数相同, 但是它们是不相等的. 
 >
 > Symbol 值不能与其他类型的值进行运算, 会报错. 
 >
-> ```javascript
-> let sym = Symbol('My symbol');
-> "your symbol is " + sym
-> // TypeError: can't convert symbol to string
-> `your symbol is ${sym}`
-> // TypeError: can't convert symbol to string
-> ```
->
+ ```javascript
+ let sym = Symbol('My symbol');
+ "your symbol is " + sym
+ // TypeError: can't convert symbol to string
+ `your symbol is ${sym}`
+ // TypeError: can't convert symbol to string
+ ```
+
 > 但是，Symbol 值可以显式转为字符串. 
->
-> ```javascript
-> let sym = Symbol('My symbol');
-> 
-> String(sym) // 'Symbol(My symbol)'
-> sym.toString() // 'Symbol(My symbol)'
-> ```
->
+
+ ```javascript
+ let sym = Symbol('My symbol');
+ 
+ String(sym) // 'Symbol(My symbol)'
+ sym.toString() // 'Symbol(My symbol)'
+ ```
+
 > 另外，Symbol 值也可以转为布尔值, 但是不能转为数值. 
 >
-> ```javascript
-> let sym = Symbol();
-> Boolean(sym) // true
-> !sym  // false
-> 
-> if (sym) {}
-> Number(sym) // TypeError
-> sym + 2 // TypeError
-> ```
+ ```javascript
+ let sym = Symbol();
+ Boolean(sym) // true
+ !sym  // false
+ 
+ if (sym) {}
+ Number(sym) // TypeError
+ sym + 2 // TypeError
+ ```
 
 ### Ⅲ - Symbol.prototype.description
 
 >创建 Symbol 的时候, 可以添加一个描述. 
->
->```javascript
->const sym = Symbol('努力学习的汪');
->```
->
->上面代码中, `sym`的描述就是字符串`努力学习的汪`. 
+
+```javascript
+const sym = Symbol('努力学习鸭');
+```
+
+>上面代码中, `sym`的描述就是字符串`努力学习鸭`. 
 >
 >但是, 读取这个描述需要将 Symbol 显式转为字符串, 即下面的写法. 
 >
->```javascript
->const sym = Symbol('努力学习的汪');
->
->String(sym) // "Symbol(努力学习的汪)"
->sym.toString() // "Symbol(努力学习的汪)"
->```
->
+```javascript
+const sym = Symbol('努力学习鸭');
+
+String(sym) // "Symbol(努力学习鸭)"
+sym.toString() // "Symbol(努力学习鸭)"
+```
+
 >上面的用法不是很方便. [ES2019](https://github.com/tc39/proposal-Symbol-description) 提供了一个实例属性`description`, 直接返回 Symbol 的描述. 
->
->```javascript
->const sym = Symbol('努力学习的汪');
->sym.description // "努力学习的汪"
->```
->
->![image-20210826183246668](ES全系列详细学习笔记中的图片/image-20210826183246668.png) 
+
+```javascript
+const sym = Symbol('努力学习鸭');
+sym.description // "努力学习鸭"
+```
+
 
 ### Ⅳ - 作为属性名的 Symbol
 
@@ -6329,101 +6326,99 @@ Array.from(string.matchAll(regex))
 
 >由于每一个 Symbol 值都是不相等的, 这意味着 Symbol 值可以作为标识符, 用于对象的属性名, 就能保证不会出现同名的属性. 这对于一个对象由多个模块构成的情况非常有用, 能防止某一个键被不小心改写或覆盖. 
 >
->```javascript
->let mySymbol = Symbol();
->
->// 第一种写法
->let a = {};
->a[mySymbol] = 'Hello!';
->
->// 第二种写法
->let a = {
->  [mySymbol]: 'Hello!'
->};
->
->// 第三种写法
->let a = {};
->Object.defineProperty(a, mySymbol, { value: 'Hello!' });
->
->// 以上写法都得到同样结果
->a[mySymbol] // "Hello!"
->```
->
+```javascript
+let mySymbol = Symbol();
+
+// 第一种写法
+let a = {};
+a[mySymbol] = 'Hello!';
+
+// 第二种写法
+let a = {
+  [mySymbol]: 'Hello!'
+};
+
+// 第三种写法
+let a = {};
+Object.defineProperty(a, mySymbol, { value: 'Hello!' });
+
+// 以上写法都得到同样结果
+a[mySymbol] // "Hello!"
+```
+
 >上面代码通过方括号结构和 [ Object.defineProperty ] , 将对象的属性名指定为一个 Symbol 值. 
->
+
 
 #### ② 不能用点运算符
 
 >注意，Symbol 值作为对象属性名时, 不能用点运算符. 
 >
->```javascript
->const mySymbol = Symbol();
->const a = {};
->//不可这样用,这样用就没效果了
->a.mySymbol = '努力学习的汪!'; //因为点运算符后面总是字符串, 所以不会读取`mySymbol`作为标识名所指代的那个值, 导致`a`的属性名实际上是一个字符串, 而不是一个 Symbol 值. 
->a[mySymbol] // undefined     -->此处以 创建的Symbol值 作为key名进行读取
->a['mySymbol'] // "努力学习的汪!"  -->此处就是字符串作为key名进行读取
->```
->
->![image-20210826183751378](../../Promise学习笔记/A_Promise系统学习笔记中的图片/image-20210826183751378.png) 
->
+```javascript
+const mySymbol = Symbol();
+const a = {};
+//不可这样用,这样用就没效果了
+a.mySymbol = '努力学习鸭'; //因为点运算符后面总是字符串, 所以不会读取`mySymbol`作为标识名所指代的那个值, 导致`a`的属性名实际上是一个字符串, 而不是一个 Symbol 值. 
+a[mySymbol] // undefined     -->此处以 创建的Symbol值 作为key名进行读取
+a['mySymbol'] // "努力学习鸭"  -->此处就是字符串作为key名进行读取
+```
+
 >上面代码中, 因为点运算符后面总是字符串, 所以不会读取`mySymbol`作为标识名所指代的那个值, 导致`a`的属性名实际上是一个字符串, 而不是一个 Symbol 值. 
 >
 >同理, 在对象的内部, 使用 Symbol 值定义属性时，Symbol 值必须放在方括号之中. 
 >
->```javascript
->let s = Symbol();
->let obj = {
->[s]: function (arg) { ... }
->};
->obj[s](123);
->```
->
+```javascript
+let s = Symbol();
+let obj = {
+[s]: function (arg) { ... }
+};
+obj[s](123);
+```
+
 >上面代码中, 如果`s`不放在方括号中, 该属性的键名就是字符串`s`, 而不是`s`所代表的那个 Symbol 值. 
 >
 >采用增强的对象写法, 上面代码的`obj`对象可以写得更简洁一些. 
 >
->```javascript
->let obj = {
->[s](arg) { ... }
->};
->```
->
+```javascript
+let obj = {
+[s](arg) { ... }
+};
+```
+
 
 #### ③ Symbol 类型用于定义常量
 
 >Symbol 类型还可以用于定义一组常量, 保证这组常量的值都是不相等的. 
 >
->```javascript
->const log = {};
->
->log.levels = {
->DEBUG: Symbol('debug'),
->INFO: Symbol('info'),
->WARN: Symbol('warn')
->};
->console.log(log.levels.DEBUG, 'debug message');
->console.log(log.levels.INFO, 'info message');
->```
->
+```javascript
+const log = {};
+
+log.levels = {
+DEBUG: Symbol('debug'),
+INFO: Symbol('info'),
+WARN: Symbol('warn')
+};
+console.log(log.levels.DEBUG, 'debug message');
+console.log(log.levels.INFO, 'info message');
+```
+
 >下面是另外一个例子. 
 >
->```javascript
->const COLOR_RED    = Symbol();
->const COLOR_GREEN  = Symbol();
->
->function getComplement(color) {
->switch (color) {
->case COLOR_RED:
->return COLOR_GREEN;
->case COLOR_GREEN:
->return COLOR_RED;
->default:
->throw new Error('Undefined color');
->}
->}
->```
->
+```javascript
+const COLOR_RED    = Symbol();
+const COLOR_GREEN  = Symbol();
+
+function getComplement(color) {
+switch (color) {
+case COLOR_RED:
+return COLOR_GREEN;
+case COLOR_GREEN:
+return COLOR_RED;
+default:
+throw new Error('Undefined color');
+}
+}
+```
+
 >常量使用 Symbol 值最大的好处, 就是其他任何值都不可能有相同的值了, 因此可以保证上面的`switch`语句会按设计的方式工作. 
 >
 >还有一点需要注意，Symbol 值作为属性名时, 该属性还是公开属性, 不是私有属性. 
@@ -6434,43 +6429,43 @@ Array.from(string.matchAll(regex))
 
 >魔术字符串指的是, 在代码之中多次出现、与代码形成强耦合的某一个具体的字符串或者数值. 风格良好的代码, 应该尽量消除魔术字符串, 改由含义清晰的变量代替. 
 >
->```js
->function getResults(param){
->	if(param == '努力学习的汪') console.log('魔术字符串')
->}
->// 函数中赋值 '努力学习的汪',所以 '努力学习的汪' 这个字符串就是魔术字符串
->getResults('努力学习的汪')
->```
->
+```js
+function getResults(param){
+	if(param == '努力学习鸭') console.log('魔术字符串')
+}
+// 函数中赋值 '努力学习鸭',所以 '努力学习鸭' 这个字符串就是魔术字符串
+getResults('努力学习鸭')
+```
+
 >上面代码中, 字符串`Triangle`就是一个魔术字符串. 它多次出现, 与代码形成“强耦合”, 不利于将来的修改和维护. 
 
 ##### b) 常用的消除魔术字符串的方法
 
 >常用的消除魔术字符串的方法, 就是把它写成一个变量
 >
->```js
->const name='努力学习的汪'
->function getResults(param){
->	if(param == name) console.log('消除魔术字符串')
->}
->getResults(name) //消除魔术字符串
->```
->
->上面代码中, 我们把`努力学习的汪`写成 [ name ] 属性, 这样就消除了强耦合. 
+```js
+const name='努力学习鸭'
+function getResults(param){
+	if(param == name) console.log('消除魔术字符串')
+}
+getResults(name) //消除魔术字符串
+```
+
+>上面代码中, 我们把`努力学习鸭`写成 [ name ] 属性, 这样就消除了强耦合. 
 
 ##### c) 改用Symbol值
 
 >如果仔细分析, 可以发现`shapeType.triangle`等于哪个值并不重要, 只要确保不会跟其他`shapeType`属性的值冲突即可. 因此, 这里就很适合改用 Symbol 值. 
 >
->```javascript
->const name=Symbol('努力学习的汪')
->function getResults(param){
->	if(param == name) console.log('Symbol消除魔术字符串')
->}
->getResults(name)  // Symbol消除魔术字符串
->```
->
->上面代码中, 除了将`努力学习的汪`的值设为一个 Symbol，其他地方都不用修改. 
+```javascript
+const name=Symbol('努力学习鸭')
+function getResults(param){
+	if(param == name) console.log('Symbol消除魔术字符串')
+}
+getResults(name)  // Symbol消除魔术字符串
+```
+
+>上面代码中, 除了将`努力学习鸭`的值设为一个 Symbol，其他地方都不用修改. 
 
 ### Ⅴ - 属性名的遍历
 
@@ -6480,174 +6475,171 @@ Array.from(string.matchAll(regex))
 >
 >但是, 它也不是私有属性, 有一个`Object.getOwnPropertySymbols()`方法, 可以获取指定对象的所有 Symbol 属性名. 该方法返回一个数组, 成员是当前对象的所有用作属性名的 Symbol 值. 
 >
->```javascript
->const obj = {};
->let a = Symbol('a');
->let b = Symbol('b');
->
->obj[a] = 'Hello';
->obj[b] = 'World';
->const objectSymbols = Object.getOwnPropertySymbols(obj);
->
->objectSymbols// [Symbol(a), Symbol(b)]
->```
->
+```javascript
+const obj = {};
+let a = Symbol('a');
+let b = Symbol('b');
+
+obj[a] = 'Hello';
+obj[b] = 'World';
+const objectSymbols = Object.getOwnPropertySymbols(obj);
+
+objectSymbols// [Symbol(a), Symbol(b)]
+```
+
 >上面代码是`Object.getOwnPropertySymbols()`方法的示例, 可以获取所有 Symbol 属性名. 
->
+
 
 #### ② 获取Symbol键名方式 
 
 >下面是另一个例子, `Object.getOwnPropertySymbols()`方法与`for...in`循环、`Object.getOwnPropertyNames`方法进行对比的例子. 
 >
->```javascript
->const name = Symbol('name');
->const obj={
->    [name]:'Symbol:努力学习的汪',  //赋一个Symbol属性
->    other:'正常属性'   //给一个正常属性做对比
->}
->
->console.log('------------ for --------------')
->for (let i in obj) {
->  console.log(i);  //只打印一个 other
->}
->console.log('------------ Object.keys --------------')
->const objKeys=Object.keys(obj)  //打印一个 [ "other" ]
->console.log(objKeys) 
->console.log('------------ Object.getOwnPropertyNames --------------')
->const PropertyNames=Object.getOwnPropertyNames(obj) // 打印一个 [ "other" ]
->console.log(PropertyNames);
->console.log('------------ Object.getOwnPropertySymbols --------------')
->const PropertySymbols= Object.getOwnPropertySymbols(obj) // [Symbol(name)]
->console.log(PropertySymbols)
->```
->
->![image-20210830141637812](ES全系列详细学习笔记中的图片/image-20210830141637812.png) 上面代码中, 使用`for...in`循环和 [Object.getOwnPropertyNames()] 方法都得不到 Symbol 键名, 需要使用`Object.getOwnPropertySymbols()`方法. 
->
+```javascript
+const name = Symbol('name');
+const obj={
+    [name]:'Symbol:努力学习鸭',  //赋一个Symbol属性
+    other:'正常属性'   //给一个正常属性做对比
+}
+
+console.log('------------ for --------------')
+for (let i in obj) {
+  console.log(i);  //只打印一个 other
+}
+console.log('------------ Object.keys --------------')
+const objKeys=Object.keys(obj)  //打印一个 [ "other" ]
+console.log(objKeys) 
+console.log('------------ Object.getOwnPropertyNames --------------')
+const PropertyNames=Object.getOwnPropertyNames(obj) // 打印一个 [ "other" ]
+console.log(PropertyNames);
+console.log('------------ Object.getOwnPropertySymbols --------------')
+const PropertySymbols= Object.getOwnPropertySymbols(obj) // [Symbol(name)]
+console.log(PropertySymbols)
+```
 
 #### ③ 获取所有类型的键名
 
 >另一个新的 API，`Reflect.ownKeys()`方法可以返回所有类型的键名, 包括常规键名和 Symbol 键名. 
 >
->```javascript
->let obj = {
->  [Symbol('my_key')]: 1,
->  enum: 2,
->  nonEnum: 3
->};
->
->Reflect.ownKeys(obj)
->//  ["enum", "nonEnum", Symbol(my_key)]
->```
->
+```javascript
+let obj = {
+  [Symbol('my_key')]: 1,
+  enum: 2,
+  nonEnum: 3
+};
+
+Reflect.ownKeys(obj)
+//  ["enum", "nonEnum", Symbol(my_key)]
+```
+
 
 #### ④ 利用特性 营造 非私有的内部方法的效果
 
 >由于以 Symbol 值作为键名, 不会被常规方法遍历得到. 我们可以利用这个特性, 为对象定义一些非私有的、但又希望只用于内部的方法. 
 >
->```javascript
->let size = Symbol('私有'); //可以 Symbol('字符串'),也可以不要Symbol(),但加了会更有辨识度
->
->class Collection { //注意,此类中的所有size属性都是指的上方  Symbol('私有')
->  constructor() {
->    this[size] = 0; //此处构造函数初始化时 给 [size]进行了初始化赋值-->[Symbol('私有')]=0
->  }
->
->  add(item) {
->    this[this[size]] = item; //此时 1. 先取出 this[size] 的值,此时为0,作为新的key,存入item 
->    this[size]++;   //此时 this[size] == 1 
->    //第一次调用 log:Collection {0: "调用一次添加", Symbol(私有): 1}  
->  }
->
->  static sizeOf(instance) {
->    return instance[size];  // 返回传入实例中的 size 属性
->  }
->}
->
->let x = new Collection();
->console.log('------------ 先获取初始化时数据 --------------')
->console.log('此时的size属性值',Collection.sizeOf(x)) // 此时的size属性值 0
->console.log(x)        //Collection {Symbol(私有): 0}
->
->console.log('------------ 调用一次添加 --------------')
->x.add('调用一次添加'); //调用一次添加
->console.log('此时的size属性值',Collection.sizeOf(x)) //此时的size属性值 1
->console.log(x) //Collection {0: "调用一次添加", Symbol(私有): 1}
->
->console.log('------------ 调用两次添加 --------------')
->x.add('调用2次添加'); //第二次调用
->console.log('此时的size属性值',Collection.sizeOf(x)) // 此时的size属性值 2
->console.log(x) // Collection {0: "调用一次添加", 1: "调用2次添加", Symbol(私有): 2}
->
->console.log('------------ 查看不同方法取出的key --------------')
->console.log(Object.keys(x)) // ["0", "1"]
->console.log(Object.getOwnPropertyNames(x)) // ["0", "1"]
->console.log(Object.getOwnPropertySymbols(x)) // [Symbol(私有)]
->
->```
->
->![image-20210830145632266](ES全系列详细学习笔记中的图片/image-20210830145632266.png) 上面代码中, 对象`x`的`size`属性是一个 Symbol 值, 所以`Object.keys(x)`、`Object.getOwnPropertyNames(x)`都无法获取它. 这就造成了一种非私有的内部方法的效果. 
+```javascript
+let size = Symbol('私有'); //可以 Symbol('字符串'),也可以不要Symbol(),但加了会更有辨识度
+
+class Collection { //注意,此类中的所有size属性都是指的上方  Symbol('私有')
+  constructor() {
+    this[size] = 0; //此处构造函数初始化时 给 [size]进行了初始化赋值-->[Symbol('私有')]=0
+  }
+
+  add(item) {
+    this[this[size]] = item; //此时 1. 先取出 this[size] 的值,此时为0,作为新的key,存入item 
+    this[size]++;   //此时 this[size] == 1 
+    //第一次调用 log:Collection {0: "调用一次添加", Symbol(私有): 1}  
+  }
+
+  static sizeOf(instance) {
+    return instance[size];  // 返回传入实例中的 size 属性
+  }
+}
+
+let x = new Collection();
+console.log('------------ 先获取初始化时数据 --------------')
+console.log('此时的size属性值',Collection.sizeOf(x)) // 此时的size属性值 0
+console.log(x)        //Collection {Symbol(私有): 0}
+
+console.log('------------ 调用一次添加 --------------')
+x.add('调用一次添加'); //调用一次添加
+console.log('此时的size属性值',Collection.sizeOf(x)) //此时的size属性值 1
+console.log(x) //Collection {0: "调用一次添加", Symbol(私有): 1}
+
+console.log('------------ 调用两次添加 --------------')
+x.add('调用2次添加'); //第二次调用
+console.log('此时的size属性值',Collection.sizeOf(x)) // 此时的size属性值 2
+console.log(x) // Collection {0: "调用一次添加", 1: "调用2次添加", Symbol(私有): 2}
+
+console.log('------------ 查看不同方法取出的key --------------')
+console.log(Object.keys(x)) // ["0", "1"]
+console.log(Object.getOwnPropertyNames(x)) // ["0", "1"]
+console.log(Object.getOwnPropertySymbols(x)) // [Symbol(私有)]
+
+```
+
+> 上面代码中, 对象`x`的`size`属性是一个 Symbol 值, 所以`Object.keys(x)`、`Object.getOwnPropertyNames(x)`都无法获取它. 这就造成了一种非私有的内部方法的效果. 
 
 ### Ⅵ - Symbol.for()，Symbol.keyFor()
 
 #### ① Symbol.for()
 
 >有时, 我们希望重新使用同一个 Symbol 值, `Symbol.for()`方法可以做到这一点. 它接受一个字符串作为参数, 然后搜索有没有以该参数作为名称的 Symbol 值. 如果有, 就返回这个 Symbol 值, 否则就新建一个以该字符串为名称的 Symbol 值, 并将其注册到全局. 
+
+```javascript
+let s1 = Symbol.for('test');
+let s2 = Symbol.for('test');
+let h1 = Symbol('努力学习鸭');
+let h2 = Symbol('努力学习鸭');
+console.log(s1 === s2 ,h1 === h2)
+```
 >
->```javascript
->let s1 = Symbol.for('hongjilin');
->let s2 = Symbol.for('hongjilin');
->let h1 = Symbol('努力学习的汪');
->let h2 = Symbol('努力学习的汪');
->console.log(s1 === s2 ,h1 === h2)
->```
->
->![image-20210830150415159](ES全系列详细学习笔记中的图片/image-20210830150415159.png) 上面代码中, `s1`和`s2`都是 Symbol 值, 但是它们都是由同样参数的`Symbol.for`方法生成的, 所以实际上是同一个值. 
+>上面代码中, `s1`和`s2`都是 Symbol 值, 但是它们都是由同样参数的`Symbol.for`方法生成的, 所以实际上是同一个值. 
 >
 >`Symbol.for()`与`Symbol()`这两种写法, 都会生成新的 Symbol. 它们的区别是 : 
 >
->>* 前者会被登记在全局环境中供搜索, 后者不会. 
->>* `Symbol.for()`不会每次调用就返回一个新的 Symbol 类型的值, 而是会先检查给定的`key`是否已经存在, 如果不存在才会新建一个值. 
->>* 如果你调用`Symbol.for("cat")`30 次, 每次都会返回同一个 Symbol 值;
->>* 但是调用`Symbol("cat")`30 次, 会返回 30 个不同的 Symbol 值. 
+>* 前者会被登记在全局环境中供搜索, 后者不会. 
+>* `Symbol.for()`不会每次调用就返回一个新的 Symbol 类型的值, 而是会先检查给定的`key`是否已经存在, 如果不存在才会新建一个值. 
+>* 如果你调用`Symbol.for("cat")`30 次, 每次都会返回同一个 Symbol 值;
+>* 但是调用`Symbol("cat")`30 次, 会返回 30 个不同的 Symbol 值. 
 
 #### ② Symbol.keyFor()
 
 >`Symbol.keyFor()`方法返回一个已登记的 Symbol 类型值的`key`. 
 >
->```javascript
->let s1 = Symbol.for("努力学习的汪");
->console.log(Symbol.keyFor(s1)) // "努力学习的汪"
->
->let s2 = Symbol("努力学习的汪");
->console.log(Symbol.keyFor(s2)) // undefined
->```
->
->![image-20210830151409178](ES全系列详细学习笔记中的图片/image-20210830151409178.png) 上面代码中, 变量`s2`属于未登记的 Symbol 值, 所以返回`undefined`. 
+```javascript
+let s1 = Symbol.for("努力学习鸭");
+console.log(Symbol.keyFor(s1)) // "努力学习鸭"
+
+let s2 = Symbol("努力学习鸭");
+console.log(Symbol.keyFor(s2)) // undefined
+```
+
+>上面代码中, 变量`s2`属于未登记的 Symbol 值, 所以返回`undefined`. 
 >
 >注意, `Symbol.for()`为 Symbol 值登记的名字, 是全局环境的, 不管有没有在全局环境运行. 
 >
->```javascript
->function foo() {
->  return Symbol.for('努力学习的汪'); //在函数内部:局部作用域中运行
->}
+```javascript
+function foo() {
+  return Symbol.for('努力学习鸭'); //在函数内部:局部作用域中运行
+}
+
+const x = foo();
+const y = Symbol.for('努力学习鸭');
+console.log(x === y); // true
+```
 >
->const x = foo();
->const y = Symbol.for('努力学习的汪');
->console.log(x === y); // true
->```
->
->![image-20210830151530178](ES全系列详细学习笔记中的图片/image-20210830151530178.png) 上面代码中, `Symbol.for('bar')`是函数内部运行的, 但是生成的 Symbol 值是登记在全局环境的. 所以, 第二次运行`Symbol.for('bar')`可以取到这个 Symbol 值. 
+> 上面代码中, `Symbol.for('bar')`是函数内部运行的, 但是生成的 Symbol 值是登记在全局环境的. 所以, 第二次运行`Symbol.for('努力学习鸭')`可以取到这个 Symbol 值. 
 >
 >`Symbol.for()`的这个全局登记特性, 可以用在不同的 iframe 或 service worker 中取到同一个值. 
 >
->```javascript
->iframe = document.createElement('iframe');
->iframe.src = String(window.location);
->document.body.appendChild(iframe);
->
->iframe.contentWindow.Symbol.for('foo') === Symbol.for('foo')
->// true
->```
+```javascript
+iframe = document.createElement('iframe');
+iframe.src = String(window.location);
+document.body.appendChild(iframe);
+
+iframe.contentWindow.Symbol.for('foo') === Symbol.for('foo')
+// true
+```
 >
 >上面代码中，iframe 窗口生成的 Symbol 值, 可以在主页面得到. 
 
@@ -6661,31 +6653,31 @@ Array.from(string.matchAll(regex))
 >
 >很容易想到, 可以把实例放到顶层对象`global`. 
 >
->```javascript
->// mod.js
->function A() {
->  this.userName = '努力学习的汪';
->}
->if (!global._userName)  global._userName = new A();
->module.exports = global._userName;
->```
->
+```javascript
+// mod.js
+function A() {
+  this.userName = '努力学习鸭';
+}
+if (!global._userName)  global._userName = new A();
+module.exports = global._userName;
+```
+
 >然后, 加载上面的`mod.js`. 
 >
->```javascript
->const a = require('./mod.js');
->console.log(a.foo);// 努力学习的汪
->```
->
+```javascript
+const a = require('./mod.js');
+console.log(a.foo);// 努力学习鸭
+```
+
 >上面代码中, 变量`a`任何时候加载的都是`A`的同一个实例. 
 >
 >但是, 这里有一个问题, 全局变量`global._foo`是可写的, 任何文件都可以修改. 
 >
->```javascript
->global._userName = { userName: '不努力学习的单身汪' };
->const a = require('./mod.js');
->console.log(a.userName); // 不努力学习的单身汪
->```
+```javascript
+global._userName = { userName: '不努力学习的单身' };
+const a = require('./mod.js');
+console.log(a.userName); // 不努力学习的单身
+```
 >
 >上面的代码, 会使得加载`mod.js`的脚本都失真. 
 
@@ -6706,23 +6698,23 @@ Array.from(string.matchAll(regex))
 >
 >上面代码中, 可以保证`global[FOO_KEY]`不会被无意间覆盖, 但还是可以被改写. 
 >
->```javascript
->//仍可以改写,但通常不会被无意间覆盖.会写出这个代码通常就是故意要覆盖的
->global[Symbol.for('userName')] = { userName: '不努力学习的单身汪' };
->const a = require('./mod.js');
->```
->
+```javascript
+//仍可以改写,但通常不会被无意间覆盖.会写出这个代码通常就是故意要覆盖的
+global[Symbol.for('userName')] = { userName: '不努力学习的单身' };
+const a = require('./mod.js');
+```
+
 
 #### ③ Symbol() 的应用
 
 >如果键名使用`Symbol`方法生成, 那么外部将无法引用这个值, 当然也就无法改写. 
 >
->```javascript
->// mod.js
->//不使用Symbol.for(),而是直接使用Symbol(),这样就确保不会被改写,理解吃力的话要重新看下上面的方法描述
->const FOO_KEY = Symbol('userName'); 
->// 后面代码相同 ……
->```
+```javascript
+// mod.js
+//不使用Symbol.for(),而是直接使用Symbol(),这样就确保不会被改写,理解吃力的话要重新看下上面的方法描述
+const FOO_KEY = Symbol('userName'); 
+// 后面代码相同 ……
+```
 >
 >上面代码将导致其他脚本都无法引用`FOO_KEY`. 但这样也有一个问题:
 >
@@ -6740,43 +6732,41 @@ Array.from(string.matchAll(regex))
 
 >对象的 [Symbol.hasInstance] 属性, 指向一个内部方法. 当其他对象使用instanceof运算符, 判断是否为该对象的实例时, 会调用这个方法. 比如, `foo instanceof Foo`在语言内部, 实际调用的是`Foo[Symbol.hasInstance](foo)`. 
 >
->```js
->class MyClass {
->  [Symbol.hasInstance](foo) {
->    return false;
->  }
->}
->class TestClass {
->  [Symbol.hasInstance](foo) {
->    return true;
->  }
->}
->console.log([1, 2, 3] instanceof new MyClass()) // false
->console.log([1, 2, 3] instanceof new TestClass()) // true
->```
->
->![image-20210830161934219](ES全系列详细学习笔记中的图片/image-20210830161934219.png)
+```js
+class MyClass {
+  [Symbol.hasInstance](foo) {
+    return false;
+  }
+}
+class TestClass {
+  [Symbol.hasInstance](foo) {
+    return true;
+  }
+}
+console.log([1, 2, 3] instanceof new MyClass()) // false
+console.log([1, 2, 3] instanceof new TestClass()) // true
+```
 
 ##### b) 举个栗子 
 
 >下面是另一个例子. 
 >
->```javascript
->class MyClass {
->  [Symbol.hasInstance](foo) {
->    return foo instanceof Array;
->  }
->  static [Symbol.hasInstance](obj) { //静态方法
->    return Number(obj) % 2 === 0;
->  }
->}
->var x = new MyClass()
->console.log([1, 2, 3] instanceof new MyClass()); // true //我是调用的动态方法
->console.log(x[Symbol.hasInstance]([0, 0, 0,]));//true //我是调用的动态方法
->console.log(2 instanceof MyClass); //true 我是调用静态方法
->console.log(MyClass[Symbol.hasInstance](2));//true 我是调用了静态方法
->console.log(x instanceof MyClass); //false 因为修改了静态方法(不传入值返回肯定是false). x本身就是MyClass的实例, 如果注释了静态方法就会返回true. 
->```
+```javascript
+class MyClass {
+  [Symbol.hasInstance](foo) {
+    return foo instanceof Array;
+  }
+  static [Symbol.hasInstance](obj) { //静态方法
+    return Number(obj) % 2 === 0;
+  }
+}
+var x = new MyClass()
+console.log([1, 2, 3] instanceof new MyClass()); // true //我是调用的动态方法
+console.log(x[Symbol.hasInstance]([0, 0, 0,]));//true //我是调用的动态方法
+console.log(2 instanceof MyClass); //true 我是调用静态方法
+console.log(MyClass[Symbol.hasInstance](2));//true 我是调用了静态方法
+console.log(x instanceof MyClass); //false 因为修改了静态方法(不传入值返回肯定是false). x本身就是MyClass的实例, 如果注释了静态方法就会返回true. 
+```
 >
 >![image-20210830162419619](ES全系列详细学习笔记中的图片/image-20210830162419619.png)
 
@@ -6784,55 +6774,55 @@ Array.from(string.matchAll(regex))
 
 >对象的`Symbol.isConcatSpreadable`属性等于一个布尔值, 表示该对象用于`Array.prototype.concat()`时, 是否可以展开. 
 >
->```javascript
->let arr1 = ['c', 'd'];
->['a', 'b'].concat(arr1, 'e') // ['a', 'b', 'c', 'd', 'e']
->arr1[Symbol.isConcatSpreadable] // undefined
->
->let arr2 = ['c', 'd'];
->arr2[Symbol.isConcatSpreadable] = false;
->['a', 'b'].concat(arr2, 'e') // ['a', 'b', ['c','d'], 'e']
->```
->
+```javascript
+let arr1 = ['c', 'd'];
+['a', 'b'].concat(arr1, 'e') // ['a', 'b', 'c', 'd', 'e']
+arr1[Symbol.isConcatSpreadable] // undefined
+
+let arr2 = ['c', 'd'];
+arr2[Symbol.isConcatSpreadable] = false;
+['a', 'b'].concat(arr2, 'e') // ['a', 'b', ['c','d'], 'e']
+```
+
 >上面代码说明, 数组的默认行为是可以展开, `Symbol.isConcatSpreadable`默认等于`undefined`. 该属性等于`true`时, 也有展开的效果. 
 >
 >类似数组的对象正好相反, 默认不展开. 它的`Symbol.isConcatSpreadable`属性设为`true`, 才可以展开. 
 >
->```javascript
->let obj = {length: 2, 0: 'c', 1: 'd'};
->['a', 'b'].concat(obj, 'e') // ['a', 'b', obj, 'e']
->
->obj[Symbol.isConcatSpreadable] = true;
->['a', 'b'].concat(obj, 'e') // ['a', 'b', 'c', 'd', 'e']
->```
+```javascript
+let obj = {length: 2, 0: 'c', 1: 'd'};
+['a', 'b'].concat(obj, 'e') // ['a', 'b', obj, 'e']
+
+obj[Symbol.isConcatSpreadable] = true;
+['a', 'b'].concat(obj, 'e') // ['a', 'b', 'c', 'd', 'e']
+```
 >
 >`Symbol.isConcatSpreadable`属性也可以定义在类里面. 
 >
->```javascript
->class A1 extends Array {
->  constructor(args) {
->    super(args);
->    this[Symbol.isConcatSpreadable] = true;
->  }
->}
->class A2 extends Array {
->  constructor(args) {
->    super(args);
->  }
->  get [Symbol.isConcatSpreadable] () {
->    return false;
->  }
->}
->let a1 = new A1();
->a1[0] = 3;
->a1[1] = 4;
->let a2 = new A2();
->a2[0] = 5;
->a2[1] = 6;
->[1, 2].concat(a1).concat(a2)
->// [1, 2, 3, 4, [5, 6]]
->```
->
+```javascript
+class A1 extends Array {
+  constructor(args) {
+    super(args);
+    this[Symbol.isConcatSpreadable] = true;
+  }
+}
+class A2 extends Array {
+  constructor(args) {
+    super(args);
+  }
+  get [Symbol.isConcatSpreadable] () {
+    return false;
+  }
+}
+let a1 = new A1();
+a1[0] = 3;
+a1[1] = 4;
+let a2 = new A2();
+a2[0] = 5;
+a2[1] = 6;
+[1, 2].concat(a1).concat(a2)
+// [1, 2, 3, 4, [5, 6]]
+```
+
 >上面代码中, 类`A1`是可展开的, 类`A2`是不可展开的, 所以使用`concat`时有不一样的结果. 
 >
 >注意, `Symbol.isConcatSpreadable`的位置差异, `A1`是定义在实例上, `A2`是定义在类本身, 效果相同. 

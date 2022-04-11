@@ -1377,8 +1377,8 @@ describe('二叉搜索树',()=>{
  function fibonacci(n:number):number { 
   if(n<=0)return 0
   if(n==1) return 1
-  let n1=0
-  let n2=1
+  let n1=0 //记录n-1的结果
+  let n2=1 //记录n-2的结果
   let res=0
   for(let i=2;i<=n;i++){
     res= n1+n2
@@ -1405,8 +1405,152 @@ describe('斐波那契数列',()=>{
     expect(fibonacci(3)).toBe(2)
     expect(fibonacci(9)).toBe(34)
   })
-  it('小于0',()=>{
-     expect(fibonacci(0)).toBe(0)
+  it('n小于0',()=>{
+     expect(fibonacci(-1)).toBe(0)
   })
 })
 ```
+
+**动态规划**
+
+* 把一个大问题拆解成多个小问题，逐级向下拆解；
+* 用递归的思路去分析问题，再改为循环来实现；
+* 算法三大思维：贪心、二分、动态规划
+
+### _青蛙跳台阶
+
+* 一只青蛙，一次可跳1级，也可跳2级
+* 问：青蛙跳到n级台阶，总共有多少种方式？
+* 动态规划的方式去分析（其实质就是斐波那契数列）   
+* 要是跳一级台阶，有f(1)
+* 要是跳两级台阶，有f(2)
+* 要是n两级台阶，有f(n-1)+f(n-2)
+
+## 9.移动0到数组的末尾
+
+>[]中的0放到末尾得到[]
+>
+>需要在原数组上进行操作
+
+!> 传统思路 <br/>
+遍历数组，遇到0则push到数组末尾 <br/>
+用splice截取掉当前元素 <br/>
+时间复杂度是O(n^2) ——算法不可用 <br>
+
+!> 更优思路-双指针 <br/>
+定义j指向第一个0，i指向j后面的第一个非0 <br/>
+交换i和j的值，继续向后移动 <br/>
+只遍历一次，时间复杂度是O(n)<br/>
+
+
+!>**向面试官确认是否修改原数组？** <br/>
+数组是连续存储，要慎用splice unshift 等API <br/>
+`双指针思路` <br>
+
+```js
+
+/**
+ * 移动0到数组末尾（嵌套循环）
+ * @param arr
+ */
+ function moveZero1(arr:number[]):void { 
+  const length = arr.length
+  if(length === 0) return
+  let zerolength= 0
+  //O(n^2)
+  for(let i=0;i<length-zeroLength;i++){
+    if(arr[i]===0){
+      arr.push(0)
+      arr.splice(i,1) //本身就有O(n)
+      i-- //数组截取一个元素，i要递减，否则连续0就会有错误
+      zeroLength++ //累加0的长度
+    }
+  }
+};
+
+/**
+ * 移动0到数组末尾（双指针）
+ * @param arr
+ */
+ function moveZero2(arr:number[]):void { 
+  const length = arr.length
+  if(length === 0) return
+  let i
+  let j= -1 //指向第一个0
+  //O(n^2)
+  for(let i=0;i<length;i++){
+    if(arr[i]===0){
+       //第一个0
+       if(j<0){
+         j= i
+       }
+    }
+    if(arr[i]!==0&&j>=0){
+      const n =arr[i]
+      arr[i] = arr[j]
+      arr[j] = n
+      j++
+    }
+  }
+};
+
+//功能测试
+const arr = [1,0,3,4,0,0,11,0]
+moveZero(arr)
+console.log(arr)
+
+
+//性能测试
+const arr1 = []
+for(let i = 0;i<20*10000;i++){
+  if(i%10 == 0){
+    arr1.push(0)
+  }else{
+    arr1.push(i)
+  }
+}
+console.time('moveZero1')
+moveZero1(arr1) //262ms
+console.timeEnd('moveZero1')
+
+const arr2 = []
+for(let i = 0;i<20*10000;i++){
+  if(i%10 == 0){
+    arr2.push(0)
+  }else{
+    arr2.push(i)
+  }
+}
+console.time('moveZero2')
+moveZero1(arr2)     //3ms
+console.timeEnd('moveZero2') 
+
+```
+
+
+!>jest进行单元测试
+
+```js
+//测试一些些伪代码 详见jest—— moveZero1 和 moveZero2 单元测试用例是一样的
+import {moveZero1} from '../文件'
+describe('移动0到数组末尾',()=>{
+  //0,1,1,2,3,5,8,13,21,34
+  it('正常情况',()=>{
+    const arr = [1,0,3,4,0,0,11,0]
+    expect(moveZero1(arr)).toEqual([1,3,4,11,0,0,0,0])
+    
+  })
+  it('没有0',()=>{
+    const arr=[1,3,4,11]
+      expect(moveZero1(arr)).toEqual([1,3,4,11])
+  })
+  it('全是0',()=>{
+    const arr=[0,0,0,0]
+      expect(moveZero1(arr)).toEqual([0,0,0,0])
+  })
+})
+```
+
+## 10.获取字符串中连续最多的字符以及次数
+
+
