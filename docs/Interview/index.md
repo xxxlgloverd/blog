@@ -1553,4 +1553,404 @@ describe('移动0到数组末尾',()=>{
 
 ## 10.获取字符串中连续最多的字符以及次数
 
+* 输入 'abbcccddeeee1234',计算得到连续最多的字符是'e'，4次
 
+
+### 传统思路_嵌套循环
+>找出每个字符的连续次数，并记录
+>
+>看似时间复制度是O(n^2)
+>
+>实际时间复杂度-O(n)因为有跳步
+### 思路_双指针
+>定义指针i和j。j不动，i继续移动
+>
+>如果i和j的值一直相等，则i继续移动
+>
+>直到i和j的值不相等，记录处理，让j追上i。继续第一步
+
+### 思路_正则表达式——效率极低 慎用，也徒增了空间复杂度O(n)
+
+!>算法题尽量用低级代码， 慎用语法糖和高级API
+
+```js
+interface IRes{
+  char:string
+  length:number
+}
+
+/**
+ * 求连续字符和次数（嵌套循环）
+ * @param str
+ */
+ function findContinuousChar1(str:string):IRes { 
+  const res:IRes={
+    char:'',
+    length:0
+  }
+  const length = str.length
+  if(length===0) return res
+  let tempLength=0 //临时记录当前连续字符的长度
+  for(let i = 0;i<length;i++){
+    tempLength=0 //重置
+    for(let j=i;j<length;j++){
+      if(str[i]==str[j]){
+        tempLength++
+      }
+      //不相等或者已经到了最后一个元素，要去判断最大值
+      if(str[i]!==str[j]||j===length-1){
+        if(tempLength>res.length){
+          res.char=str[i]
+          res.length = tempLength
+        }
+        if(i<length-1){
+          i=j-1 //跳步
+        }
+        break
+      }
+    }
+  }
+  return res
+};
+
+/**
+ *  求连续字符和次数（双指针）
+ * @param str
+ */
+ function findContinuousChar2(str:string):IRes{
+  const res:IRes={
+    char:'',
+    length:0
+  }
+  const length = str.length
+  if(length===0) return res
+  let tempLength=0 //临时记录当前连续字符的长度
+  let i=0;
+  let j=0;
+  for(;i<length;i++){
+    if(str[i]===str[j]){
+      tempLength++
+    }
+     if(str[i]!==str[j]||i===length-1){
+      if(tempLength>res.length){
+        res.char=str[j]
+        res.length=tempLength
+      }
+      tempLength=0
+      if(i<length - 1){
+        j = i
+        i--
+      }
+    }
+  }
+  return res
+};
+
+//功能测试
+const str = 'aabbccceeee1234'
+console.log(findContinuousChar1(str))
+
+
+//性能测试
+const str = ''
+for(let i = 0;i<100*10000;i++){
+  str+=i.toString()
+}
+console.time('findContinuousChar1')
+findContinuousChar1(str) //219ms
+console.timeEnd('findContinuousChar1')
+
+console.time('findContinuousChar2')
+findContinuousChar2(str) //228ms
+console.timeEnd('findContinuousChar2')
+```
+
+
+!>jest进行单元测试
+
+```js
+//测试一些些伪代码 详见jest—— findContinuousChar1 和 findContinuousChar2 单元测试用例是一样的
+import {findContinuousChar1,findContinuousChar2} from '../文件'
+describe('连续字符和长度',()=>{
+  it('正常情况',()=>{
+    const str='aabbbcccdddeeee1234'
+    expect(findContinuousChar1(str)).toEqual({char:'e',length:4})
+    
+  })
+  it('空字符串',()=>{
+    expect(findContinuousChar1('')).toEqual({char:'',length:0})
+  })
+  it('无连续字符',()=>{
+   expect(findContinuousChar1('abc')).toEqual({char:'a',length:1})
+  })
+  it('全部连续字符',()=>{
+   expect(findContinuousChar1('aaa')).toEqual({char:'a',length:3})
+  })
+})
+```
+## 11.实现快速排序并说明时间复杂度
+
+### 固定算法固定思路
+>
+>找到中间位置 midValue
+>
+>遍历数组，小于midValue放在left,否则放在right
+>
+>继续递归，最后concat 拼接，返回
+>
+
+`细节`
+>
+>获取midValue的两种方式；
+>
+>使用splice,会修改原数组
+>
+>使用slice,不会修改原数组——更加推荐！
+>
+>
+```js
+/**
+ * 快速排序（splice）
+ * @param arr
+ */
+ function quickSort1(arr:number[]):number[] { 
+   let length = arr.length
+   if(length == 0) return arr
+   let midIndex = Math.floor(length/2)
+   let midValue = arr.splice(midIndex,1)[0]
+   let left = []
+   let right = []
+   //注意这里不用直接用length,而是用arr.length.因为splice把数组改变了
+   for(let i = 0; i<arr.length;i++){
+     const n = arr[i]
+     if(n<midValue){
+       left.push(n)
+     }else{
+       right.push(n)
+     }
+   }
+   return quickSort1(left).concat([midValue],quickSort1(right))
+};
+
+/**
+ * 快速排序（slice）
+ * @param arr
+ * 时间复杂度 O(nlogn)
+ */
+ function quickSort2(arr:number[]):number[]{
+   let length = arr.length
+   if(length == 0) return arr
+   let midIndex = Math.floor(length/2)
+   let midValue = arr.slice(midIndex,midIndex+1)[0]
+   let left = []
+   let right = []
+   for(let i = 0; i<length;i++){
+      const n = arr[i]
+      if(n!==midValue){ 
+          if(n<midValue){
+            left.push(n)
+          }else{
+            right.push(n)
+          }
+      }   
+   }
+   return quickSort2(left).concat([midValue],quickSort2(right))
+};
+
+//功能测试
+    const arr=[6,1,8,2,4,9,5,7,3]
+    quickSort1(arr)
+//性能测试
+const arr1 = []
+for(let i = 0;i<10*10000;i++){
+    arr1.push(Math.floor(Math.random()*1000))
+}
+console.time('quickSort1')
+quickSort1(arr1) //74ms
+console.timeEnd('quickSort1')
+
+const arr2 = []
+for(let i = 0;i<10*10000;i++){
+    arr2.push(Math.floor(Math.random()*1000))
+}
+console.time('quickSort2')
+quickSort1(arr2) //82ms
+console.timeEnd('quickSort2')
+//算法本身时间复杂度就够高O(n*logn)
+//外加，splice 是逐步二分之后执行得，二分会快速削减数量级
+//如果单独比较splice和slice效果就会非常明显；
+
+//单独比较splice和slice
+const arr1 = []
+for(let i = 0;i<10*10000;i++){
+    arr1.push(Math.floor(Math.random()*1000))
+}
+console.time('splice')
+arr.splice(5*10000,1) //0.01220ms
+console.timeEnd('splice')
+
+const arr2 = []
+for(let i = 0;i<10*10000;i++){
+    arr2.push(Math.floor(Math.random()*1000))
+}
+console.time('slice')
+arr.slice(5*10000,5*10000+1) //0.00805ms
+console.timeEnd('slice')
+```
+
+!>jest进行单元测试
+
+```js
+//测试一些些伪代码 详见jest—— quickSort1 和 quickSort2 单元测试用例是一样的
+import {quickSort1,quickSort2} from '../文件'
+describe('快速排序',()=>{
+  it('正常情况',()=>{
+    const arr=[6,1,8,2,4,9,5,7,3]
+    expect(quickSort1(arr)).toEqual([1,2,3,4,5,6,7,8,9])
+  })
+  it('有负数',()=>{
+    const arr=[-2,1,4,-1,3,2]
+    expect(quickSort1(arr)).toEqual([-2,-1,1,2,3,4])
+  })
+  it('数组元素一样',()=>{
+    const arr=[1,1,1,1,1]
+    expect(quickSort1(arr)).toEqual([1,1,1,1,1])
+  })
+  it('空数组',()=>{
+    expect(quickSort1([])).toEqual([])
+  })
+})
+```
+
+## 12.获取1-10000之前所有的对称数（回文数）
+
+`思路一：使用数组反转、比较`
+>
+>数字转换为字符串，再转换为数组
+>
+>数组reverse,再join为字符串
+>
+>前后字符串比较
+
+
+`思路二：字符串头尾比较`
+>
+>数字转换为字符串
+>
+>字符串头尾字符比较
+>
+>也可以用栈，像括号匹配，但是要注意奇偶数
+>
+
+`思路三：生成反转数`
+>
+>使用%和Math.floor 生成反转数
+>
+>前后数字进行比较
+>
+
+!>**性能分析** <br/>
+思路1-看似是O(n)，但数组转换、操作都是需要时间，所以很慢； <br/>
+思路2vs思路3，操作数字更快，电脑原型就是计算器 <br/>
+思路2 要用栈来实现不合适，因为栈一般也是数组实现的会慢 <br/>
+
+
+```js
+/**
+ * 查找回文数（数组反转比较）
+ * @param max查找最大范围值
+ */
+ function findPalindromeNumbers1(max:number):number[] { 
+    const res :number[]=[]
+    if(max<=0)return res
+    for(let i=1;i<=max;i++){
+      const str=i.toString()
+      //转换成字符串之后 再对字符串进行反转比较，（需要将其转换成数组反转数组在拼接成字符串）
+      if(str== str.split('').reverse().join('')){
+        res.push(i)
+      }
+    }
+    return res
+  };
+
+
+  /**
+ * 查找回文数（字符串头尾比较）
+ * @param max查找最大范围值
+ */
+ function findPalindromeNumbers2(max:number):number[] { 
+    const res :number[]=[]
+    if(max<=0)return res
+    for(let i=1;i<=max;i++){
+      const str=i.toString()
+      const length = str.length
+      let flag = true
+      let startIndex = 0
+      let endIndex = length-1
+      while(startIndex<endIndex){
+        if(s[startIndex]!==s[endIndex]){
+          flag=false
+          break
+        }else{
+          startIndex++
+          endIndex--
+        }
+      }
+      if(flag) res.push(i)
+    }
+    return res
+  };
+
+  /**
+ * 查找回文数（生成反转数）
+ * @param max查找最大范围值
+ */
+ function findPalindromeNumbers3(max:number):number[] { 
+    const res :number[]=[]
+    if(max<=0)return res
+    for(let i=1;i<=max;i++){
+       let n=i
+       let rev= 0
+       while(n>0){
+         rev = rev*10+n%10
+         n=Math.floor(n/10)
+       }
+       if(i===rev)res.push(i)
+    }
+    return res
+  };
+  
+  //性能测试
+console.time('findPalindromeNumbers1')
+findPalindromeNumbers1(100*10000) //408ms
+console.timeEnd('findPalindromeNumbers1')
+
+console.time('findPalindromeNumbers2')
+findPalindromeNumbers2(100*10000) //53ms
+console.timeEnd('findPalindromeNumbers2')
+
+console.time('findPalindromeNumbers3')
+findPalindromeNumbers3(100*10000) //42ms
+console.timeEnd('findPalindromeNumbers3')
+```
+
+
+!>jest进行单元测试
+
+```js
+//测试一些些伪代码 详见jest—— findPalindromeNumbers1单元测试用例是一样的
+import {findPalindromeNumbers1,findPalindromeNumbers2,findPalindromeNumbers3} from '../文件'
+describe('查找回文数',()=>{
+  it('正常情况',()=>{
+    expect(findPalindromeNumbers1(200).length).toBe(28)
+  })
+  it('max小于0',()=>{
+  expect(findPalindromeNumbers1(0)).toEqual([])
+  })
+})
+```
+
+?>**划重点** <br/>
+尽量不要转换数据结构，尤其是转换成数组这种有序结构 <br/>
+尽量不要使用内置的API (reverse), 不好识别复杂度 <br/>
+数字操作最快，其次是字符串 <br/>
