@@ -1954,3 +1954,227 @@ describe('查找回文数',()=>{
 尽量不要转换数据结构，尤其是转换成数组这种有序结构 <br/>
 尽量不要使用内置的API (reverse), 不好识别复杂度 <br/>
 数字操作最快，其次是字符串 <br/>
+
+
+## 13.高效的字符串前缀匹配
+
+* 有一个人英文单词库（数组），里面有几十万个英文单词
+* 输入一个字符串，快速判断是不是某一个单词的前缀
+* 说明思路，不需要写代码
+
+`常规思路`
+>
+>第一，遍历单词库数组
+>
+>第二，indexOf判断前缀
+>
+>实际时间复杂度超过O(n)，因为要考虑indexOf的计算量
+>
+`优化`
+>
+>英文字母一共26个，可以提前把单词库数组拆分为26个
+>
+>既然第一层拆分为26个，第二层、第三层，还可以继续拆分
+>
+>最后单词库拆分为一棵树
+
+`性能分析`
+>
+>如遍历数组，时间复杂度至少O(n)起步（n是数组长度）
+>
+>而改为树，时间复杂度降低到O(m)(m是单词的长度)
+>
+>PS：哈希表（对象）通过key查询，时间复杂度是O(1)
+
+`划重点`
+>
+>考虑优化原始数据结构（需和面试官沟通确认）
+>
+>有明确范围的数据（如26个英文字母），考虑使用哈希表（对象）
+>
+>以空间换时间，定义数据结构最重要
+>
+
+## 14.数字千分位格式化
+
+* 将数字千分位格式化，输出字符串
+* 如输入数字12050100，输出字符串12，050，100
+* （注意：逆序判断）
+
+`常规思路`
+
+* 转化为数组，reverse，每3位拆分
+* 使用正则表达式 性能极差
+* 使用字符串拆分 推荐！！
+
+```js
+/**
+ * 千分位格式化（使用数组）
+ * @param n
+ */
+ function format1(n:number):string { 
+    n = Math.floor(n) //只考虑整数
+    const s= n.toString()
+    const arr=s.split('').reverse()
+    return arr.reduce((prev,val,index)=>{
+        if(index % 3 === 0){
+          if(prev){
+            return val+ ','+prev
+          }else{
+            return val
+          }
+        }else{s
+          return val + prev
+        }
+    },'')
+  };
+
+/**
+ * 千分位格式化（字符串）
+ * @param n
+ */
+ function format2(n:number):string { 
+    n = Math.floor(n) //只考虑整数
+    let res = ''
+
+    const s= n.toString()
+    const length = s.length
+    for(let i=length-1;i>=0;i--){
+      const j = length - i
+      if(j %3 ===0){
+         if(i === 0){
+           res = s[i] + res
+         }else{
+           res = ',' + s[i] + res
+         }
+      }else{
+        res=s[i] + res
+      }
+
+    }
+    return res
+  };
+  //功能测试
+  const n = 10201004050
+  format1(n)
+  ```
+
+!>jest进行单元测试
+
+```js
+//测试一些些伪代码 详见jest—— format1单元测试用例是一样的
+import {format1,format2} from '../文件'
+describe('数字千分位格式化',()=>{
+  it('正常情况',()=>{
+    const n = 10201004050
+    const res = format1(n)
+    expect(res).toBe('10,201,004,050')
+  })
+  it('小于1000',()=>{
+  expect(format1(0)).toBe('0')
+  })
+})
+```
+
+## 15.切换字母大小写
+
+* 输入一个字符串，切换其中字母大小写
+* 如输入字符串12aBc34，输出字符串12AbC34
+
+`常规思路`
+
+* 使用正则表达式 性能极差
+* 通过ASCII码判断 推荐！！
+
+```js
+/**
+ * 切换字母大小写（正则表达式）
+ * @param s
+ */
+ function switchLetterCase1(s:string):string { 
+    const res = ''
+    const length = s.length
+    if(length == 0) return res
+    const reg1 = /[a-z]/
+    const reg2 = /[A-Z]/
+    for (let i = 0;i<length;i++){
+      const c = s[i]
+      if(reg1.test(c)){
+        res += c.toUpperCase()
+      }else if (reg2.test(c)){
+        res += c.toLowerCase()
+      }else{
+        res += c
+      }
+    }
+    return res
+ }
+
+/**
+ * 切换字母大小写（ASCII码）
+ * @param s
+ */
+ function switchLetterCase2(s:string):string { 
+    const res = ''
+    const length = s.length
+    if(length == 0) return res
+    for (let i = 0;i<length;i++){
+       const c = s[i]
+       const code = c.charCodeAt(0)
+       if (code >= 65 && code <= 90){
+         res += c.toLowerCase()
+       }else if (code >= 97 && code <= 122){
+          res += c.toUpperCase()
+       }else{
+          res += c
+       }
+    }
+    return res
+
+ }
+
+  //功能测试
+  const s = '12aBc34'
+  switchLetterCase1(s)
+
+  //性能测试
+  const s = '12aBc3412aBc3412aBc3412aBc3412aBc3412aBc3412aBc3412aBc3412aBc3412aBc3412aBc3412aBc34'
+  console.time('switchLetterCase1')
+  for (let i = 0; i<10*10000;i++){
+      switchLetterCase1(s) //436ms
+  }
+  console.timeEnd('switchLetterCase1')
+
+  console.time('switchLetterCase2')
+  for (let i = 0; i<10*10000;i++){
+      switchLetterCase2(s) //210ms
+  }
+  console.timeEnd('switchLetterCase2')
+```
+
+  !>jest进行单元测试
+
+```js
+//测试一些些伪代码 详见jest—— switchLetterCase1单元测试用例是一样的
+import {switchLetterCase1,switchLetterCase2} from '../文件'
+describe('切换字母大小写',()=>{
+  it('正常情况',()=>{
+    const s = '12aBc34'
+    const res = switchLetterCase1(s)
+    expect(res).toBe('12AbC34')
+  })
+  it('空字符串',()=>{
+    expect( switchLetterCase1('')).toBe('')
+  })
+  it('非字母',()=>{
+    expect( switchLetterCase1('100%%你好')).toBe('100%%你好')
+  })
+})
+```
+
+## 16.0.1+0.2 !== 0.3
+
+**计算机使用二进制存储数据**
+* 整数转换二进制没有误差，如9 转换为二进制是 1001，而小数可能无法用二进制准确表达，如 0.2转换为 1.1001100 ..
+* （不光JS，其他编程语言也都一样）
+* 可用第三方库 https://www.npmjs.com/package/mathjs
