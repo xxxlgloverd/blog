@@ -402,12 +402,105 @@ options请求，是跨域请求之前的预检查；<br>
 > 
 >异步
 
-`异步——宏任务和微任务`
+`浏览器异步——宏任务和微任务`
 
 * 宏任务，如 setTimeout setInterval 网络请求
 * 微任务，如 promise async/await
-* 微任务在下一轮DOM渲染之前执行，宏任务在之后执行
+* 微任务在下一轮`DOM渲染`之前执行，宏任务在之后执行
 
+```js
+console.log('start')
+setTimeout(()=>{
+  console.log('timeout')
+})
+Promise.resolve().then(()=>{
+  console.log('Promise then')
+})
+console.log('end')
+//start end  Promise then  timeout
+//队列先进先出，宏任务队列（MarcoTask Queue） 微任务队列（MicroTask Queue）
+```
+`nodejs异步——宏任务和微任务`
+* Nodejs同样使用ES语法，也是单线程，也需要异步
+* 异步任务也分：宏任务 + 微任务
+* 但是，它的宏任务和微任务，分不同`类型`，有`不同优先级
+
+
+>nodejs `宏任务`类型和优先级(高到低)
+>
+>Timers - setTimeout setInterval
+>
+>V/O callbacks - 处理网络、流、TCP 的错误回调
+>
+>Idle, prepare- 闲置状态（nodejs 内部使用）
+>
+>Poll 轮询 -执行 poll 中的I/0队列
+>
+>Check 检查 - 存储 setimmediate 回调
+>
+>Close callbacks - 关闭回调，如 socket.on('close' )
+
+
+>nodejs `微任务`类型和优先级
+>
+>包括：promise, async/await, process.nextTick
+>
+>注意，process.nextTick 优先级最高
+>
+
+?>`nodejs event loop` <br/>
+• 执行同步代码 <br/>
+• 执行微任务（process.nextTick 优先级更高）<br/>
+• 按顺序执行 6 个类型的宏任务（ 每个结束时都执行当前的微任务）<br/>
+
+!>`注意事项` <br/>
+• 推荐使用 setImmediate 代替 process.nextTick* <br/>
+• 本文基于nodejs 最新版本。nodejs 低版本可能会有不同 <br/>
+```js
+    console.info('start')
+    setImmediate(() => {
+      console.info("setImmediate')
+    })
+    setTimeout(()=>
+      console.info("timeout)
+    })
+    Promise.resolve().then(()=> 
+      console.info("promise then')
+    })
+    process.nextTick(()=>{
+      console.info(nextTick)
+    })
+    console.info("end" )
+
+//start end nextTick  promise then timeout setImmediate
+```
+## 3.vdom真的很快？
+
+* Virtual DOM ，虚拟DOM
+* 用JS对象模拟DOM节点数据
+* 由React最先推广的
+* Vue React 数据驱动视图这是比较核心的;只关注业务数据，而不用再关心DOM的变化
+
+>vdom 并不快，js直接操作DOM才是最快的
+>
+>但“数据驱动视图”要有合适的技术方案，不能全部DOM重建
+>
+>vdom就是目前最合适的技术方案（并不是因为它快，而是合适）
+>
+>svelte 组件编译更准确，像外科手术式操作DOM,像JQuery那样操作Dom,但没有Vue、React稳定
+
+## 4.遍历数组，for 和 forEach 哪个快？
+
+>时间复杂度都是O(n)
+>
+>但是for比forEach更快一些
+>
+>forEach 每次都要创建一个函数来调用，而for不会创建函数
+>
+>函数需要独立的作用域，会有额外的开销
+
+!>越`低级`的代码，性能往往越好 <br/>
+日常开发别只考虑性能，forEach 代码可读性更好
 
 # 算法篇 #
 
@@ -2112,7 +2205,7 @@ describe('查找回文数',()=>{
   format1(n)
   ```
 
-!>jest进行单元测试
+!> jest进行单元测试
 
 ```js
 //测试一些些伪代码 详见jest—— format1单元测试用例是一样的
@@ -2205,7 +2298,7 @@ describe('数字千分位格式化',()=>{
   console.timeEnd('switchLetterCase2')
 ```
 
-  !>jest进行单元测试
+!>jest进行单元测试
 
 ```js
 //测试一些些伪代码 详见jest—— switchLetterCase1单元测试用例是一样的
@@ -2231,3 +2324,4 @@ describe('切换字母大小写',()=>{
 * 整数转换二进制没有误差，如9 转换为二进制是 1001，而小数可能无法用二进制准确表达，如 0.2转换为 1.1001100 ..
 * （不光JS，其他编程语言也都一样）
 * 可用第三方库 https://www.npmjs.com/package/mathjs
+
