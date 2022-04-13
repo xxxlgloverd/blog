@@ -1,4 +1,5 @@
-# 基础篇 #
+#
+# 基础篇
 
 ## 1.Ajax-Fetch-Axios三者有什么区别?
 
@@ -355,6 +356,58 @@ computed有缓存而watch是没有的；<br>
 options请求，是跨域请求之前的预检查；<br>
 浏览器自行发起的，无需我们干预；<br>
 不会影响实际功能；<br>
+
+# 深度篇——原理
+
+## 1.JS内存垃圾回收用什么算法
+>
+>垃圾回收：函数已经执行完了 再也用不到的一些对象和数据
+>
+>引用计数（之前） 循环引用出现一些缺陷， 引用次数为0则被清除
+>
+>标记清除（现代）从js的根（window）下逐步遍历，只要能找到的就保留，没有找到就清除
+
+### I.【连环问】JS闭包是内存泄漏吗
+>
+>闭包不是内存泄漏，但是闭包的数据不会被垃圾回收
+
+### II.如何检测JS内存泄漏
+>
+>泄漏的情况就是一直上升，正常的情况是锯齿上升下降高低形状
+>
+>可使用 Chrome devTools 的Performance 和 Memory 工具来检测 js 内存
+
+![检测内存泄漏](image/检测内存泄漏.jpg) 
+
+
+### III.JS内存泄漏的场景有哪些(Vue为例) 
+>
+>被全局变量、函数引用，组件销毁时未清除 (window定义的变量和函数 要去销毁 赋值为 null)
+>
+>被全局事件、定时器引用，组件销毁时未清除 (setInterval ,clearInterval,window.addEventListen,window.removeEventListener)
+>
+>被自定义事件引用，组件销毁时未清除 (event)
+
+### IV.WeakMap WeakSet 
+> 弱引用 ，weakMap的key 只能是引用类型
+> 
+> 没有length,size ,也不能用foreach 只能用get去控制；
+> 
+> 不会影响垃圾回收，也不会带来内存泄漏的风险
+
+## 2.浏览器和nodejs事件循环（EventLoop）有什么
+> js 是单线程的（无论在浏览器还是nodejs）
+> 
+> 浏览器中js执行和DOM渲染共用一个线程
+> 
+>异步
+
+`异步——宏任务和微任务`
+
+* 宏任务，如 setTimeout setInterval 网络请求
+* 微任务，如 promise async/await
+* 微任务在下一轮DOM渲染之前执行，宏任务在之后执行
+
 
 # 算法篇 #
 
