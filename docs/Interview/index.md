@@ -502,6 +502,143 @@ console.log('end')
 !>越`低级`的代码，性能往往越好 <br/>
 日常开发别只考虑性能，forEach 代码可读性更好
 
+## 5.nodejs如何开启多进程，进程如何通讯-进程和线程的,使用child_process或者cluster(集群)
+
+!>`进程`**process** vs `线程` **thread** <br/>
+• 进程，OS(操作系统) 进行资源分配和调度的最小单位，有独立内存空间；线程，OS 进行运算调度的最小单位，共享进程内存空间 <br/>
+• 一个进程包含多个线程，进程之间是独立的
+• JS是单线程的，但可以开启多进程执行，如 WebWorker <br/>
+
+!>`为何需要多进程？`  <br/>
+• 多核CPU，更适合处理多进程，内存较大，多个进程才能更好的利用（单进程有内存上限,内存利用不高，资源浪费），总之，“压榨〞机器资源，更快，更节省！ <br/>
+
+>**nodejs**开启多进程可以使用开启子进程 child_process.fork 和 cluster.fork,使用send和on传递消息 
+>
+>实际工作中可以使用PM2插件帮助我们做进程守护
+
+?>**使用 child_process 的方式**
+```js
+//主进程-process-fork
+const http = require('http')
+const fork = require('child_process').fork
+
+const server = http.createServer((req,res)=>{
+  if(req.url === 'get_sum'){
+    console.info('主进程 id',process.pid)
+
+    //开启子进程
+    const computeProcess = fork('./compute.js')
+    computeProcess.send('开始计算')
+
+    computeProcess.on('message',data=>{
+      console.info('主进程接受到的信息：',data)
+      res.send('sum is '+data)
+    })
+
+     computeProcess.on('close',data=>{
+      console.info('子进程因报错而退出')
+      computeProcess.kill()
+      res.send('error ')
+    })
+  }
+})
+server.listen(3000,()=>{
+  console.info('localhost:3000')
+})
+```
+
+```js
+  //子进程-compute
+  function getSum(){
+    let sum = 0
+    for(let i = 0;i < 10000;i++){
+      sum += i
+    }
+    return sum
+  }
+
+  process.on('message',data=>{
+      console.info('子进程 id',process.pid)
+      console.info('子进程接受到的信息：',data)
+
+      const sum = getSum()
+      //发送消息给主进程
+      process.send(sum)
+    })
+```
+?>`打印的结果` <br/>
+>localhost:3000
+>
+>主进程 id 80780
+>
+>子进程 id 80781
+>
+>子进程接受到的信息：开始计算
+>
+>主进程接受到的信息：49995000
+>
+?>**使用 cluster 的方式** <br/>
+
+```js
+  const http = require('http')
+  const cpuCoreLength = require('os').cpus().length
+  const cluster = require('cluster')
+
+  if(cluster.isMaster){
+    for(let i=0;i<cpuCoreLength;i++){
+      cluster.fork() //开启子进程
+    }
+  cluster.on('exit',worker=>{
+    console.log('子进程退出')
+    cluster.fork() //进程守护
+  })
+  }else{
+    //多个进程会共享一个TCP连接，提供一份网络服务
+    const server =  http.createServer((req,res)=>{
+    res.writeHead(200)
+    res.end('done')
+    })
+    server.listen(3000)
+  }
+
+```
+## 6.js-bridge的实现原理
+
+?>小游戏： chrome://dino/
+`JS Bridge常用的实现方式`
+* 注册全局API (简单的封装)
+* URL Scheme (推荐)
+
+```js
+//封装JS-bridge
+const sdk = {
+    invoke(url, data = {}, onSuccess, onError) {
+      const iframe = document.createElement("iframe") 
+      iframe.style.visibility ='hidden'
+      document.body.appendChild(iframe)
+      iframe.onload = () => {
+          const content = iframel.contentWindow.document.body.innerHTML
+          onSuccess(JSON.parse(content))
+          iframe.remove()
+      }
+      iframe.onerror = () => {
+      onError()
+      iframe.remove()
+      iframe.src= `my-app-name://$(url}?data=${JSON.stringify(data)}`
+      }
+    }
+    fn1(data, onSuccess, onError) {this. invoke('api/fn1', data, onSuccess, onError)}
+    fn2(data, onSuccess, onError) {this.invoke('api/fn2', data,onSuccess, onError)}
+}
+  sdk.fn1()
+
+```
+## 7.requestIdleCallback  和 requestAnimationFrame 区别
+> requestAnimationFrame 每次渲染完都会执行，高优
+> requestIdleCallback 空闲时才会执行，低优 
+> 都是宏任务
+> 
+
 # 算法篇 #
 
 !> 算法复杂度-程序执行时需要的计算量和内存空间，复杂度是数量级（颗粒度粗） <br>前端通常`重时间轻空间`<br>
