@@ -639,6 +639,103 @@ const sdk = {
 > 都是宏任务
 > 
 
+```html
+<html>
+<body>
+  <button id='btn1'>change</button>
+  <div id="box"></div>
+<script>
+    const box = document.getElementById( 'box' )
+    
+    document.getElementById('btn1').addEventListener('click',()=>{
+        let curWidth = 100
+        const maxwidth= 400
+        function addwidth(){
+        curWidth = curWidth + 3
+        box.style.width =
+        `${curwidth}px`
+            if (curwidth < maxWidth) {
+              //requestIdleCallback实现效果一样
+            window.requestAnimationFrame(addwidth)//时间不用自己控制
+            }
+        }
+        addwidth()
+    })
+</script>
+</body>
+</html>
+```
+
+?>执行先后顺序
+
+
+```js
+//执行顺序：start end timeout requestAnimationFrame requestIdleCallback 
+    window.onload = () => {
+      console.info("start')
+      setTimeout(() => {
+      console.info('timeout )
+      })
+      window.requestIdleCallback(()=>
+      {
+        console.info('requestIdleCallback")
+      })
+      window.requestAnimationFrame(()=>
+      {
+        console.info('requestAnimationFrame")
+      })
+      console.info("end')
+    }
+```
+## 8.vue生命周期
+
+?>`beforeCreate` <br/>* 创建一个空白的Vue实例<br/>* data method 尚未被初始化，不可使用<br/>`create` <br/>* Vue实例初始化完成，完成响应式绑定<br/>* data method 都已经初始化完成，可调用<br/>* 尚未开始渲染模板`beforeMount` <br/>* 编译模板，调用render 生成vdom<br/>* 还没有开始渲染DOM<br/>`mounted` <br/>* 完成DOM渲染<br/>* 组件创建完成<br/>* 开始由“创建阶段”进入“运行阶段”<br/>`beforeUpdate` <br/>* data发生变化之后<br/>* 准备更新DOM(尚未更新DOM)<br/>
+`updated` <br/>* data发生变化,且DOM更新完成<br/>* （不要在updated中修改data,可能会导致死循环）<br/>
+`beforeUnmount` <br/>* 组件进入销毁阶段（尚未销毁，可正常使用）<br/>* 可移除、解绑一些全局事件、自定义事件<br/>
+`unmounted` <br/>* 组件被销毁了<br/>* 所有子组件也都被销毁了<br/>
+`补充说明——keep-alive组件`<br/>* onActivated缓存组件被激活<br/>* onDeactivated缓存组件被隐藏<br/>
+
+!>Vue什么时候操作DOM比较合适
+* mounted和updated都不能保证子组件全部挂载完成
+* 使用$nextTick渲染DOM
+
+```js
+mounted(){
+  this.$nextTick(function(){
+    //仅在整个试图都被渲染之后才会运行的代码
+  })
+}
+```
+!>Ajax应该在哪个生命周期？
+* created和mounted
+* 推荐mounted
+## 9.Vue2 Vue3 React 三者diff算法有什么区别？
+
+?>Vue2-双端比较<br/>Vue3-最长递增子序列<br/>React-仅右移
+
+![ReactDiff](image/ReactDiff.png) 
+![vue3Diff](image/vue3Diff.png) 
+
+`Vue React 为何循环时必须使用 key?`
+* vdom diff 算法会根据 key 判断元素是否要删除
+* 匹配了 key ，则只移动元素 -性能较好
+* 未匹配key ，则删除重建-性能较差
+
+![ReactKey](image/ReactKey.png) 
+![keyTemplate](image/keyTemplate.png) 
+
+`介绍diff 算法`
+* diff 算法很早就有
+* diff 算法应用广泛，例如 github 的Pull Request 中的代码 diff
+* 如果要严格 diff 两棵树 ，时间复杂度 O（n^3)，不可用
+
+`Tree diff 的优化——时间复杂度降到O(n)`
+* 只比较同一层级，不跨级比较tag 不同则删掉重建（不再去比较内部的细节）
+* 子节点通过 key 区分（key 的重要性）
+## 10.Vue-router-MemoryHistory(abstract')？
+
+?>Vue-router 三种模式<br/>`Hash` <br/>* location.hash->带 # <br/>`WebHistory`<br/> * history. pushState<br/> * window. onpopstate<br>`MemoryHistor`（ V4 之前叫做 abstract history)<br/> * 页面渲染正常，没有路由映射（就是IP+端口号），没有前进和后退<br/>`扩展：React-router 也有相同的 3 种模式`
+
 # 算法篇 #
 
 !> 算法复杂度-程序执行时需要的计算量和内存空间，复杂度是数量级（颗粒度粗） <br>前端通常`重时间轻空间`<br>
