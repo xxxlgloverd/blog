@@ -711,18 +711,17 @@ mounted(){
 * 推荐mounted
 ## 9.Vue2 Vue3 React 三者diff算法有什么区别？
 
-?>Vue2-双端比较<br/>Vue3-最长递增子序列<br/>React-仅右移
+?>Vue2-双端比较<br/>![vue2Diff](image/vue2Diff.jpg) <br/>Vue3-最长递增子序列<br/>![vue3Diff](image/vue3Diff.jpg) <br/>React-仅右移<br/> ![ReactDiff](image/ReactDiff.jpg)
 
-![ReactDiff](image/ReactDiff.png) 
-![vue3Diff](image/vue3Diff.png) 
 
 `Vue React 为何循环时必须使用 key?`
 * vdom diff 算法会根据 key 判断元素是否要删除
 * 匹配了 key ，则只移动元素 -性能较好
 * 未匹配key ，则删除重建-性能较差
 
-![ReactKey](image/ReactKey.png) 
-![keyTemplate](image/keyTemplate.png) 
+![ReactKey](image/ReactKey.jpg) 
+
+![keyTemplate](image/keyTemplate.jpg) 
 
 `介绍diff 算法`
 * diff 算法很早就有
@@ -735,6 +734,16 @@ mounted(){
 ## 10.Vue-router-MemoryHistory(abstract')？
 
 ?>Vue-router 三种模式<br/>`Hash` <br/>* location.hash->带 # <br/>`WebHistory`<br/> * history. pushState<br/> * window. onpopstate<br>`MemoryHistor`（ V4 之前叫做 abstract history)<br/> * 页面渲染正常，没有路由映射（就是IP+端口号），没有前进和后退<br/>`扩展：React-router 也有相同的 3 种模式`
+
+
+# 广度篇 #
+## 1.移动端H5点击有300ms延迟，该如何解决
+> 背景：double tap to zoom (轻点两下缩放)
+> fastclick (初期解决方案)
+> width = device-width (协议解决)
+## 2.HTTP请求中token和cookie有什么区别
+
+
 
 # 算法篇 #
 
