@@ -778,6 +778,8 @@ token默认没有跨域限制<br>
 `JWT(JSON Web TOken)`<br>
 请求头带着token信息<br>
 
+!>如有严格管理用户信息的需求（保密、快速封禁）推荐Session<br/>
+如没有特殊要求，则使用JWT(如创业初期的网站)
 
 # 算法篇 #
 
