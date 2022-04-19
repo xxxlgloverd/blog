@@ -1,3 +1,4 @@
+# 
 # 组件开发Demo
 
 >实现一个列表组件——局部组件和插槽结合使用灵活性更高！
@@ -127,3 +128,77 @@ describe("HelloWorld.vue", () => {
 });
 
 ```
+# computed && watch
+
+
+`computed`
+```html
+<template>
+  <div>
+    {{ fullName }}
+
+    <div>firstName: <input v-model="firstName" /></div>
+    <div>lastName: <input v-model="lastName" /></div>
+  </div>
+</template>
+<script>
+export default {
+  data: function() {
+    return {
+      firstName: "Foo",
+      lastName: "Bar"
+    };
+  },
+  computed: {
+    fullName: function() {
+      return this.firstName + " " + this.lastName;
+    }
+  },
+  watch: {
+    fullName: function(val, oldVal) {
+      console.log("new: %s, old: %s", val, oldVal);
+    }
+  }
+};
+</script>
+
+```
+`watch`
+ >防抖 重清零
+```html
+<template>
+  <div>
+    {{ fullName }}
+
+    <div>firstName: <input v-model="firstName" /></div>
+    <div>lastName: <input v-model="lastName" /></div>
+  </div>
+</template>
+<script>
+export default {
+  data: function() {
+    return {
+      firstName: "Foo",
+      lastName: "Bar",
+      fullName: "Foo Bar"
+    };
+  },
+  watch: {
+    firstName: function(val) {
+      clearTimeout(this.firstTimeout);
+      this.firstTimeout = setTimeout(() => {
+        this.fullName = val + " " + this.lastName;
+      }, 500);
+    },
+    lastName: function(val) {
+      clearTimeout(this.lastTimeout);
+      this.lastTimeout = setTimeout(() => {
+        this.fullName = this.firstName + " " + val;
+      }, 500);
+    }
+  }
+};
+</script>
+
+```
+

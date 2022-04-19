@@ -740,9 +740,43 @@ mounted(){
 ## 1.移动端H5点击有300ms延迟，该如何解决
 > 背景：double tap to zoom (轻点两下缩放)
 > fastclick (初期解决方案)
-> width = device-width (协议解决)
-## 2.HTTP请求中token和cookie有什么区别
+> width = device-width (标准协议解决，要做响应式 所以没有必要做300ms延迟)
 
+fastclick实现及原理
+
+```js
+window.addEventListener('load',function(){
+  FastClick.attach(document.body)
+},false)
+
+//FastClick原理
+//监听touchend事件（touchstart touchend 会先于click 触发）
+//使用自定义DOM事件模拟一个click事件
+//把默认的click事件（300ms之后触发）禁止掉
+
+```
+## 2.HTTP请求中token和cookie有什么区别
+>
+>cookie:HTTP标准，跨域限制，配合session使用
+>
+>token:无标准，无跨域限制，用于JWT
+
+?>**cookie**<br>
+HTTP无状态，每次请求都要带cookie,以帮助识别身份<br>
+服务端也可以向客户端set-cookie,cookie大小限制4kb<br>
+默认有跨域限制：不可跨域共享、传递cookie(withCredentials允许跨域传递)<br>
+HTML5之前cookie常被用于本地存储<br>
+HTML5之后推荐使用localStorage和sessionStorage<br>
+现代浏览器开始禁止第三方cookie,打击第三方广告，保护个人隐私，新增SameSite:Strict/Lax/none<br/>
+cookie+session是常用的登录验证解决方案；
+
+
+?>**token**<br>
+cookie是HTTP规范，而token是自定义传递<br>
+cookie会默认被浏览器存储，而token需自己存储<br>
+token默认没有跨域限制<br>
+`JWT(JSON Web TOken)`<br>
+请求头带着token信息<br>
 
 
 # 算法篇 #
