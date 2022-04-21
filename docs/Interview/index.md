@@ -878,8 +878,29 @@ token默认没有跨域限制<br>
 ```
 ## 6.前端攻击手段有哪些，该如何预防?
 >XSS
->
->
+* Cross Site Script跨站脚本攻击
+* 手段：黑客将JS代码插入到网页内容中，渲染时执行JS代码
+* 预防：特殊字符替换（前端或者后端）
+* vue中用v-html会发生XSS攻击，其他的vue不会
+
+>CSRF
+* Cross Site Request Forgery 跨站请求伪造
+* 手段：黑客诱导用户去访问另一个网站的接口，伪造请求
+* 预防：严格的跨域限制+验证码机制
+
+>点击劫持
+* Click jacking
+* 手段：诱导界面上蒙一个透明的iframe,诱导用户点击
+* 预防：让iframe不能跨域加载（X-frame-options:sameorigin）
+
+>DDoS
+* Distribute denial-of-service 分布式拒绝服务
+* 手段：分布式的、大规模的流量访问，使服务器瘫痪
+* 预防：软件层不好做，需要硬件预防（如阿里云WAF）
+
+>SQL注入
+* 手段：黑客提交内容时写入SQL语句，破坏数据库
+* 预防：处理输入的内容，替换特殊字符看，
 
 # 算法篇 #
 
