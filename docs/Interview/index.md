@@ -814,6 +814,72 @@ token默认没有跨域限制<br>
 * HTTP协议1.1：缓存策略cache-control E-tag等；支持长连接Connection:keep-alive,一次TCP连接多次请求；支持断点续传，状态码206；支持新的方法PUT DELETE等，可用Restful API
 * HTTP协议2.0：可压缩header,减少体积；多路复用，一次TCP连接中可以多个HTTP并行请求；服务端推送；
 
+## 4.HTTPS中间人攻击，如何预防？
+
+> HTTPS加密传输
+
+* HTTP明文传输
+* HTTPS加密传输，HTTPS+TLS/SSL;对称加密和非对称加密
+
+![HTTPS加密](image/HTTPS加密.jpg) 
+
+![中间人攻击](image/中间人攻击.jpg) 
+
+## 5.script标签的defer和async有什么区别?
+
+![script区别](image/script区别.jpg) 
+
+>无：HTML暂停解析，下载JS,执行JS,再继续解析HTML
+>
+>defer：HTML继续解析，并行下载JS,HTML解析完再执行JS
+>
+>async：HTML继续解析，并行下载JS,执行JS,再解析HTML
+>
+>执行JS不能并行但是下载JS支持并行
+>
+
+?>prefetch和dns-prefetch <br/>
+* prefetch 是资源预获取（和preload相关）
+* dns-prefetch是DNS预查询（和preconnect相关）
+
+>preload 资源在当前页面使用，会优先加载
+>
+>prefetch 资源在末来页面使用，空闲时加载
+>
+```html
+<head>
+<!--preload -->
+<link rel="preload" href="style.css" as="style">
+<link rel="preload" href="main.js" as="script">
+<!--prefetch -->
+<link rel="prefetch" href="other.js" as="script">
+<!--引用 css-->
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!--引用 css-->
+<script src="main.js" defer></script>
+</body>
+```
+
+>dns-prefetch 即 DNS 预查询
+>
+>preconnect 即 DNS 预连接
+>
+```html
+<html>
+  <head>
+      <link rel="dns-prefetch" href="https://fonts.gstatic.com/">
+      <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+  </head>
+  <body>
+  </body>
+</html>
+```
+## 6.前端攻击手段有哪些，该如何预防?
+>XSS
+>
+>
 
 # 算法篇 #
 
