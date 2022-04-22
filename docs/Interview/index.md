@@ -902,6 +902,39 @@ token默认没有跨域限制<br>
 * 手段：黑客提交内容时写入SQL语句，破坏数据库
 * 预防：处理输入的内容，替换特殊字符看，
 
+## 7.WebSocket和HTTP协议的区别?
+
+>webSocket
+* 支持端对端通讯
+* 可以由client发起，也可以由server发起
+* 用于：消息通知，直播间讨论区，聊天室，协同编辑
+
+>WebSocket连接过程
+* 先发送一个HTTP请求
+* 成功之后再升级到WebSocket协议，再通讯
+
+>WebSocket和HTTP协议的区别
+* WebSocket协议名是ws://，可双端发起请求
+* WebSocket没有跨域限制
+* 通过send和onmessage通讯（HTTP通过req和res）
+
+![websocket服务端](image/websocket服务端.jpg) 
+
+![websocket客户端](image/websocket客户端.jpg) 
+
+![ws请求](image/ws请求.jpg) 
+
+![wss](image/wss.jpg) 
+
+![socket.io](image/socket.io.jpg) 
+
+>WebSocket和HTTP长轮询的区别
+* HTTP长轮询：客户端发起请求，服务端阻塞，不会立即返回，需要处理timeout机制，处理完timeout之后重新发送请求；
+* WebSocket:客户端可发起请求，服务端也可发起请求
+
+# 8.从输入URL 到网页显示的完整过程
+
+
 # 算法篇 #
 
 !> 算法复杂度-程序执行时需要的计算量和内存空间，复杂度是数量级（颗粒度粗） <br>前端通常`重时间轻空间`<br>
