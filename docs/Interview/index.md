@@ -932,8 +932,63 @@ token默认没有跨域限制<br>
 * HTTP长轮询：客户端发起请求，服务端阻塞，不会立即返回，需要处理timeout机制，处理完timeout之后重新发送请求；
 * WebSocket:客户端可发起请求，服务端也可发起请求
 
-# 8.从输入URL 到网页显示的完整过程
+## 8.从输入URL 到网页显示的完整过程
 
+>关键点：网络请求，解析,渲染
+>
+>DNS查询（得到IP）,建立TCP连接（三次握手）
+>
+>浏览器发起HTTP请求
+>
+>收到请求响应，得到HTML源代码
+>
+>解析HTML过程中，遇到静态资源还会继续发起网络请求，JS、CSS图片 视频等（静态资源有可能强缓存，此时不必请求）
+>
+>HTML构建DOM树
+>
+>CSS构建CSSOM树（style tree）
+>
+>两者结合，形成render tree
+>
+>解析优化有：CSS放在Head中，不要异步加载CSS,JS放在body最下面（或合理使用defer async）,img提前定义width height；
+>
+>Render Tree绘制到页面，计算各个DOM的尺寸、定位最后绘制到页面,遇到JS可能会执行（参考defer async因为html和js共用一个线程），异步CSS、图片加载，可能会触发重新渲染；
+>
+>网络请求：DNS解析，HTTP请求
+>
+>解析：DOM树，CSSOM树，Render Tree
+>
+>渲染：计算、绘制，同时执行JS
+>
+![浏览器解析过程](image/浏览器解析过程.jpg) 
+
+## 9.网页重绘repaint和重排reflow有什么区别
+
+* 网页只要有变化就会有重绘和重排；
+* 重排比重绘影响更大，消耗也更大，所以进行减少无意义的重排；
+* 减少重排：集中修改样式，或直接切换css class,修改前先设置display:none,脱离文件流，使用BFC特性不影响其他元素的位置，频繁触发（resize scroll）使用节流和防抖,使用createDocumentFragement批量操作DOM,优化动画使用CSS3和requestAnimationFrame
+
+
+?>`重绘repaint`<br>元素外观改变，如颜色、背景色，但元素的尺寸、定位不变，不会影响其他元素的位置；<br>`重排reflow`<br>重新计算尺寸和布局，可能会影响其他元素的位置<br>如元素高度增加，可能会使相邻元素位置下移；
+
+?>BFC（Block Format Context块级格式化上下文）特性：内部的元素无论如何改动，都不会影响其他元素的位置<br>触发BFC条件：<br>* 根节点<html> <br> * float:left/right <br> * overflow:auto/scroll/hidden <br> * display:inline-block/table/table-row/table-cell <br> * display:flex/grid 的直接子元素 <br> * position:absolute/fixed;
+
+
+## 10.如何实现网页多标签通讯
+
+?>`WebSocket`<br>无跨域限制，需要服务端支持，成本高；<br>`localStorage通讯`<br>同域的A和B两个页面，A页面设置localstorage,B页面可监听到localstorage值的修改（addEventListener监听storage事件）<br>`SharedWorker通讯`<br>SharedWorker是WebWorker的一种，WebWorker可开启子进程执行JS,但不能操作DOM,SharedWOrker可单独开启一个进程，用于同域页面通讯(chrome隐私模式开启调试，不支持IE11)
+
+## 11.如何实现网页和iframe通讯
+>postmessage 发送消息,第一参数是发送消息，第二个参数就是目标域名信息，不跨域用*表示，监听事件message，接受也可以判断域名合法性；
+
+## 12.Koa2洋葱圈模型
+
+>Koa2
+* 一个简约、流行nodejs框架
+* 通过中间件组织代码
+* 多个中间件以洋葱圈模型执行
+
+!>await 和 async,异步编程原理；
 
 # 算法篇 #
 
