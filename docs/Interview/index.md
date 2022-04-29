@@ -1105,6 +1105,37 @@ token默认没有跨域限制<br>
 
 ?> 形成日常记录的好习惯，为了你自己！！！
 
+## 5.如何统一监听Vue组件报错？
+> 1.window.onerror
+> 
+>  * 全局监听所有JS错误
+> 
+>  * 但它是JS级别的，识别不了Vue组件信息
+> 
+>  * 捕捉一些Vue监听不到的错误,比如异步的报错
+> 
+> 2.errorCaptured 生命周期 （App.vue）
+> 
+>  * 监听所有**下级**组件的错误
+> 
+>  * 返回false会阻止向上传播 
+> 
+>  * 监听要重要的、有风险的组件错误
+> 
+> 3.errorHandler配置 (main.js)
+> 
+>  * Vue 全局错误监听，所有组件错误都会汇总到这里
+> 
+>  * 但是errorCaptured 返回false，就不会传播到这里
+> 
+>  * 和window.onerror 互斥
+> 
+>  * **异步错误** 无法捕获需要用window.onerror
+> 
+>  `Promise 未处理的catch需要 onunhandledrejection`
+> 
+
+
 # 算法篇 #
 
 !> 算法复杂度-程序执行时需要的计算量和内存空间，复杂度是数量级（颗粒度粗） <br>前端通常`重时间轻空间`<br>
