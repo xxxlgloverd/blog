@@ -1135,6 +1135,283 @@ token默认没有跨域限制<br>
 >  `Promise 未处理的catch需要 onunhandledrejection`
 > 
 
+## 6.如果一个H5很慢，如何排查性能问题
+
+* `前端性能指标`
+* First Paint(FP)
+* Fist Contentful Paint(FCP)
+* Fist Meaningful Paint(FMP) ——已弃之，改用LCP
+* DomContentLoaded(DCL)
+* Largest Contentfull Paint(LCP)
+* Load(L)
+
+> Chrome devTools
+* Performance 可查看上述性能指标，并有网页快照
+* Nework可以查看各个资源加载时间
+
+> Lighthouse 测试报告
+* npm install lighthouse
+
+> **如果是网页加载慢**
+* 优化服务端硬件配置，使用CDN
+* 路由懒加载，大组件异步加载——减少主包的体积
+* 优化HTTP缓存策略
+
+> **如果是网页渲染慢**
+* 优化服务端接口（如Ajax获取数据慢）
+* 继续分析，优化前端组件内部的逻辑（参考Vue React 优化）
+* 服务端渲染SSR
+
+> **持续跟进**
+* 性能优化是一个循序渐进的过程，不像bug一次性解决
+* 持续跟进统计结果，再逐步分析性能瓶颈，持续优化
+* 可使用第三方统计服务，如阿里云ARMS、百度统计
+
+?> 要有`监控`，`持续跟进`的思维，解决了问题，还得保持住！！！
+
+## 7.工作中遇到过哪些项目难点，如何解决的？
+
+> **遇见问题要注意积累**
+* 每个人都会遇到难题，总有几个问题让你抓耳挠腮
+* 日常要注意积累，解决了问题就自己写文章复盘一下
+* `如果之前没有积累`，就回顾一下半年之内你遇到的一个难题（肯定会有的）
+* 想一下当时的解决方案，以及解决之后的效果
+* 写一篇文章记录一下
+
+!> `话术模板`<br/> 描述问题：背景+现象+造成的影响<br/>问题如何被解决：分析+解决 <br/>自己的成长：学到了什么+以后如何避免6
+
+# 手写篇 #
+!> 高质量代码特点：编码规范性，功能完整性，鲁棒性<br>
+
+## 1.手写一个JS函数，实现数组扁平化，只减少一级嵌套
+>如 输入[1,[2,[3]],4],输出[1,2,[3],4]
+
+```js
+/**
+ * 数组扁平化，使用push
+ * @param arr
+ * */
+function flatten1(arr:any[]): any[] {
+  const res: any[] = []
+  arr.forEach(item => {
+    if(Array.isArray(item)){
+      item.forEach(n => res.push(n))
+    }else{
+      res.push(item)
+    }
+  })
+  return res
+}
+
+/**
+ * 数组扁平化，使用concat
+ * @param arr
+ * */
+function flatten2(arr:any[]): any[] {
+  let res: any[] = []
+  arr.forEach(item => {
+      res=res.concat(item)
+  })
+  return res
+}
+```
+
+!>jest进行单元测试
+
+```js
+//测试一些些伪代码 详见jest
+import {flatten1} from '../文件'
+describe('数组扁平化',()=>{
+  it('空数组',()=>{
+   const res = flatten1([])
+   expect(res).toEqual([])
+  })
+  it('非嵌套数组',()=>{
+   const arr = [1,2,3]
+   const res = flatten1(arr)
+   expect(res).toEqual([1,2,3])
+  })
+  it('一级嵌套数组',()=>{
+   const arr = [1,2,[10,20],3]
+   const res = flatten1(arr)
+   expect(res).toEqual([1,2,10,20,3])
+  })
+  it('二级嵌套数组',()=>{
+   const arr = [1,2,[10,[100,200],20],3]
+   const res = flatten1(arr)
+   expect(res).toEqual([1,2,10,[100,200],20,3])
+  })
+})
+```
+
+## 2.手写一个JS函数，实现数组深度扁平化
+>如 输入[1,[2,[3]],4],输出[1,2,3,4]
+
+>`思路：`
+* 先实现一级扁平化，然后递归调用，直到全部扁平
+
+```js
+/**
+ * 数组深度扁平化，使用push
+ * @param arr
+ * */
+function flattenDeep1(arr:any[]): any[] {
+  const res: any[] = []
+  arr.forEach(item => {
+    if(Array.isArray(item)){
+      const flatItem = flattenDeep1(item) //递归
+      flatItem.forEach(n => res.push(n))
+    }else{
+      res.push(item)
+    }
+  })
+  return res
+}
+
+/**
+ * 数组扁平化，使用concat
+ * @param arr
+ * */
+function flattenDeep2(arr:any[]): any[] {
+  let res: any[] = []
+  arr.forEach(item => {
+    if(Array.isArray(item)){
+      const flatItem = flattenDeep2(item) //递归
+      res=res.concat(flatItem)
+    }else{
+      res=res.concat(item)
+    }
+  })
+  return res
+}
+```
+
+!>jest进行单元测试
+
+```js
+//测试一些些伪代码 详见jest
+import {flattenDeep1} from '../文件'
+describe('数组深度扁平化',()=>{
+  it('空数组',()=>{
+   const res = flattenDeep1([])
+   expect(res).toEqual([])
+  })
+  it('非嵌套数组',()=>{
+   const arr = [1,2,3]
+   const res = flattenDeep1(arr)
+   expect(res).toEqual([1,2,3])
+  })
+  it('一级嵌套数组',()=>{
+   const arr = [1,2,[10,20],3]
+   const res = flattenDeep1(arr)
+   expect(res).toEqual([1,2,10,20,3])
+  })
+  it('二级嵌套数组',()=>{
+   const arr = [1,2,[10,[100,200],20],3]
+   const res = flattenDeep1(arr)
+   expect(res).toEqual([1,2,10,100,200,20,3])
+  })
+   it('三级嵌套数组',()=>{
+   const arr = [1,2,[10,[100,['a',[true],'b'],200],20],3]
+   const res = flattenDeep1(arr)
+   expect(res).toEqual([1,2,10,100,'a',true,'b',200,20,3])
+  })
+})
+```
+
+## 3.获取类型
+> 手写一个getType函数，传入任意变量，可准确获取类型
+> 
+> 如 number string boolean 等值类型
+> 
+> 还有 object array map regexp等引用类型
+
+> **常见的类型判断**
+* typeof -只能判断值类型，其他就是function 和 object
+* intanceof -需要两个参数来判断，而不是获取类型
+* 
+
+> 使用 Object.prototype.toString.call(x)
+```js
+/**
+ * 获取数据类型
+ * */
+function getType(x:any[]):string{
+  const originType = Object.prototype.toString.call(x) //'[Objec 'String']'此次有空格
+  const spaceIndex = originType.indexOf(' ') //空格的index
+  const type = originType.slice(spaceIndex + 1,-1) //'String'
+  return type.toLowerCase() //'string'
+}
+
+```
+
+!>jest进行单元测试
+
+```js
+//测试一些些伪代码 详见jest
+import {getType} from '../文件'
+describe('获取数据类型',()=>{
+  it('null',()=>{
+   expect(getType(null)).toBe('null')
+  })
+  it('undefined',()=>{
+   expect(getType(undefined)).toBe('undefined')
+  })
+   it('number',()=>{
+   expect(getType(100)).toBe('number')
+   expect(getType(NaN)).toBe('number')
+   expect(getType(Infinity)).toBe('number')
+   expect(getType(-Infinity)).toBe('number')
+  })
+  it('string',()=>{
+   expect(getType('abc')).toBe('string')
+  })
+  it('boolean',()=>{
+   expect(getType(true)).toBe('boolean')
+  })
+  it('symbol',()=>{
+   expect(getType(Symbol())).toBe('symbol')
+  })
+  it('bigint',()=>{
+   expect(getType(BigInt(100))).toBe('bigint')
+  })
+  it('object',()=>{
+   expect(getType({})).toBe('object')
+  })
+  it('array',()=>{
+   expect(getType([])).toBe('array')
+  })
+  it('function',()=>{
+   expect(getType(()=>{})).toBe('function')
+   expect(getType(class Foo {})).toBe('function')
+  })
+  it('map',()=>{
+   expect(getType(new Map())).toBe('map')
+  })
+  it('weakmap',()=>{
+   expect(getType(new WeakMap())).toBe('weakmap')
+  })
+  it('set',()=>{
+   expect(getType(new Set())).toBe('set')
+  })
+  it('weakset',()=>{
+   expect(getType(new WeakSet())).toBe('weakset')
+  })
+  it('date',()=>{
+   expect(getType(new Date())).toBe('date')
+  })
+  it('regexp',()=>{
+   expect(getType(new RegExp(''))).toBe('regexp')
+  })
+  it('error',()=>{
+   expect(getType(new Error())).toBe('error')
+  })
+  it('promise',()=>{
+   expect(getType(Promise.resolve('ok'))).toBe('promise')
+  })
+})
+```
+
 
 # 算法篇 #
 
