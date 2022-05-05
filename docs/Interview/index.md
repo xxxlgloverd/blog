@@ -346,6 +346,23 @@ computed有缓存而watch是没有的；<br>
 * 同源策略一般限制Ajax网络请求，不能跨域请求server
 * 不会限制 `<link><scrip><img><iframe>` 加载第三方资源
 
+### 浏览器发送options预检请求的前提：
+* 在非简单请求且跨域的情况下，浏览器会发送options预检请求；
+* `简单请求`
+*  1.请求方法：get post
+*  2.http请求头信息不超过以下字段
+*    Accept
+*    Accept-Language
+*    Content-Language
+*    Last-Event-ID
+*    Content-Type：只限于（application/x-www-form-urlencoded、multipart/form-data、text/plain）
+* `复杂请求`
+* 非简单请求即为复杂请求，常见复杂请求有：
+*    1.请求方法：put delete
+*    2.Content-Type字段类型胃：application/json
+*    3.添加额外的http header 比如：access_token
+*    在跨域的情况下，非简单请求会先发起一次空body的OPTIONS预检请求用于向服务器请求权限信息，等预检请求被成功响应后，才会发起真正的http请求；
+*    浏览器的预检请求可以通过设置：Access-Control-Max-Age进行缓存
 ### 解决跨域的方法
 
 #### I.JSONP -script 标签去请求
@@ -1410,6 +1427,97 @@ describe('获取数据类型',()=>{
    expect(getType(Promise.resolve('ok'))).toBe('promise')
   })
 })
+```
+
+## 4.new一个对象的过程是什么？手写代码表示
+
+>创建对象
+```js
+function Foo(name){
+  this.name = name
+  this.city = 'beijing'
+}
+Foo.prototype.getName = function() { return this.name}
+const f = new Foo('test')
+f.getName() //'test'
+class Foo1 {}
+typeof Foo1 //'function'
+```
+### new一个对象的过程
+
+* 创建一个空对象obj,继承构造函数的原型
+* 执行构造函数（将obj作为this）
+* 返回obj
+
+```js
+function customNew<T>(constructor:Function,...args:any[]):T{
+  //1.创建一个空对象，继承构造函数的原型
+  const obj = Object.create(constructor.prototype)
+  //2.将obj作为this,执行constructor，传入参数
+  constructor.apply(obj,args)
+  //3.返回obj
+  return obj
+}
+
+class Foo{
+  name:string
+  city:string
+  constructor(name:string,n:number){
+    this.name = name
+    this.city = 'beijing'
+    this.n = n
+  }
+  getName(){
+    return this.name
+  }
+}
+
+const f = customNew<Foo>(Foo,'test',100)
+
+```
+
+
+!>jest进行单元测试
+
+```js
+//测试一些些伪代码 详见jest
+import {customNew} from '../文件'
+describe('自定义new',()=>{
+  it('new',()=>{
+     class Foo{
+      name:string
+      city:string
+      constructor(name:string,n:number){
+        this.name = name
+        this.city = 'beijing'
+        this.n = n
+      }
+      getName(){
+        return this.name
+      }
+    }
+
+    const f = customNew<Foo>(Foo,'test',100)
+    expect(f.name).toBe('test')
+    expect(f.city).toBe('beijing')
+    expect(f.n).toBe(100)
+    expect(f.getName()).toBe('test')
+  })
+})
+```
+>object.create 和 {} 区别
+
+* {}创建空对象，原型指向 Object.prototype
+* Object.create 创建空对象，原型指向传入的参数
+  
+```js
+const obj1 = {}
+obj1.__proto__ === Object.prototype //true 
+
+const obj2 = Object.create({x:100})
+obj2.__proto__ ===Object.prototype//false
+obj2 //{}
+obj2.__proto__ //{x:100}
 ```
 
 
