@@ -1195,7 +1195,7 @@ token默认没有跨域限制<br>
 * 想一下当时的解决方案，以及解决之后的效果
 * 写一篇文章记录一下
 
-!> `话术模板`<br/> 描述问题：背景+现象+造成的影响<br/>问题如何被解决：分析+解决 <br/>自己的成长：学到了什么+以后如何避免6
+!> `话术模板`<br/> 描述问题：背景+现象+造成的影响<br/>问题如何被解决：分析+解决 <br/>自己的成长：学到了什么+以后如何避免
 
 # 手写篇 #
 !> 高质量代码特点：编码规范性，功能完整性，鲁棒性<br>
@@ -1505,20 +1505,125 @@ describe('自定义new',()=>{
   })
 })
 ```
->object.create 和 {} 区别
+**object.create 和 {} 区别**
 
 * {}创建空对象，原型指向 Object.prototype
 * Object.create 创建空对象，原型指向传入的参数
   
-```js
-const obj1 = {}
-obj1.__proto__ === Object.prototype //true 
+>
+> const obj1 = {}
+> 
+> obj1.__proto__ === Object.prototype //true 
+> 
+> const obj2 = Object.create({x:100})
+> 
+> obj2.__proto__ === Object.prototype//false
+> 
+> obj2 //'{}'
+> 
+> obj2.__proto__  //{x:100}
+> 
 
-const obj2 = Object.create({x:100})
-obj2.__proto__ ===Object.prototype//false
-obj2 //{}
-obj2.__proto__ //{x:100}
+## 5.遍历DOM树
+
+* 给你一个DOM树
+* 深度优先遍历，结果会输出什么？
+* 广度优先遍历，结果会输出什么？
+
+```js
+//遍历Dom tree
+/**
+ * 访问节点
+ * @param n node
+ * */
+function visitNode(n: Node){
+  if (n instanceof Comment){
+    //注释
+    console.info('Comment node ---',n.textContent)
+  }
+  if (n instanceof Text){
+    //文本
+    const t = n.textContent?.trim()
+    if (t){
+      console.info('Text node ----',t)  
+    }
+    
+  }
+  if (n instanceof HTMLElement){
+    //element
+    console.info('Element node ---',`<${n.tagName.toLowerCase()}>`)
+  }
+}
+
+/**
+ * 深度优先遍历——递归
+ * @param root dom node
+ * */
+function depthFirstTraverse(root:Node){
+  visitNode(root)
+  const childNodes = root.childNodes //.childNodes(比children 多了一些文本 和 注释) 和 .children 不一样
+  if (childNodes.length){
+    childNodes.forEach(child => {
+      depthFirstTraverse(child)
+    })
+  }
+} 
+
+/**
+ * 深度优先遍历——栈
+ * @param root dom node
+ * */
+function depthFirstTraverse1(root:Node){
+   const stack:Node[] = []
+   //根节点压栈
+   stack.push(root)
+
+   while (stack.length > 0){
+     const curNode = stack.pop() // 出栈
+     if(curNode == null) break
+
+     visitNode(curNode)
+
+     //子节点压栈
+     const childNodes = curNode.childNodes
+     if (childNodes.length > 0){
+       //reverse 反顺序压栈
+       Array.from(childNodes).reverse().forEach(child => stack.push(child))
+     }
+   }
+} 
+/**
+ * 广度优先遍历
+ * @param root dom node
+ * */
+function breadthFirstTraverse(root:Node){
+   //定义一个队列
+   const queue:Node[] = [] //数组 vs 链表
+   //根节点入队列
+   queue.unshift(root)
+
+   while (queue.length > 0){
+     const curNode = queue.pop()
+     if (curNode == null) break
+
+     visitNode(curNode)
+
+     //子节点入队
+     const childNodes = curNode.childNodes
+     if (childNodes.length){
+       childNodes.forEach(child => queue.unshift(child))
+     }
+   }
+} 
+
+const box = document.getElementById('box')
+if(box == null) throw new Error('box is null')
+//深度功能测试-递归、贪心,可以不用递归来实现，可以使用栈来实现
+depthFirstTraverse(box)
+//广度功能测试-使用队列（数组 vs 链表）
+breadthFirstTraverse(box)
 ```
+
 
 
 # 算法篇 #

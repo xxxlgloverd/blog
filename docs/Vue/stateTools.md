@@ -1,5 +1,7 @@
 !> vue状态管理工具-Pinia/vuex
 
+![vux运行机制](vuexImage/vuex.jpg) 
+
 # **实现vuex理解核心原理**
 
 ## 一、核心原理

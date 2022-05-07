@@ -128,6 +128,8 @@ describe("HelloWorld.vue", () => {
 });
 
 ```
+?>`shallowMount`是vue test utils中的一个方法为浅渲染，表示只渲染当前组件不关注子组件中的内容，一般用于单元测试，性能较高。与之对应的是`mount`，它会将当前组件以及所有子组件都渲染，适合集成测试，性能稍差。
+
 # computed && watch
 
 

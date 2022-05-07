@@ -6841,66 +6841,66 @@ a2[1] = 6;
 
 #### ① Set
 
->- 定义: 类似于数组的数据结构, 成员值都是唯一且没有重复的值
->- 声明: `const set = new Set(arr)`
->- 入参: 具有`Iterator接口`的数据结构
->- 属性
->  - **constructor**: 构造函数, 返回Set
->  - **size**: 返回实例成员总数
->- 方法
->  - **add()**: 添加值, 返回实例
->  - **delete()**: 删除值, 返回布尔
->  - **has()**: 检查值, 返回布尔
->  - **clear()**: 清除所有成员
->  - **keys()**: 返回以属性值为遍历器的对象
->  - **values()**: 返回以属性值为遍历器的对象
->  - **entries()**: 返回以属性值和属性值为遍历器的对象
->  - **forEach()**: 使用回调函数遍历每个成员
->
->> 应用场景
->
->- 去重字符串: `[...new Set(str)].join("")`
->- 去重数组: `[...new Set(arr)]`或`Array.from(new Set(arr))`
->- 集合数组
->  - 声明: `const a = new Set(arr1)`
->  - 并集: `new Set([...a, ...b])`
->  - 交集: `new Set([...a].filter(v => b.has(v)))`  //此处的has指的是set自带的方法
->  - 差集: `new Set([...a].filter(v => !b.has(v)))`
->- 映射集合
->  - 声明: `let set = new Set(arr)`
->  - 映射: `set = new Set([...set].map(v => v * 2))`或`set = new Set(Array.from(set, v => v * 2))`
->
->> 重点难点
->
->- 遍历顺序: 插入顺序
->- 没有键只有值, 可认为键和值两值相等
->- 添加多个`NaN`时, 只会存在一个`NaN`
->- 添加相同的对象时, 会认为是不同的对象
->- 添加值时不会发生类型转换(`5 !== "5"`)
->- `keys()`和`values()`的行为完全一致, `entries()`返回的遍历器同时包括键和值且两值相等
+- 定义: 类似于数组的数据结构, 成员值都是唯一且没有重复的值
+- 声明: `const set = new Set(arr)`
+- 入参: 具有`Iterator接口`的数据结构
+- 属性
+  - **constructor**: 构造函数, 返回Set
+  - **size**: 返回实例成员总数
+- 方法
+  - **add()**: 添加值, 返回实例
+  - **delete()**: 删除值, 返回布尔
+  - **has()**: 检查值, 返回布尔
+  - **clear()**: 清除所有成员
+  - **keys()**: 返回以属性值为遍历器的对象
+  - **values()**: 返回以属性值为遍历器的对象
+  - **entries()**: 返回以属性值和属性值为遍历器的对象
+  - **forEach()**: 使用回调函数遍历每个成员
+
+> 应用场景
+
+- 去重字符串: `[...new Set(str)].join("")`
+- 去重数组: `[...new Set(arr)]`或`Array.from(new Set(arr))`
+- 集合数组
+  - 声明: `const a = new Set(arr1)`
+  - 并集: `new Set([...a, ...b])`
+  - 交集: `new Set([...a].filter(v => b.has(v)))`  //此处的has指的是set自带的方法
+  - 差集: `new Set([...a].filter(v => !b.has(v)))`
+- 映射集合
+  - 声明: `let set = new Set(arr)`
+  - 映射: `set = new Set([...set].map(v => v * 2))`或`set = new Set(Array.from(set, v => v * 2))`
+
+> 重点难点
+
+- 遍历顺序: 插入顺序
+- 没有键只有值, 可认为键和值两值相等
+- 添加多个`NaN`时, 只会存在一个`NaN`
+- 添加相同的对象时, 会认为是不同的对象
+- 添加值时不会发生类型转换(`5 !== "5"`)
+- `keys()`和`values()`的行为完全一致, `entries()`返回的遍历器同时包括键和值且两值相等
 
 #### ② WeakSet
 
->- 定义: 和Set结构类似, 成员值只能是对象
->- 声明: `const set = new WeakSet(arr)`
->- 入参: 具有`Iterator接口`的数据结构
->- 属性
->  - **constructor**: 构造函数, 返回WeakSet
->- 方法
->  - **add()**: 添加值, 返回实例
->  - **delete()**: 删除值, 返回布尔
->  - **has()**: 检查值, 返回布尔
->
->> 应用场景
->
->- 储存DOM节点: DOM节点被移除时自动释放此成员, 不用担心这些节点从文档移除时会引发内存泄漏
->- 临时存放一组对象或存放跟对象绑定的信息: 只要这些对象在外部消失, 它在`WeakSet结构`中的引用就会自动消去
->
->> 重点难点
->
->- 成员都是`弱引用`, 垃圾回收机制不考虑`WeakSet结构`对此成员的引用
->- 成员不适合引用, 它会随时消失, 因此ES6规定`WeakSet结构不可遍历`
->- 其他对象不再引用成员时, 垃圾回收机制会自动回收此成员所占用的内存, 不考虑此成员是否还存在于`WeakSet结构`中
+- 定义: 和Set结构类似, 成员值只能是对象
+- 声明: `const set = new WeakSet(arr)`
+- 入参: 具有`Iterator接口`的数据结构
+- 属性
+  - **constructor**: 构造函数, 返回WeakSet
+- 方法
+  - **add()**: 添加值, 返回实例
+  - **delete()**: 删除值, 返回布尔
+  - **has()**: 检查值, 返回布尔
+
+> 应用场景
+
+- 储存DOM节点: DOM节点被移除时自动释放此成员, 不用担心这些节点从文档移除时会引发内存泄漏
+- 临时存放一组对象或存放跟对象绑定的信息: 只要这些对象在外部消失, 它在`WeakSet结构`中的引用就会自动消去
+
+> 重点难点
+
+- 成员都是`弱引用`, 垃圾回收机制不考虑`WeakSet结构`对此成员的引用
+- 成员不适合引用, 它会随时消失, 因此ES6规定`WeakSet结构不可遍历`
+- 其他对象不再引用成员时, 垃圾回收机制会自动回收此成员所占用的内存, 不考虑此成员是否还存在于`WeakSet结构`中
 
 ### Ⅱ -  基本用法
 
@@ -6910,37 +6910,35 @@ a2[1] = 6;
 >
 >`Set`本身是一个构造函数, 用来生成 Set 数据结构. 
 >
->```javascript
->const s = new Set();
->['努','努','力','学习','的','学习','汪'].forEach(item => s.add(item));
->console.log(s) //Set(5) {"努", "力", "学习", "的", "汪"}
->```
->
->![image-20210830172842921](ES全系列详细学习笔记中的图片/image-20210830172842921.png) 
+```javascript
+const s = new Set();
+['努','努','力','学习','的','学习'].forEach(item => s.add(item));
+console.log(s) //Set(5) {"努", "力", "学习", "的"}
+```
 >上面代码通过`add()`方法向 Set 结构加入成员, 结果表明 Set 结构不会添加重复的值. 
 
 #### ② 接受一个数组作为参数
 
 >`Set`函数可以接受一个数组（或者具有 iterable 接口的其他数据结构）作为参数, 用来初始化. 
 >
->```javascript
->// 例一
->const set = new Set([1, 2, 3, 4, 4]);
->console.log([...set]) //[1, 2, 3, 4]
->// 例二
->const items = new Set([1, 2, 3, 4, 5, 5, 5, 5]);
->console.log(items.size) // 5
->// 例三
->const setDiv = new Set(document.querySelectorAll('div'));
->console.log(setDiv.size) // 这个就根据你的当前页面梳理而定
->// 类似于
->const setDIV = new Set();
->document
-> .querySelectorAll('div')
-> .forEach(div => setDIV.add(div));
->console.log(setDiv.size) // 这个就根据你的当前页面梳理而定
->```
->
+```javascript
+// 例一
+const set = new Set([1, 2, 3, 4, 4]);
+console.log([...set]) //[1, 2, 3, 4]
+// 例二
+const items = new Set([1, 2, 3, 4, 5, 5, 5, 5]);
+console.log(items.size) // 5
+// 例三
+const setDiv = new Set(document.querySelectorAll('div'));
+console.log(setDiv.size) // 这个就根据你的当前页面梳理而定
+// 类似于
+const setDIV = new Set();
+document
+ .querySelectorAll('div')
+ .forEach(div => setDIV.add(div));
+console.log(setDiv.size) // 这个就根据你的当前页面梳理而定
+```
+
 >![image-20210830173525573](ES全系列详细学习笔记中的图片/image-20210830173525573.png) 上面代码中, 例一和例二都是`Set`函数接受数组作为参数, 例三是接受类似数组的对象作为参数. 
 >
 
@@ -6948,159 +6946,158 @@ a2[1] = 6;
 
 >上面代码也展示了一种去除数组重复成员的方法. 
 >
->```javascript
->// 去除数组的重复成员
->[...new Set(array)]
->```
+```javascript
+// 去除数组的重复成员
+[...new Set(array)]
+```
 >
 >上面的方法也可以用于, 去除字符串里面的重复字符. 
 >
->```javascript
->[...new Set('ababbc')].join('')
->// "abc"
->```
->
+```javascript
+[...new Set('ababbc')].join('')
+// "abc"
+```
+
 
 #### ④ 不会发生类型转换
 
 >向 Set 加入值的时候, 不会发生类型转换, 所以`5`和`"5"`是两个不同的值. Set 内部判断两个值是否不同, 使用的算法叫做“Same-value-zero equality”, 它类似于精确相等运算符（`===`）, 主要的区别是向 Set 加入值时认为`NaN`等于自身, 而精确相等运算符认为`NaN`不等于自身. 
->
->```javascript
->let set = new Set();
->let a = NaN;
->let b = NaN;
->set.add(a);
->set.add(b);
->set // Set {NaN}
->```
->
+
+```javascript
+let set = new Set();
+let a = NaN;
+let b = NaN;
+set.add(a);
+set.add(b);
+set // Set {NaN}
+```
+
 >上面代码向 Set 实例添加了两次`NaN`, 但是只会加入一个. 这表明, 在 Set 内部, 两个`NaN`是相等的. 
 >
 >另外, 两个对象总是不相等的. 
->
->```javascript
->let set = new Set();
->set.add({});
->console.log(set,set.size) //Set(1) {{…}} 1
->set.add({});
->console.log(set,set.size) //Set(2) {{…}, {…}} 2
->```
->
+
+```javascript
+let set = new Set();
+set.add({});
+console.log(set,set.size) //Set(1) {{…}} 1
+set.add({});
+console.log(set,set.size) //Set(2) {{…}, {…}} 2
+```
+
 >![image-20210830173927525](ES全系列详细学习笔记中的图片/image-20210830173927525.png) 
 
 ### Ⅲ - Set 实例的属性和方法
 
 >Set 结构的实例有以下属性. 
->
->- `Set.prototype.constructor`: 构造函数, 默认就是`Set`函数. 
->- `Set.prototype.size`: 返回`Set`实例的成员总数. 
->
+
+- `Set.prototype.constructor`: 构造函数, 默认就是`Set`函数. 
+- `Set.prototype.size`: 返回`Set`实例的成员总数. 
+
 >Set 实例的方法分为两大类: 操作方法（用于操作数据）和遍历方法（用于遍历成员）. 下面先介绍四个操作方法. 
->
->- `Set.prototype.add(value)`: 添加某个值, 返回 Set 结构本身. 
->- `Set.prototype.delete(value)`: 删除某个值, 返回一个布尔值, 表示删除是否成功. 
->- `Set.prototype.has(value)`: 返回一个布尔值, 表示该值是否为`Set`的成员. 
->- `Set.prototype.clear()`: 清除所有成员, 没有返回值. 
->
+
+- `Set.prototype.add(value)`: 添加某个值, 返回 Set 结构本身. 
+- `Set.prototype.delete(value)`: 删除某个值, 返回一个布尔值, 表示删除是否成功. 
+- `Set.prototype.has(value)`: 返回一个布尔值, 表示该值是否为`Set`的成员. 
+- `Set.prototype.clear()`: 清除所有成员, 没有返回值. 
+
 >上面这些属性和方法的实例如下. 
 >
->```javascript
->let s=new Set()
->s.add(6).add(6).add('努力').add('学习的汪').add('学习的汪');// 注意 [6] [学习的汪] 被加入了两次
->console.log(s,s.size) // Set(3) {6, "努力", "学习的汪"} 3
->console.log(s.has(6))  //true
->console.log(s.has('努力'))  //true
->console.log(s.has('努力学习的单身汪'))  //false
->//删除 [ 6 ]
->s.delete(6); 
->console.log(s.has(6))  // false
->console.log(s,s.size)  //Set(2) {"努力", "学习的汪"} 2
->```
+```javascript
+let s=new Set()
+s.add(6).add(6).add('努力').add('学习').add('学习');// 注意 [6] [学习] 被加入了两次
+console.log(s,s.size) // Set(3) {6, "努力", "学习"} 3
+console.log(s.has(6))  //true
+console.log(s.has('努力'))  //true
+console.log(s.has('努力学习的单身汪'))  //false
+//删除 [ 6 ]
+s.delete(6); 
+console.log(s.has(6))  // false
+console.log(s,s.size)  //Set(2) {"努力", "学习"} 2
+```
 >
 >下面是一个对比, 看看在判断是否包括一个键上面, `Object`结构和`Set`结构的写法不同. 
->
->```javascript
->// 对象的写法
->const properties = {
->  'width': 1,
->  'height': 1
->};
->if (properties[someName]) console.log("对象的写法")
->
->// Set的写法
->const properties = new Set();
->properties.add('width');
->properties.add('height');
->if (properties.has(someName))console.log('Set的写法')
->```
->
+
+```javascript
+// 对象的写法
+const properties = {
+  'width': 1,
+  'height': 1
+};
+if (properties[someName]) console.log("对象的写法")
+
+// Set的写法
+const properties = new Set();
+properties.add('width');
+properties.add('height');
+if (properties.has(someName))console.log('Set的写法')
+```
+
 >`Array.from`方法可以将 Set 结构转为数组. 
 >
->```javascript
->const items = new Set([1, 2, 3, 4, 5]);
->const array = Array.from(items);
->```
->
+```javascript
+const items = new Set([1, 2, 3, 4, 5]);
+const array = Array.from(items);
+```
+
 >这就提供了去除数组重复成员的另一种方法. 
->
->```javascript
->function dedupe(array) {
->  return Array.from(new Set(array));
->}
->dedupe([1, 1, 2, 3]) // [1, 2, 3]
->```
->
+
+```javascript
+function dedupe(array) {
+  return Array.from(new Set(array));
+}
+dedupe([1, 1, 2, 3]) // [1, 2, 3]
+```
+
 
 ### Ⅳ - 遍历操作
 
->Set 结构的实例有四个遍历方法, 可以用于遍历成员. 
->
->- `Set.prototype.keys()`: 返回键名的遍历器
->- `Set.prototype.values()`: 返回键值的遍历器
->- `Set.prototype.entries()`: 返回键值对的遍历器
->- `Set.prototype.forEach()`: 使用回调函数遍历每个成员
->
+Set 结构的实例有四个遍历方法, 可以用于遍历成员. 
+
+- `Set.prototype.keys()`: 返回键名的遍历器
+- `Set.prototype.values()`: 返回键值的遍历器
+- `Set.prototype.entries()`: 返回键值对的遍历器
+- `Set.prototype.forEach()`: 使用回调函数遍历每个成员
+
 >需要特别指出的是, `Set`的遍历顺序就是插入顺序. 这个特性有时非常有用, 比如使用 Set 保存一个回调函数列表, 调用时就能保证按照添加顺序调用
 
 #### ① `keys()`, `values()`, `entries()`
 
 >`keys`方法、`values`方法、`entries`方法返回的都是遍历器对象（详见《Iterator 对象》）. 由于 Set 结构没有键名, 只有键值（或者说键名和键值是同一个值）, 所以`keys`方法和`values`方法的行为完全一致. 
 >
->```javascript
->let set = new Set(['努力', '学习', '的汪']);
->console.log('---------  set.keys()  -------------');
->for (let item of set.keys()) { console.log(item) }
->console.log('---------  set.values()  -------------');
->for (let item of set.values()) { console.log(item) }
->console.log('---------  set.entries()  -------------');
->for (let item of set.entries()) {  console.log(item) }
->```
->
->![image-20210830180145744](ES全系列详细学习笔记中的图片/image-20210830180145744.png) 上面代码中, `entries`方法返回的遍历器, 同时包括键名和键值, 所以每次输出一个数组, 它的两个成员完全相等. 
+```javascript
+let set = new Set(['努力', '学习']);
+console.log('---------  set.keys()  -------------');
+for (let item of set.keys()) { console.log(item) } // 努力 学习
+console.log('---------  set.values()  -------------');
+for (let item of set.values()) { console.log(item) } // 努力 学习
+console.log('---------  set.entries()  -------------');
+for (let item of set.entries()) {  console.log(item) } // ['努力','努力'] ['学习','学习']
+```
+
+> 上面代码中, `entries`方法返回的遍历器, 同时包括键名和键值, 所以每次输出一个数组, 它的两个成员完全相等. 
 >
 >Set 结构的实例默认可遍历, 它的默认遍历器生成函数就是它的`values`方法. 
->
->```javascript
->Set.prototype[Symbol.iterator] === Set.prototype.values // true
->```
->
+
+```javascript
+Set.prototype[Symbol.iterator] === Set.prototype.values // true
+```
+
 >这意味着, 可以省略`values`方法, 直接用`for...of`循环遍历 Set. 
 >
->```javascript
->let set = new Set(['努力', '学习', '的汪']);
->for (let x of set) { console.log(x) }
->```
->
->![image-20210830180417020](ES全系列详细学习笔记中的图片/image-20210830180417020.png)  
+```javascript
+let set = new Set(['努力', '学习']);
+for (let x of set) { console.log(x) } //努力 学习
+```
+
 
 #### ② forEach()
 
 >Set 结构的实例与数组一样, 也拥有`forEach`方法, 用于对每个成员执行某种操作, 没有返回值. 
 >
->```javascript
->let set = new Set(['努力','学习', '的大帅哥']);
->set.forEach((value, key) => console.log(key + ' : ' + value))
->```
+```javascript
+let set = new Set(['努力','学习', '的大帅哥']);
+set.forEach((value, key) => console.log(key + ' : ' + value))
+```
 >
 >![image-20210830180645571](ES全系列详细学习笔记中的图片/image-20210830180645571.png) 
 >
