@@ -1624,7 +1624,35 @@ depthFirstTraverse(box)
 breadthFirstTraverse(box)
 ```
 
+## 6.手写LazyMan,实现sleep机制
 
+* 支持sleep和eat两种方法
+* 支持***链式调用**
+
+> **示例：**
+> 
+>  const me = new LazyMan('test')
+> 
+>  me.eat('苹果').eat('香蕉').sleep(5).eat('葡萄')
+> 
+>  // 'test eat 苹果'
+> 
+>  // 'test eat 香蕉'
+> 
+>  // (等待 5s)
+> 
+>  // 'test eat 葡萄'
+> 
+> **代码设计：**
+> 
+> 由于有sleep功能
+>
+
+```js
+
+class 
+
+```
 
 # 算法篇 #
 
