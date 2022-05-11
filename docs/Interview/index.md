@@ -1645,15 +1645,131 @@ breadthFirstTraverse(box)
 > 
 > **代码设计：**
 > 
-> 由于有sleep功能
->
+> 由于有sleep功能,函数不能直接在调用时触发
+> 
+> 初始化一个列表，把函数注册进去
+> 
+> 由每个item 触发 next 执行（遇到sleep则异步触发）
+> 
+
 
 ```js
 
-class 
+class LazyMan {
+  private name:string
+  private tasks:Function [] = [] //任务列表
+
+  constructor(name:string){
+    this.name = name
+    setTimeout(()=>{
+      this.next()
+    })
+  }
+
+  private next() {
+    const task = this.tasks.shift() //取出当前 tasks 的第一个任务
+    if(task) task()
+  }
+  eat(food:string){
+    const task = () =>{
+      console.info(`${this.name} eat ${food}`)
+      this.next() //立刻执行下一个任务
+    }
+    this.tasks.push(task)
+
+    return this //链式调用
+  }
+  sleep(second:number){
+    console.info(`${this.name}开始进入睡眠状态，请耐心等待`)
+    const task = () =>{
+      setTimeout(()=>{
+        console.info(`${this.name}已经睡完 ${second}s,开始执行下一个任务！`)
+        this.next()    
+      },second*1000)
+    }
+    this.tasks.push(task)
+
+    return this //链式调用
+  }
+} 
+
+//功能测试
+const me = new LazyMan('test')
+me.eat('苹果').eat('葡萄').sleep(2).eat('香蕉').eat('西瓜')
+
+//输出结果
+//test eat 苹果
+//test eat 葡萄
+//test已经睡完 2s,开始执行下一个任务！
+//test eat 香蕉
+//test eat 西瓜
 
 ```
+**划重点**
+* 任务队列
+* 触发next
+* sleep 异步触发
+  
+## 7.手写curry函数，实现函数柯里化
+**分析**
+> curry返回的是一个函数fn
+>
+> 执行fn,中间状态返回函数，如 add(1)或者 add(1)(2)
+>
+> 最后返回执行结果，如add(1)(2)(3)
 
+```js
+function curry(fn: Function){
+  const fnArgsLength = fn.length //传入函数的参数长度
+  let args:ary[] = []
+
+  //ts中，独立函数，this需要声明类型
+  function calc(this:any,...newArgs:any[]){
+    //积累函数
+    args=[
+      ...args,
+      ...newArgs
+    ]
+    if(args.length < fnArgsLength) {
+      //参数不够，返回函数
+      return calc
+    }else{
+      //参数够了，返回执行结果
+      return fn.apply(this,args.slice(0,fnArgsLength))
+    }
+
+  }
+  return calc
+}
+
+//功能测试
+function add(a:number,b:number,c:number):number{
+  return a + b + c
+}
+//add(10,20,30) //60
+
+const curryAdd = curry(add)
+const res = curryAdd(10)(20)(30) //60
+console.info(res)
+```
+
+!>jest进行单元测试
+
+```js
+//测试一些些伪代码 详见jest
+import {curry} from '../文件'
+describe('curry',()=>{
+  it('curry',()=>{
+    function add(a:number,b:number,c:number):number{
+      return a + b + c
+    }
+    const res1 = add(10,20,30)
+    const curryAdd = curry(add)
+    const res2 = curryAdd(10)(20)(30) //60
+    expect(res1).toBe(res2)
+  })
+})
+```
 # 算法篇 #
 
 !> 算法复杂度-程序执行时需要的计算量和内存空间，复杂度是数量级（颗粒度粗） <br>前端通常`重时间轻空间`<br>
