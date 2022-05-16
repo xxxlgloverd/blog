@@ -1770,6 +1770,488 @@ describe('curry',()=>{
   })
 })
 ```
+
+## 8.instanceof原理是什么，请用代码表示
+?>原型链相关的知识点
+
+```js
+/**
+ * 自定义 instanceof
+ * @param instance instance
+ * @param origin class or function
+ * */
+function myInstanceof(instance:any,origin:any):boolean{
+    if (instance == null) return false //null undefined
+
+    const type = typeof instance
+    if(type !== 'object' && type !== 'function'){
+      //值类型
+      return false
+    }
+
+    let tempInstance = instance //为了防止修改 instance
+    while (tempInstance){
+      if(tempInstance.__proto__ === origin.prototype){
+         return true //配上了        
+      }
+      //未匹配上
+      tempInstance = tempInstance.__proto__ //顺着原型链往上找
+    }
+    return false
+}
+
+//功能测试
+console.info(myInstanceof({},Object))
+```
+
+!>jest进行单元测试
+
+```js
+//测试一些些伪代码 详见jest
+import {myInstanceof} from '../文件'
+describe('自定义 myInstanceof',()=>{
+  it('null undefined',()=>{
+      expect(myInstanceof(null,Object)).toBe(false)
+      expect(myInstanceof(undefined,Object)).toBe(false)
+  })
+  it('值类型',()=>{
+    expect(myInstanceof(100,Number)).toBe(false)
+    expect(myInstanceof('abc',String)).toBe(false)
+  })
+  it('引用类型',()=>{
+    expect(myInstanceof([],Array)).toBe(true)
+    expect(myInstanceof({},Object)).toBe(true)
+    expect(myInstanceof({},Array)).toBe(false)
+  })
+  it('函数',()=>{
+    function fn(){}
+    const res = myInstanceof(fn,Function)
+    expect(res).toBe(true)
+  })
+  it('自定义',()=>{
+    class Foo {}
+    const f = new Foo()
+    const res1 = myInstanceof(f,Foo)
+    expect(res1).toBe(true)
+    const res2 = myInstanceof(f,Object)
+    expect(res2).toBe(true)
+  })
+})
+```
+
+## 9.手写函数bind
+
+**bind应用**
+* 返回一个新函数，但不执行
+* 绑定this和部分参数
+* 如是箭头函数，无法改变this，只能改变参数
+
+**bind分析**
+* 返回一个新函数
+* 绑定this
+* 同时绑定执行时的参数（apply或者call）
+
+```js
+Function.prototype.customBind = function(context:any,...bindArgs:any[]){
+  //context 是 bind 传入的this 
+  //bindArgs 是 bind 传入的各个参数
+
+  const self = this //当前的函数本身
+
+  return function (...args:any[]){
+     //拼接参数
+     const newArgs = bindArgs.concat(args)
+     return self.apply(context,newArgs)
+  }
+}
+//功能测试
+function fn(this:any,a:any,b:any,c:any){
+   console.info(this,a,b,c)
+}
+// fn(10,20,30)
+const fn1=fn.customBind({x:100},10)
+fn1(20,30)
+```
+!>jest进行单元测试
+
+```js
+//测试一些些伪代码 详见jest
+import from '../文件'
+describe('自定义bind',()=>{
+  it('绑定 this',()=>{
+    function fn(this:any){
+      return this
+    }
+    const fn1 = fn.customBind({x:100})
+    expect(fn1()).toEqual({x:100})
+  })
+   it('绑定 参数',()=>{
+    function fn(a:number,b:number,c:number){
+      return a+b+c
+    }
+    const fn1 = fn.customBind(null,10,20)
+    expect(fn1(30)).toBe(60)
+  })
+})
+```
+## 10.手写函数call和apply
+
+**call和apply应用**
+* bind返回一个新函数（不执行），call和apply会立即执行函数
+* 绑定this
+* 传入执行参数
+
+**call和apply分析**
+* 如何在函数执行时绑定this
+* 如：const obj = {x:100,fn(){this.x}}
+* 执行obj.fn() ,此时fn内部的this 就指向 obj
+* 可借此来实现函数绑定this
+
+```js
+//call
+Function.prototype.customCall = function (context:any,...args:any[]){
+  if (context ==null) context = globalThis //指向window
+  if (typeof context !== 'object') context = new Object(context) //值类型，变为对象
+
+  const fnKey = Symbol() //不会出现属性名称的污染或者覆盖
+  context[fnKey] = this // this 就是当前的函数
+
+  const res = context[fnKey](...args) //绑定了 this
+
+  delete context[fnKey] //清理掉 fn ，防止污染
+
+  return res
+}
+
+//apply
+Function.prototype.customApply = function (context:any,args:any[] = []){
+  if (context ==null) context = globalThis //指向window
+  if (typeof context !== 'object') context = new Object(context) //值类型，变为对象
+
+  const fnKey = Symbol() //不会出现属性名称的污染或者覆盖
+  context[fnKey] = this // this 就是当前的函数
+
+  const res = context[fnKey](...args) //绑定了 this
+
+  delete context[fnKey] //清理掉 fn ，防止污染
+
+  return res
+}
+
+//功能测试
+
+function fn (this:any,a:any,b:any,c:any){
+  console.info(this,a,b,c)
+}
+fn.customCall({x:100},10,20,30)
+fn.customApply({x:200},[10,20,30])
+```
+
+!>jest进行单元测试
+
+```js
+//测试一些些伪代码 详见jest
+import from '../文件'
+describe('自定义call',()=>{
+  it('绑定 this - 对象',()=>{
+    function fn(this:any){
+      return this
+    }
+    const fn1 = fn.customCall({x:100})
+    expect(fn1).toEqual({x:100})
+  })
+  it('绑定 this - 值类型',()=>{
+    function fn(this:any){
+      return this
+    }
+    const fn1 = fn.customCall('abc')
+    expect(fn1.toString()).toBe('abc')
+
+    const fn2 = fn.customCall(null)
+    expect(fn2).not.toBeNull()
+  })
+   it('绑定 参数',()=>{
+    function fn(a:number,b:number,c:number){
+      return a+b+c
+    }
+    const fn1 = fn.customCall(null,10,20，30)
+    expect(fn1).toBe(60)
+  })
+})
+
+describe('自定义apply',()=>{
+  it('绑定 this - 对象',()=>{
+    function fn(this:any){
+      return this
+    }
+    const fn1 = fn.customApply({x:100})
+    expect(fn1).toEqual({x:100})
+  })
+  it('绑定 this - 值类型',()=>{
+    function fn(this:any){
+      return this
+    }
+    const fn1 = fn.customApply('abc')
+    expect(fn1.toString()).toBe('abc')
+
+    const fn2 = fn.customApply(null)
+    expect(fn2).not.toBeNull()
+  })
+   it('绑定 参数',()=>{
+    function fn(a:number,b:number,c:number){
+      return a+b+c
+    }
+    const fn1 = fn.customApply(null,[10,20，30])
+    expect(fn1).toBe(60)
+  })
+})
+```
+
+
+
+## 11.手写EventBus自定义事件——包括on和once
+
+**EventBus分析**
+* on和once注册函数，存储起来
+* emit时找到对应的函数执行
+* off找到对应的函数，从存储中（对象）删除
+* `区分on和once`
+* on绑定的事件可以连续执行，除非off
+* once绑定的函数emit一次即删除，也可以未执行而被off
+* 数据结构上标识出on和once
+
+```js
+class EventBus {
+  /**
+   * 'key1':[
+   * {fn: fn1,isOnce: false},
+   * {fn: fn2,isOnce: false},
+   * {fn: fn3,isOnce: true},
+   * ]
+   * 'key2':[]//有序
+   * 'key3':[]
+   * */
+  private events:{
+    [key:string]:Array<{fn: Function; isOnce: boolean}>
+  }
+
+  constructor(){
+    this.events = {}
+  }
+
+  on(type:string,fn:Function,isOnce:boolean=false){
+    const events = this.events
+    if(events[type] == null){
+      events[type] = [] //初始化key 的 fn 数组
+    }
+    events[type].push({fn,isOnce})
+  }
+  once(type:string,fn:Function){
+    this.on(type,fn,true)
+  }
+  off(type:string,fn?:Function){
+    if(!fn){
+    //解绑所有的type函数
+    this.events[type] = []
+    }else{
+      //解绑单个fn
+      const fnList = this.events[type]
+      if(fnList){
+        this.events[type] = fnList.filter(item => item.fn !== fn)
+      }
+    }
+  }
+  emit(type:string,...args:any[]){
+    const fnList = this.events[type]
+    if(fnList ==null) return
+
+    //注意
+    this.events[type] = fnList.filter(item =>{
+      const {fn, isOnce} = item
+      fn(...args)
+      
+      //once 执行一次就要过滤掉
+      if(!isOnce) return true
+      return false     
+    })
+  }
+}
+  
+const e = new EventBus()
+
+function fn1(a:any,b:any){console.log('fn1',a,b)}
+function fn2(a:any,b:any){console.log('fn2',a,b)}
+function fn3(a:any,b:any){console.log('fn3',a,b)}
+
+e.on('key1',fn1)
+e.on('key1',fn2)
+e.once('key1',fn3)
+
+e.emit('key1',10,20) //触发fn1 fn2 fn3
+
+e.off('key1',fn1)
+
+e.emit('key1',10,20) //触发fn2 
+
+```
+>数据结构简单化方式实现EventBus
+
+```js
+class EventBus2{
+    private events:{[key:string]:Array<Function>}// {key1:[fn1,fn2]}
+    private onceEvents:{[key:string]:Array<Function>}
+
+    constructor(){
+      this.events = {}
+      this.onceEvents = {}
+    }
+
+    on(type:string,fn:Function){
+      const events = this.events
+      if(events[type] == null){
+        events[type] = [] //初始化key 的 fn 数组
+      }
+      events[type].push({fn})
+  }
+
+   once(type:string,fn:Function){
+      const onceEvents = this.onceEvents
+      if(onceEvents[type] == null){
+        onceEvents[type] = [] //初始化key 的 fn 数组
+      }
+      onceEvents[type].push({fn})
+  }
+
+   off(type:string,fn?:Function){
+    if(!fn){
+    //解绑所有的type函数
+    this.events[type] = []
+    this.onceEvents[type] = []
+    }else{
+      //解绑单个fn
+      const fnList = this.events[type]
+      const onceFnList = this.onceEvents[type]
+      if(fnList){
+        this.events[type] = fnList.filter(curFn => curFn !== fn)
+      }
+      if(onceFnList){
+         this.onceEvents[type] = onceFnList.filter(curFn => curFn !== fn)
+      }
+    }
+  }
+  emit(type:string,...args:any[]){
+    const fnList = this.events[type]
+    const onceFnList = this.onceEvents[type]
+    if(fnList) {
+      fnList.forEach(f => f(...args))
+    }
+    
+    if(onceFnList) {
+      onceFnList.forEach(f => f(...args))
+      this.onceEvents[type] = []
+    }
+    
+  }
+}
+
+const e = new EventBus2()
+
+function fn1(a:any,b:any){console.log('fn1',a,b)}
+function fn2(a:any,b:any){console.log('fn2',a,b)}
+function fn3(a:any,b:any){console.log('fn3',a,b)}
+
+e.on('key1',fn1)
+e.on('key1',fn2)
+e.once('key1',fn3)
+
+e.emit('key1',10,20) //触发fn1 fn2 fn3
+
+e.off('key1',fn1)
+
+e.emit('key1',10,20) //触发fn2 
+```
+
+!>jest进行单元测试
+
+```js
+//测试一些些伪代码 详见jest
+import EventBus from '../文件'
+
+describe('EventBus 自定义事件',()=>{
+  it('绑定事件，触发事件',()=>{
+    const event = new EventBus()
+
+    //注意
+    const fn1 = jest.fn() //jest mock function 
+    const fn2 = jest.fn() 
+    const fn3 = jest.fn() 
+
+    event.on('key1',fn1)
+    event.on('key1',fn2)
+    event.on('xxxx',fn3)
+
+    event.emit('key1',10,20)
+
+    expect(fn1).toBeCalledWith(10,20) 
+    expect(fn2).toBeCalledWith(10,20) 
+    expect(fn3).not.toBeCalled() 
+  })
+
+  it('解绑单个事件',()=>{
+    const event = new EventBus()
+
+    //注意
+    const fn1 = jest.fn() //jest mock function 
+    const fn2 = jest.fn() 
+
+    event.on('key1',fn1)
+    event.on('key1',fn2)
+
+    event.off("key1",fn1)
+
+    event.emit('key1',10,20)
+
+    expect(fn1).not.toBeCalled() 
+    expect(fn2).toBeCalledWith(10,20) 
+  })  
+
+  it('解绑所有事件',()=>{
+   const event = new EventBus()
+
+    const fn1 = jest.fn() //jest mock function 
+    const fn2 = jest.fn() 
+
+    event.on('key1',fn1)
+    event.on('key1',fn2)
+
+    event.off("key1")
+
+    event.emit('key1',10,20)
+
+    expect(fn1).not.toBeCalled() 
+    expect(fn2).not.toBeCalled() 
+  })
+
+  it('once',()=>{
+    const event = new EventBus()
+    
+    let n = 1 //jest 中 toBeCalled 函数只能用一次，多次则没法使用 一直是最初的状态
+    const fn1 = jest.fn(()=> n++) //jest mock function 
+    const fn2 = jest.fn(()=> n++) 
+
+    event.once('key1',fn1)
+    event.once('key1',fn2)
+
+    event.emit('key1')
+    event.emit('key1')
+    event.emit('key1')
+    event.emit('key1')
+    expect(n).toBe(3) 
+  })
+})
+
+```
+
 # 算法篇 #
 
 !> 算法复杂度-程序执行时需要的计算量和内存空间，复杂度是数量级（颗粒度粗） <br>前端通常`重时间轻空间`<br>
