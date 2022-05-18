@@ -1711,6 +1711,7 @@ me.eat('苹果').eat('葡萄').sleep(2).eat('香蕉').eat('西瓜')
 * sleep 异步触发
   
 ## 7.手写curry函数，实现函数柯里化
+
 **分析**
 > curry返回的是一个函数fn
 >
@@ -2377,6 +2378,308 @@ describe('LRU cache',()=>{
 >
 >get set 时移动数据，用数组splice 效率太低
 * 可使用`双向链表`去实现（感觉有点点难呢有next pre head tail）
+
+```js
+interface IListNode {
+  value:any
+  key:string //存储key，方便删除（否则删除时就需要遍历对象）
+  prev?:IListNode
+  next?:IListNode
+}
+
+export default class LRUCache {
+  private length: number
+  private data: { [key: string]: IListNode } = {}
+  private dataLength: number = 0
+  private listHead: IListNode | null = null
+  private listTail: IListNode | null = null
+
+  constructor(length: number){
+    if(length < 1) throw new Error('invalid length')
+    this.length =length
+  }
+
+  private moveToTail(curNode: IListNode){
+    const tail = this.listTail
+    if(tail == curNode) return
+
+    //-----1.让prevNode nextNode 断绝与 curNode 的关系 同时和前后再建立连接----------
+    const prevNode = curNode.prev
+    const nextNode = curNode.next
+    if(prevNode){
+      if(nextNode){
+        prevNode.next = nextNode
+      }else{
+        delete prevNode.next
+      }
+    }
+    if(nextNode){
+      if(prevNode){
+        nextNode.prev = prevNode
+      }else{
+        delete nextNode.prev
+      }
+      if(this.listHead === curNode) this.listHead = nextNode
+    }
+    //-----2.让curNode 断绝与 prevNode nextNode 的关系----------
+    delete curNode.prev
+    delete curNode.next
+    //-----3.在list 末尾重新建立  curNode 的新关系----------
+    if(tail){
+      tail.next = curNode
+      curNode.prev = tail
+    }
+    this.listTail = curNode
+  }
+  private tryClean(){
+    while (this.dataLength > this.length){
+      const head =this.listHead
+      if(head == null) throw new Error('head is null')
+      const headNext = head.next
+      if(headNext == null) throw new Error('headNext is null')
+
+      //1.断绝 head 和 next 的关系
+      delete headNext.prev
+      delete head.next
+
+      //2.重新赋值 listHead
+      this.listHead = headNext
+
+      //3.清理data,重新计数
+      delete this.data[head.key]
+      this.dataLength = this.dataLength - 1
+
+    }
+  }
+  get(key: string): any {
+    const data = this.data
+    const curNode = data[key]
+
+    if(curNode == null) return null
+    
+    if(this.listTail == curNode){
+      //本身就在末尾（最新鲜的位置），直接返回value即可
+      return curNode.value
+    }
+    //移动到末尾
+    this.moveToTail(curNode)
+    return curNode.value
+  }
+
+  set(key: any,value: any){
+    const data = this.data
+    const curNode = data[key]
+
+    if(curNode == null){
+      //新增数据
+      const newNode：IListNode = {key,value}
+      //移动到末尾
+      this.moveToTail(newNode)
+
+      data[key] = newNode
+      this.dataLength++
+
+      if(this.dataLength == 1) this.listHead=newNode
+    }else{
+     //修改现有数据
+     curNOde.value = value
+     //移动到末尾
+     this.moveToTail(curNode)
+
+    }
+    //尝试清理长度
+    this.tryClean()
+  }
+}
+
+//功能测试
+const lruCache = new LRUCache(2)
+lruCache.set('1',1) //{1=1}
+lruCache.set('2',2) //{1=1,2=2}
+lruCache.get('1') //'1' {2=2,1=1}
+lruCache.set('3',3) //{1=1,3=3}
+lruCache.get('2') //null
+lruCache.set('4',4) //{3=3,4=4}
+lruCache.get('1') //null
+lruCache.get('3') //'3' {4=4,3=3}
+lruCache.get('4') //'4' {3=3,4=4}
+
+//单元测试同上
+```
+
+## 13.手写深拷贝——考虑各种数据类型和循环引用
+**使用JSON.stringify和parse**
+* 无法转换函数
+* 无法转换Map和Set
+* 无法转换循环引用
+
+**普通深拷贝**
+* 只考虑Object Array
+* 无法转换Map 和 Set 和 循环引用
+* 只能应对初级要求的技术一面
+
+```js
+/**
+ * 普通的深拷贝——简单的数组、对象
+ * @param obj obj
+ * */
+function easyDeepclone(obj:any){
+  if(typeof obj !=='object' || obj ==null) return obj
+
+  let result: any
+  if(obj instanceof Array){
+    result = []
+  }else{
+    result = {}
+  }
+
+  for(let key in obj){
+    if(obj.hasOwnProperty(key)){
+      result[key] = easyDeepclone(obj[key]) //递归调用
+    }
+  }
+  return result
+}
+//功能测试
+const a: any = {
+  set:new Set([10,20,30]),
+  map:new Map([['x',10],['y',20]])
+}
+a.self=a //会报错
+console.log(easyDeepclone(a)) //无法处理 Map Set 和 循环引用
+```
+
+**深拷贝**
+* 考虑多种数据结构
+* 考虑循环引用
+
+
+```js
+/**
+ * 深拷贝
+ * @param obj obj
+ * @param map WeakMap 为了避免循环引用，弱引用可以防止内存泄漏 
+ **/
+export function deepClone(obj:any,map = new WeakMap()):any{
+   if(typeof obj !=='object' || obj ==null) return obj
+
+   //避免循环引用
+  const objFromMap = map.get(obj)
+  if(objFromMap) return objFromMap
+
+  let target:any = {}
+  map.set(obj,target)
+  
+  //Map
+  if(obj instanceof Map){
+    target = new Map()
+    obj.forEach((v,k)=>{
+      const v1 = deepClone(v,map)
+      const k1 = deepClone(k,map)
+      target.set(k1,v1)
+    })
+  }
+
+  //Set
+  if(obj instanceof Set){
+    target = new Set()
+    obj.forEach(v=>{
+      const v1 = deepClone(v,map)
+      target.add(v1)
+    })
+  }
+  
+  //Array
+  if(obj instanceof Array){
+    target = obj.map(item => deepClone(item,map))
+  }
+
+  //Object
+  for(const key in obj){
+    const val = obj[key]
+    const val1= deepClone(val,map)
+    target[key] = val1
+  }
+
+  return target
+}
+
+//功能测试
+const a: any = {
+  set:new Set([10,20,30]),
+  map:new Map([['x',10],['y',20]]),
+  info:{
+    city:'北京'
+  },
+  fn:()=>{console.info(100)}
+}
+a.self=a 
+console.log(deepClone(a))
+```
+!>jest进行单元测试
+
+```js
+//测试一些些伪代码 详见jest
+import deepClone from '../文件'
+
+describe('深拷贝',()=>{
+  it('值类型',()=>{
+    expect(deepClone(100)).toBe(100)
+    expect(deepClone('abc')).toBe('abc')
+    expect(deepClone(null)).toBe(null)
+  })
+  it('普通对象和数组',()=>{
+    const obj = {
+      name:'test',
+      info:{
+        city:'北京'
+      },
+      arr:[10,20,30]
+    }
+    const obj1 = deepClone(obj)
+    onj.info.city = '上海'
+
+    expect(obj1.info.city).toBe('北京')
+    expect(obj1.arr).toEqual([10,20,30])
+  })
+  it('Map',()=>{
+    const m1 = new Map([['x',10],['y',20]])
+    const m2 = deepClone(m1)
+    expect(m2.size).toBe(2)
+
+    const obj = {
+      map:new Map([['x',10],['y',20]])
+
+    }
+    const obj1 = deepClone(obj)
+    expect(obj1.map.size).toBe(2)
+  })
+  it('Set',()=>{
+    const s1 = new Set([10,20,30])
+    const s2 = deepClone(s1)
+    expect(s2.size).toBe(3)
+
+    const obj = {
+      s: new Set([10,20,30])
+    }
+    const obj1 = deepClone(obj)
+    expect(obj1.size).toBe(3)
+  })
+  it('循环引用',()=>{
+    const a:any ={}
+    a.self = a
+    const b = deepClone(a)
+    expect(b.self).toBe(b)
+  })
+})
+
+```
+
+
+# 分析解决问题篇 #
+
+* 看懂代码，分析逻辑
+* 能识别代码中的一些坑
 
 # 算法篇 #
 
