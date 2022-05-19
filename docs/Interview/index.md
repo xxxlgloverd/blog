@@ -2681,6 +2681,42 @@ describe('深拷贝',()=>{
 * 看懂代码，分析逻辑
 * 能识别代码中的一些坑
 
+## 1.["1","2","3"].map(parseInt)输出什么
+
+> parseInt(str,radix)
+> 
+> 解析一个字符串，并返回十进制整数
+> 
+> 第一个参数str,即要解析的字符串
+> 
+> 第二个参数radix,基数（进制），范围2-36
+> 
+> 没有radix
+> 
+> 当str以 `0x`开头，则按照16进制处理
+> 
+> 当str以`0`开头，则按8进制处理（但ES5取消了）
+> 
+> 其他情况是按照10进制的
+> 
+
+
+```js
+//拆解代码，语义一样
+const nums = ['1','2','3']
+const res = nums.map((item,index)=>{
+  //item:'1',index:0
+  //item:'2',index:1
+  //item:'3',index:2
+  return parseInt(item,index)
+
+  //parseInt(1,0) //1
+  //parseInt(2,1) //NaN
+  //parseInt(3,2) //NaN
+})
+```
+
+
 # 算法篇 #
 
 !> 算法复杂度-程序执行时需要的计算量和内存空间，复杂度是数量级（颗粒度粗） <br>前端通常`重时间轻空间`<br>

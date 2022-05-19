@@ -3,6 +3,8 @@ import HelloWorld from "./components/HelloWorld.vue";
 import TheWelcome from "./components/TheWelcome.vue";
 import proxy from "./test/proxy.vue";
 import computed from "./test/computed.vue";
+import cssstyle from "./test/cssstyle.vue";
+import todoList from "./test/todoList.vue";
 </script>
 
 <template>
@@ -13,8 +15,12 @@ import computed from "./test/computed.vue";
     </div>
     <h2>响应式基础：</h2>
     <proxy />
-     <h2>计算属性：</h2>
-     <computed/>
+    <h2>计算属性：</h2>
+    <computed />
+    <h2>类与样式绑定：</h2>
+    <cssstyle />
+    <h2>todoList：</h2>
+    <todoList />
   </main>
 </template>
 
