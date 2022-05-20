@@ -170,7 +170,11 @@ const styleObject = reactive({
 ></my-component>
 ```
 
-生命周期
+## 8.事件处理
+> v-on 指令 (简写为 @) 来监听 DOM 事件和运行 JavaScript 代码
+> 绑定事件，可以搭配使用响应的事件修饰符或者按键修饰符
+
+## 8.生命周期
 >vue3生命周期
 >
 >beforeCreated、created、beforeMount、mounted、beforeUpdate、updated、beforeUnmount、unmounted
